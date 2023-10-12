@@ -31,5 +31,8 @@ type BankKeeper interface {
 
 type RecordsKeeper interface {
 	GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) sdk.Int
-	YATransfer(ctx sdk.Context, msg *ibctypes.MsgTransfer) error
+	VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.AccAddress, msg *ibctypes.MsgTransfer) error
+	GetVaultPendingDeposit(ctx sdk.Context, vaultId uint64) sdk.Int
+	IncreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int)
+	DecreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int)
 }

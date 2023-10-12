@@ -7,10 +7,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
 )
 
-func (k Keeper) GetAllPendingDeposits(ctx sdk.Context) []types.PendingDeposit {
+func (k Keeper) GetAllVaultPendingDeposits(ctx sdk.Context) []types.PendingDeposit {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PendingDepositKey))
 	deposits := []types.PendingDeposit{}
 	iterator := store.Iterator(nil, nil)
@@ -29,17 +29,17 @@ func (k Keeper) GetAllPendingDeposits(ctx sdk.Context) []types.PendingDeposit {
 	return deposits
 }
 
-func (k Keeper) IncreasePendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
-	deposit := k.GetPendingDeposit(ctx, vaultId)
-	k.SetPendingDeposit(ctx, vaultId, deposit.Add(amount))
+func (k Keeper) IncreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
+	deposit := k.GetVaultPendingDeposit(ctx, vaultId)
+	k.SetVaultPendingDeposit(ctx, vaultId, deposit.Add(amount))
 }
 
-func (k Keeper) DecreasePendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
-	deposit := k.GetPendingDeposit(ctx, vaultId)
-	k.SetPendingDeposit(ctx, vaultId, deposit.Sub(amount))
+func (k Keeper) DecreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
+	deposit := k.GetVaultPendingDeposit(ctx, vaultId)
+	k.SetVaultPendingDeposit(ctx, vaultId, deposit.Sub(amount))
 }
 
-func (k Keeper) GetPendingDeposit(ctx sdk.Context, vaultId uint64) sdk.Int {
+func (k Keeper) GetVaultPendingDeposit(ctx sdk.Context, vaultId uint64) sdk.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PendingDepositKey))
 	bz := store.Get(sdk.Uint64ToBigEndian(vaultId))
 	if bz == nil {
@@ -55,7 +55,7 @@ func (k Keeper) GetPendingDeposit(ctx sdk.Context, vaultId uint64) sdk.Int {
 	return amount
 }
 
-func (k Keeper) SetPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
+func (k Keeper) SetVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PendingDepositKey))
 	bz, err := amount.Marshal()
 	if err != nil {

@@ -9,6 +9,7 @@ message TransferCallback {
   uint64 deposit_record_id = 1;
 }
 
-message TransferLSMTokenCallback {
-  LSMTokenDeposit deposit = 1;
+message VaultTransferCallback {
+  uint64 vault_id          = 1;
+  string strategy_contract = 2;
 }

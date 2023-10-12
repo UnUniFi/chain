@@ -115,8 +115,8 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 		EpochNumber: 1,
 		HostZoneUnbondings: []*recordstypes.HostZoneUnbonding{
 			{
-				StTokenAmount:         0,
-				NativeTokenAmount:     0,
+				StTokenAmount:         sdk.ZeroInt(),
+				NativeTokenAmount:     sdk.ZeroInt(),
 				Denom:                 zone.HostDenom,
 				HostZoneId:            zone.ChainId,
 				UnbondingTime:         0,
@@ -129,7 +129,7 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 	// set deposit record for env
 	suite.app.RecordsKeeper.SetDepositRecord(suite.ctx, recordstypes.DepositRecord{
 		Id:                 1,
-		Amount:             100,
+		Amount:             sdk.NewInt(100),
 		Denom:              ibcDenom,
 		HostZoneId:         "hub-1",
 		Status:             recordstypes.DepositRecord_DELEGATION_QUEUE,

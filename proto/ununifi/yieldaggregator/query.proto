@@ -92,6 +92,11 @@ message VaultContainer {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+  string total_pending_deposit = 5 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message QueryAllVaultResponse {
@@ -128,7 +133,12 @@ message QueryGetVaultResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
-  repeated Strategy strategies = 5 [(gogoproto.nullable) = false];
+  string total_pending_deposit = 5 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  repeated Strategy strategies = 6 [(gogoproto.nullable) = false];
 }
 
 message QueryAllStrategyRequest {

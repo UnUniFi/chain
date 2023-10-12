@@ -43,7 +43,7 @@ func (c ICACallbacks) RegisterICACallbacks() icacallbackstypes.ICACallbackHandle
 	a := c.
 		AddICACallback(TRANSFER, ICACallback(TransferCallback)).
 		AddICACallback(CONTRACT_TRANSFER, ICACallback(ContractTransferCallback)).
-		AddICACallback(YA_TRANSFER, ICACallback(YATransferCallback))
+		AddICACallback(YA_TRANSFER, ICACallback(VaultTransferCallback))
 
 	return a.(ICACallbacks)
 }

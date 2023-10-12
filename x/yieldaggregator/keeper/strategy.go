@@ -261,9 +261,9 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 		version := k.GetStrategyVersion(ctx, strategy)
 		_ = version
 		info := k.GetStrategyDepositInfo(ctx, strategy)
+		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 		if info.Denom == stakeCoin.Denom {
 			wasmMsg := `{"stake":{}}`
-			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 			_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
 			return err
 		}
@@ -286,7 +286,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 		initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
 		memo, err := json.Marshal(metadata)
 
-		k.IncreasePendingDeposit(ctx, vault.Id, stakeCoin.Amount)
+		k.recordsKeeper.IncreaseVaultPendingDeposit(ctx, vault.Id, stakeCoin.Amount)
 		msg := ibctypes.NewMsgTransfer(
 			ibctransfertypes.PortID,
 			transferRoute[0].ChannelId,
@@ -297,7 +297,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 			timeoutTimestamp,
 			string(memo),
 		)
-		err = k.recordsKeeper.YATransfer(ctx, msg)
+		err = k.recordsKeeper.VaultTransfer(ctx, vault.Id, contractAddr, msg)
 		return err
 	}
 }

@@ -132,15 +132,15 @@ func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Pac
 	return nil
 }
 
-func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
-	k.Logger(ctx).Info("YATransferCallback executing", "packet", packet)
+func VaultTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
+	k.Logger(ctx).Info("VaultTransferCallback executing", "packet", packet)
 	if ack.GetError() != "" {
-		k.Logger(ctx).Error(fmt.Sprintf("YATransferCallback does not handle errors %s", ack.GetError()))
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "YATransferCallback does not handle errors: %s", ack.GetError())
+		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback does not handle errors %s", ack.GetError()))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "VaultTransferCallback does not handle errors: %s", ack.GetError())
 	}
 	if ack == nil {
 		// timeout
-		k.Logger(ctx).Error(fmt.Sprintf("YATransferCallback timeout, ack is nil, packet %v", packet))
+		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback timeout, ack is nil, packet %v", packet))
 		return nil
 	}
 
@@ -149,12 +149,16 @@ func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, a
 		k.Logger(ctx).Error(fmt.Sprintf("Error unmarshalling packet  %v", err.Error()))
 		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
 	}
-	k.Logger(ctx).Info(fmt.Sprintf("YATransferCallback unmarshalled FungibleTokenPacketData %v", data))
+	k.Logger(ctx).Info(fmt.Sprintf("VaultTransferCallback unmarshalled FungibleTokenPacketData %v", data))
 
-	// TODO: move pending deposits to records module
+	unmarshalledTransferCallback := types.VaultTransferCallback{}
+	if err := proto.Unmarshal(args, &unmarshalledTransferCallback); err != nil {
+		k.Logger(ctx).Error(fmt.Sprintf("UnmarshalVaultTransferCallbackArgs %v", err.Error()))
+		return err
+	}
+	k.Logger(ctx).Info(fmt.Sprintf("VaultTransferCallback %v", unmarshalledTransferCallback))
 
-	// TODO: not data.Sender but deposit strategy contract address + vault id
-	contractAddress, err := sdk.AccAddressFromBech32(data.Sender)
+	contractAddress, err := sdk.AccAddressFromBech32(unmarshalledTransferCallback.StrategyContract)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrUnmarshalFailure, "cannot retrieve contract address: %s", err.Error())
 	}
@@ -180,7 +184,11 @@ func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, a
 		return fmt.Errorf("failed to Sudo: %v", err)
 	}
 
-	k.YAKeeper.DecreasePendingDeposit(ctx, vault.Id, data.Amount)
+	amount, ok := sdk.NewIntFromString(data.Amount)
+	if !ok {
+		return fmt.Errorf("failed to parse transfer amount: %s", data.Amount)
+	}
+	k.DecreaseVaultPendingDeposit(ctx, unmarshalledTransferCallback.VaultId, amount)
 
 	return nil
 }

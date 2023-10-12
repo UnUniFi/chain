@@ -66,22 +66,23 @@ func (m *TransferCallback) GetDepositRecordId() uint64 {
 	return 0
 }
 
-type TransferLSMTokenCallback struct {
-	Deposit *LSMTokenDeposit `protobuf:"bytes,1,opt,name=deposit,proto3" json:"deposit,omitempty"`
+type VaultTransferCallback struct {
+	VaultId          uint64 `protobuf:"varint,1,opt,name=vault_id,json=vaultId,proto3" json:"vault_id,omitempty"`
+	StrategyContract string `protobuf:"bytes,2,opt,name=strategy_contract,json=strategyContract,proto3" json:"strategy_contract,omitempty"`
 }
 
-func (m *TransferLSMTokenCallback) Reset()         { *m = TransferLSMTokenCallback{} }
-func (m *TransferLSMTokenCallback) String() string { return proto.CompactTextString(m) }
-func (*TransferLSMTokenCallback) ProtoMessage()    {}
-func (*TransferLSMTokenCallback) Descriptor() ([]byte, []int) {
+func (m *VaultTransferCallback) Reset()         { *m = VaultTransferCallback{} }
+func (m *VaultTransferCallback) String() string { return proto.CompactTextString(m) }
+func (*VaultTransferCallback) ProtoMessage()    {}
+func (*VaultTransferCallback) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1a9d66e4bf18ea7d, []int{1}
 }
-func (m *TransferLSMTokenCallback) XXX_Unmarshal(b []byte) error {
+func (m *VaultTransferCallback) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *TransferLSMTokenCallback) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *VaultTransferCallback) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_TransferLSMTokenCallback.Marshal(b, m, deterministic)
+		return xxx_messageInfo_VaultTransferCallback.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,50 +92,58 @@ func (m *TransferLSMTokenCallback) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *TransferLSMTokenCallback) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TransferLSMTokenCallback.Merge(m, src)
+func (m *VaultTransferCallback) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VaultTransferCallback.Merge(m, src)
 }
-func (m *TransferLSMTokenCallback) XXX_Size() int {
+func (m *VaultTransferCallback) XXX_Size() int {
 	return m.Size()
 }
-func (m *TransferLSMTokenCallback) XXX_DiscardUnknown() {
-	xxx_messageInfo_TransferLSMTokenCallback.DiscardUnknown(m)
+func (m *VaultTransferCallback) XXX_DiscardUnknown() {
+	xxx_messageInfo_VaultTransferCallback.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TransferLSMTokenCallback proto.InternalMessageInfo
+var xxx_messageInfo_VaultTransferCallback proto.InternalMessageInfo
 
-func (m *TransferLSMTokenCallback) GetDeposit() *LSMTokenDeposit {
+func (m *VaultTransferCallback) GetVaultId() uint64 {
 	if m != nil {
-		return m.Deposit
+		return m.VaultId
 	}
-	return nil
+	return 0
+}
+
+func (m *VaultTransferCallback) GetStrategyContract() string {
+	if m != nil {
+		return m.StrategyContract
+	}
+	return ""
 }
 
 func init() {
 	proto.RegisterType((*TransferCallback)(nil), "ununifi.records.TransferCallback")
-	proto.RegisterType((*TransferLSMTokenCallback)(nil), "ununifi.records.TransferLSMTokenCallback")
+	proto.RegisterType((*VaultTransferCallback)(nil), "ununifi.records.VaultTransferCallback")
 }
 
 func init() { proto.RegisterFile("ununifi/records/callbacks.proto", fileDescriptor_1a9d66e4bf18ea7d) }
 
 var fileDescriptor_1a9d66e4bf18ea7d = []byte{
-	// 251 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2f, 0xcd, 0x2b, 0xcd,
-	0xcb, 0x4c, 0xcb, 0xd4, 0x2f, 0x4a, 0x4d, 0xce, 0x2f, 0x4a, 0x29, 0xd6, 0x4f, 0x4e, 0xcc, 0xc9,
-	0x49, 0x4a, 0x4c, 0xce, 0x2e, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x87, 0x2a, 0xd0,
-	0x83, 0x2a, 0x90, 0x92, 0x45, 0xd7, 0x01, 0xa5, 0x21, 0xea, 0x95, 0xec, 0xb8, 0x04, 0x42, 0x8a,
-	0x12, 0xf3, 0x8a, 0xd3, 0x52, 0x8b, 0x9c, 0xa1, 0x46, 0x09, 0x69, 0x71, 0x09, 0xa6, 0xa4, 0x16,
-	0xe4, 0x17, 0x67, 0x96, 0xc4, 0x43, 0x14, 0xc7, 0x67, 0xa6, 0x48, 0x30, 0x2a, 0x30, 0x6a, 0xb0,
-	0x04, 0xf1, 0x43, 0x25, 0x82, 0xc0, 0xe2, 0x9e, 0x29, 0x4a, 0x61, 0x5c, 0x12, 0x30, 0xfd, 0x3e,
-	0xc1, 0xbe, 0x21, 0xf9, 0xd9, 0xa9, 0x79, 0x70, 0x73, 0xac, 0xb8, 0xd8, 0xa1, 0xca, 0xc1, 0xba,
-	0xb9, 0x8d, 0x14, 0xf4, 0xd0, 0x5c, 0xa7, 0x07, 0xd3, 0xe3, 0x02, 0x35, 0x16, 0xa6, 0xc1, 0x29,
-	0xf6, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58,
-	0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x9c, 0xd3, 0x33, 0x4b, 0x32,
-	0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x43, 0xf3, 0x42, 0xf3, 0x32, 0xdd, 0x32, 0xf5, 0x93,
-	0x33, 0x12, 0x33, 0xf3, 0xf4, 0x2b, 0xf4, 0x2b, 0x33, 0x53, 0x73, 0x52, 0x12, 0xd3, 0xd3, 0x8b,
-	0x52, 0xd3, 0x13, 0x4b, 0xf2, 0x8b, 0xf4, 0x8b, 0x4b, 0x93, 0x72, 0xf3, 0x53, 0x4a, 0x73, 0x52,
-	0xe1, 0xde, 0xd6, 0x2f, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0xfb, 0xde, 0x18, 0x10, 0x00,
-	0x00, 0xff, 0xff, 0x02, 0xf9, 0xb6, 0x4c, 0x50, 0x01, 0x00, 0x00,
+	// 269 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x90, 0x4f, 0x4b, 0xc3, 0x30,
+	0x18, 0xc6, 0x1b, 0x11, 0xff, 0xe4, 0xb2, 0xad, 0x20, 0x4c, 0xc1, 0x38, 0x76, 0x1a, 0x0a, 0xcd,
+	0xc1, 0xbb, 0x07, 0x0b, 0xc2, 0xae, 0xc5, 0x79, 0x10, 0xa4, 0xa4, 0x49, 0xd6, 0x05, 0xbb, 0xa4,
+	0x24, 0x6f, 0xc4, 0x7e, 0x0b, 0x3f, 0x96, 0xc7, 0x1d, 0x3d, 0x4a, 0xfb, 0x45, 0xc4, 0x2e, 0x2a,
+	0xb8, 0xd3, 0xcb, 0xfb, 0x3c, 0xbf, 0xe7, 0x81, 0xf7, 0xc5, 0x17, 0x5e, 0x7b, 0xad, 0x96, 0x8a,
+	0x5a, 0xc9, 0x8d, 0x15, 0x8e, 0x72, 0x56, 0x55, 0x05, 0xe3, 0xcf, 0x2e, 0xa9, 0xad, 0x01, 0x13,
+	0x0f, 0x02, 0x90, 0x04, 0xe0, 0xec, 0xfc, 0x7f, 0x22, 0xcc, 0x2d, 0x3f, 0xbd, 0xc1, 0xc3, 0x7b,
+	0xcb, 0xb4, 0x5b, 0x4a, 0x9b, 0x86, 0xaa, 0xf8, 0x12, 0x8f, 0x84, 0xac, 0x8d, 0x53, 0x90, 0x6f,
+	0xe1, 0x5c, 0x89, 0x31, 0x9a, 0xa0, 0xd9, 0x7e, 0x36, 0x08, 0x46, 0xd6, 0xeb, 0x73, 0x31, 0xcd,
+	0xf1, 0xc9, 0x03, 0xf3, 0x15, 0xec, 0x94, 0x9c, 0xe2, 0xa3, 0x97, 0x6f, 0xe3, 0x2f, 0x7b, 0xd8,
+	0xef, 0x73, 0x11, 0x5f, 0xe1, 0x91, 0x03, 0xcb, 0x40, 0x96, 0x4d, 0xce, 0x8d, 0x06, 0xcb, 0x38,
+	0x8c, 0xf7, 0x26, 0x68, 0x76, 0x9c, 0x0d, 0x7f, 0x8c, 0x34, 0xe8, 0xb7, 0x4f, 0xef, 0x2d, 0x41,
+	0x9b, 0x96, 0xa0, 0xcf, 0x96, 0xa0, 0xb7, 0x8e, 0x44, 0x9b, 0x8e, 0x44, 0x1f, 0x1d, 0x89, 0x1e,
+	0xd3, 0x52, 0xc1, 0xca, 0x17, 0x09, 0x37, 0x6b, 0xba, 0xd0, 0x0b, 0xad, 0xee, 0x14, 0xe5, 0x2b,
+	0xa6, 0x34, 0x7d, 0xa5, 0x8d, 0x92, 0x95, 0x60, 0x65, 0x69, 0x65, 0xc9, 0xc0, 0x58, 0xea, 0x7c,
+	0xb1, 0x36, 0xc2, 0x57, 0xf2, 0xf7, 0x7e, 0x0a, 0x4d, 0x2d, 0x5d, 0x71, 0xd0, 0xbf, 0xe1, 0xfa,
+	0x2b, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x12, 0x78, 0x9c, 0x59, 0x01, 0x00, 0x00,
 }
 
 func (m *TransferCallback) Marshal() (dAtA []byte, err error) {
@@ -165,7 +174,7 @@ func (m *TransferCallback) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *TransferLSMTokenCallback) Marshal() (dAtA []byte, err error) {
+func (m *VaultTransferCallback) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -175,27 +184,27 @@ func (m *TransferLSMTokenCallback) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *TransferLSMTokenCallback) MarshalTo(dAtA []byte) (int, error) {
+func (m *VaultTransferCallback) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *TransferLSMTokenCallback) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *VaultTransferCallback) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Deposit != nil {
-		{
-			size, err := m.Deposit.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCallbacks(dAtA, i, uint64(size))
-		}
+	if len(m.StrategyContract) > 0 {
+		i -= len(m.StrategyContract)
+		copy(dAtA[i:], m.StrategyContract)
+		i = encodeVarintCallbacks(dAtA, i, uint64(len(m.StrategyContract)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x12
+	}
+	if m.VaultId != 0 {
+		i = encodeVarintCallbacks(dAtA, i, uint64(m.VaultId))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -223,14 +232,17 @@ func (m *TransferCallback) Size() (n int) {
 	return n
 }
 
-func (m *TransferLSMTokenCallback) Size() (n int) {
+func (m *VaultTransferCallback) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Deposit != nil {
-		l = m.Deposit.Size()
+	if m.VaultId != 0 {
+		n += 1 + sovCallbacks(uint64(m.VaultId))
+	}
+	l = len(m.StrategyContract)
+	if l > 0 {
 		n += 1 + l + sovCallbacks(uint64(l))
 	}
 	return n
@@ -311,7 +323,7 @@ func (m *TransferCallback) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *TransferLSMTokenCallback) Unmarshal(dAtA []byte) error {
+func (m *VaultTransferCallback) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -334,17 +346,17 @@ func (m *TransferLSMTokenCallback) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: TransferLSMTokenCallback: wiretype end group for non-group")
+			return fmt.Errorf("proto: VaultTransferCallback: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: TransferLSMTokenCallback: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: VaultTransferCallback: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Deposit", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultId", wireType)
 			}
-			var msglen int
+			m.VaultId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowCallbacks
@@ -354,27 +366,42 @@ func (m *TransferLSMTokenCallback) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.VaultId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StrategyContract", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCallbacks
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthCallbacks
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthCallbacks
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Deposit == nil {
-				m.Deposit = &LSMTokenDeposit{}
-			}
-			if err := m.Deposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.StrategyContract = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

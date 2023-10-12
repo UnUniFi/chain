@@ -92,3 +92,12 @@ message LSMTokenDeposit {
   cosmos.base.v1beta1.Coin st_token = 8 [(gogoproto.nullable) = false];
   Status                   status   = 9;
 }
+
+message PendingDeposit {
+  uint64 vault_id = 1;
+  string amount   = 2 [
+    (gogoproto.moretags)   = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable)   = false
+  ];
+}
