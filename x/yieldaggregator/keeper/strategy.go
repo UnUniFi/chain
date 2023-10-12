@@ -286,6 +286,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 		initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
 		memo, err := json.Marshal(metadata)
 
+		k.IncreasePendingDeposit(ctx, vault.Id, stakeCoin.Amount)
 		msg := ibctypes.NewMsgTransfer(
 			ibctransfertypes.PortID,
 			transferRoute[0].ChannelId,
@@ -297,7 +298,6 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 			string(memo),
 		)
 		err = k.recordsKeeper.YATransfer(ctx, msg)
-		// TODO: handle YATransfer callback handler for packet forwarding response
 		return err
 	}
 }

@@ -45,6 +45,7 @@ func (k Keeper) VaultAll(c context.Context, req *types.QueryAllVaultRequest) (*t
 	for _, vault := range vaults {
 		vaultContainers = append(vaultContainers, types.VaultContainer{
 			Vault:                vault,
+			TotalPendingDeposit:  k.GetPendingDeposit(ctx, vault.Id),
 			TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
 			TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
 			WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),
@@ -77,6 +78,7 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 	return &types.QueryGetVaultResponse{
 		Vault:                vault,
 		Strategies:           strategies,
+		TotalPendingDeposit:  k.GetPendingDeposit(ctx, vault.Id),
 		TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
 		TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
 		WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),
@@ -118,6 +120,7 @@ func (k Keeper) VaultAllByShareHolder(c context.Context, req *types.QueryAllVaul
 
 		vaultContainers = append(vaultContainers, types.VaultContainer{
 			Vault:                vault,
+			TotalPendingDeposit:  k.GetPendingDeposit(ctx, vault.Id),
 			TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
 			TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
 			WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),

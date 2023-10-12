@@ -43,7 +43,7 @@ func (k Keeper) GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, send
 
 		if val.Sender == sender.String() &&
 			val.HostZoneId == zoneId {
-			return sdk.NewInt(int64(val.Amount))
+			return val.Amount
 		}
 	}
 	return sdk.ZeroInt()

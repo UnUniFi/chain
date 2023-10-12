@@ -61,7 +61,7 @@ func TransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack
 		k.Logger(ctx).Error(fmt.Sprintf("TransferCallback deposit record not found, packet %v", packet))
 		return sdkerrors.Wrapf(types.ErrUnknownDepositRecord, "deposit record not found %d", transferCallbackData.DepositRecordId)
 	}
-	depositRecord.Status = types.DepositRecord_STAKE
+	depositRecord.Status = types.DepositRecord_DELEGATION_QUEUE
 	k.SetDepositRecord(ctx, depositRecord)
 	k.Logger(ctx).Info(fmt.Sprintf("\t [IBC-TRANSFER] Deposit record updated: {%v}", depositRecord.Id))
 	k.Logger(ctx).Info(fmt.Sprintf("[IBC-TRANSFER] success to %s", depositRecord.HostZoneId))
@@ -151,6 +151,9 @@ func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, a
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("YATransferCallback unmarshalled FungibleTokenPacketData %v", data))
 
+	// TODO: move pending deposits to records module
+
+	// TODO: not data.Sender but deposit strategy contract address + vault id
 	contractAddress, err := sdk.AccAddressFromBech32(data.Sender)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrUnmarshalFailure, "cannot retrieve contract address: %s", err.Error())
@@ -176,5 +179,8 @@ func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, a
 		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
 		return fmt.Errorf("failed to Sudo: %v", err)
 	}
+
+	k.YAKeeper.DecreasePendingDeposit(ctx, vault.Id, data.Amount)
+
 	return nil
 }

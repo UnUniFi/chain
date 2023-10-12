@@ -12,6 +12,7 @@ option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
-  repeated Vault    vaults     = 2 [(gogoproto.nullable) = false];
-  repeated Strategy strategies = 3 [(gogoproto.nullable) = false];
+  repeated Vault          vaults           = 2 [(gogoproto.nullable) = false];
+  repeated Strategy       strategies       = 3 [(gogoproto.nullable) = false];
+  repeated PendingDeposit pending_deposits = 4 [(gogoproto.nullable) = false];
 }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ununifi.records;
+
+import "ununifi/records/records.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types";
+
+message TransferCallback {
+  uint64 deposit_record_id = 1;
+}
+
+message TransferLSMTokenCallback {
+  LSMTokenDeposit deposit = 1;
+}

@@ -120,7 +120,7 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 				Denom:                 zone.HostDenom,
 				HostZoneId:            zone.ChainId,
 				UnbondingTime:         0,
-				Status:                recordstypes.HostZoneUnbonding_BONDED,
+				Status:                recordstypes.HostZoneUnbonding_UNBONDING_QUEUE,
 				UserRedemptionRecords: []string{},
 			},
 		},
@@ -132,7 +132,7 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 		Amount:             100,
 		Denom:              ibcDenom,
 		HostZoneId:         "hub-1",
-		Status:             recordstypes.DepositRecord_STAKE,
+		Status:             recordstypes.DepositRecord_DELEGATION_QUEUE,
 		DepositEpochNumber: 1,
 		Source:             recordstypes.DepositRecord_UNUNIFI,
 	})
@@ -247,7 +247,7 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 	suite.Require().True(found)
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings, 1)
 	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount, uint64(1000_000))
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_BONDED)
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_UNBONDING_QUEUE)
 	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount, uint64(1000_000))
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings[0].UserRedemptionRecords, 1)
 }

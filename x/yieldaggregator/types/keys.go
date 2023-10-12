@@ -25,13 +25,14 @@ var (
 )
 
 const (
-	VaultKey         = "Vault/value/"
-	VaultCountKey    = "Vault/count/"
-	StrategyKey      = "Strategy/value/"
-	StrategyCountKey = "Strategy/count/"
-	DenomInfoKey     = "Denom/info/"
-	SymbolInfoKey    = "Symbol/info/"
-	ChainReceiverKey = "ChainReceiver/info/"
+	VaultKey          = "Vault/value/"
+	VaultCountKey     = "Vault/count/"
+	StrategyKey       = "Strategy/value/"
+	StrategyCountKey  = "Strategy/count/"
+	DenomInfoKey      = "Denom/info/"
+	SymbolInfoKey     = "Symbol/info/"
+	ChainReceiverKey  = "ChainReceiver/info/"
+	PendingDepositKey = "PendingDeposit/info"
 )
 
 func KeyPrefixStrategy(vaultDenom string) []byte {

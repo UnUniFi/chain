@@ -18,6 +18,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, vault := range genState.Vaults {
 		k.AppendVault(ctx, vault)
 	}
+	for _, deposit := range genState.PendingDeposits {
+		k.SetPendingDeposit(ctx, deposit.VaultId, deposit.Amount)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
@@ -29,6 +32,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	}
 	genesis.Strategies = k.GetAllStrategy(ctx, "")
 	genesis.Vaults = k.GetAllVault(ctx)
+	genesis.PendingDeposits = k.GetAllPendingDeposits(ctx)
 
 	return genesis
 }

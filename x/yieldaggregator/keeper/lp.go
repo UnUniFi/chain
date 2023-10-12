@@ -66,8 +66,9 @@ func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
 	amountInStrategies := k.VaultAmountInStrategies(ctx, vault)
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
 	amountUnbonding := k.VaultUnbondingAmountInStrategies(ctx, vault)
+	pendingDeposit := k.GetPendingDeposit(ctx, vault.Id)
 
-	totalAmount := amountInStrategies.Add(amountInVault).Add(amountUnbonding)
+	totalAmount := amountInStrategies.Add(amountInVault).Add(amountUnbonding).Add(pendingDeposit)
 	return totalAmount
 }
 
