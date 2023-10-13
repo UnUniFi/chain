@@ -214,7 +214,7 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().NoError(err)
 
-	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Id, sdk.NewInt64Coin(atomIbcDenom, 100000))
+	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
 	suite.Require().Equal(estMintAmount.String(), "100000"+lpDenom)
 
 	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))

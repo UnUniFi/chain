@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var _ sdk.Msg = &MsgCreateVault{}
+var _ sdk.Msg = &MsgTransferVaultOwnership{}
 
 func NewMsgTransferVaultOwnership(sender string, vaultId uint64, recipient string) *MsgTransferVaultOwnership {
 	return &MsgTransferVaultOwnership{

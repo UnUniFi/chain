@@ -28,7 +28,7 @@ func (k Keeper) EstimateMintAmount(c context.Context, req *types.QueryEstimateMi
 		return nil, types.ErrInvalidAmount
 	}
 
-	mintAmount := k.EstimateMintAmountInternal(ctx, vault.Id, sdk.NewCoin(vault.Denom, depositAmount))
+	mintAmount := k.EstimateMintAmountInternal(ctx, vault.Id, depositAmount)
 
 	return &types.QueryEstimateMintAmountResponse{
 		MintAmount: mintAmount,

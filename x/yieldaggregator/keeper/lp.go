@@ -74,7 +74,7 @@ func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
 
 // lpAmount = lpSupply * (principalAmountToMint / principalAmountInVault)
 // If principalAmountInVault is zero, lpAmount = principalAmountToMint
-func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultId uint64, principalCoin sdk.Coin) sdk.Coin {
+func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultId uint64, principalAmount sdk.Int) sdk.Coin {
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
@@ -84,10 +84,10 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultId uint64, prin
 	totalVaultAmount := k.VaultAmountTotal(ctx, vault)
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 	if totalVaultAmount.IsZero() || lpSupply.IsZero() {
-		return sdk.NewCoin(lpDenom, principalCoin.Amount)
+		return sdk.NewCoin(lpDenom, principalAmount)
 	}
 
-	lpAmount := lpSupply.Mul(principalCoin.Amount).Quo(totalVaultAmount)
+	lpAmount := lpSupply.Mul(principalAmount).Quo(totalVaultAmount)
 
 	return sdk.NewCoin(lpDenom, lpAmount)
 }
@@ -147,7 +147,7 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	}
 
 	// calculate lpCoin token amount
-	lpCoin := k.EstimateMintAmountInternal(ctx, vaultId, principalCoin)
+	lpCoin := k.EstimateMintAmountInternal(ctx, vaultId, principalCoin.Amount)
 
 	// transfer coins after lp amount calculation
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
