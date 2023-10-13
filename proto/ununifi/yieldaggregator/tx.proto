@@ -29,6 +29,7 @@ service Msg {
   rpc RegisterDenomInfos(MsgRegisterDenomInfos) returns (MsgRegisterDenomInfosResponse);
   rpc RegisterSymbolInfos(MsgRegisterSymbolInfos) returns (MsgRegisterSymbolInfosResponse);
   rpc SetIntermediaryAccountInfo(MsgSetIntermediaryAccountInfo) returns (MsgSetIntermediaryAccountInfoResponse);
+  rpc ReinitVaultTransfer(MsgReinitVaultTransfer) returns (MsgReinitVaultTransferResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -204,3 +205,12 @@ message MsgSetIntermediaryAccountInfo {
   repeated ChainAddress addrs  = 2 [(gogoproto.nullable) = false];
 }
 message MsgSetIntermediaryAccountInfoResponse {}
+
+message MsgReinitVaultTransfer {
+  string                   sender         = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64                   vault_id       = 2;
+  string                   strategy_denom = 3;
+  uint64                   strategy_id    = 4;
+  cosmos.base.v1beta1.Coin amount         = 5 [(gogoproto.nullable) = false];
+}
+message MsgReinitVaultTransferResponse {}

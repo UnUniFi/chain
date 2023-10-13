@@ -27,3 +27,13 @@ func (k Keeper) SetIntermediaryAccountInfo(ctx sdk.Context, addrs []types.ChainA
 	})
 	store.Set(types.KeyPrefix(types.ChainReceiverKey), bz)
 }
+
+func (k Keeper) GetIntermediaryReceiver(ctx sdk.Context, chainId string) string {
+	info := k.GetIntermediaryAccountInfo(ctx)
+	for _, ca := range info.Addrs {
+		if ca.ChainId == chainId {
+			return ca.Address
+		}
+	}
+	return ""
+}

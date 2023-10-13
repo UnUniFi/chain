@@ -9,7 +9,7 @@ import (
 
 const TRANSFER = "transfer"
 const CONTRACT_TRANSFER = "contract_transfer"
-const YA_TRANSFER = "aggregator_transfer"
+const VAULT_TRANSFER = "aggregator_transfer"
 
 // ICACallbacks wrapper struct for stakeibc keeper
 type ICACallback func(Keeper, sdk.Context, channeltypes.Packet, *channeltypes.Acknowledgement, []byte) error
@@ -43,7 +43,7 @@ func (c ICACallbacks) RegisterICACallbacks() icacallbackstypes.ICACallbackHandle
 	a := c.
 		AddICACallback(TRANSFER, ICACallback(TransferCallback)).
 		AddICACallback(CONTRACT_TRANSFER, ICACallback(ContractTransferCallback)).
-		AddICACallback(YA_TRANSFER, ICACallback(VaultTransferCallback))
+		AddICACallback(VAULT_TRANSFER, ICACallback(VaultTransferCallback))
 
 	return a.(ICACallbacks)
 }
