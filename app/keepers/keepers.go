@@ -72,6 +72,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 
@@ -87,7 +88,7 @@ import (
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
 	interchainquerykeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
-	records "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records"
+	"github.com/UnUniFi/chain/x/yieldaggregator/submodules/records"
 	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
 	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
 	stakeibc "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc"
@@ -96,7 +97,7 @@ import (
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
 	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	// nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
@@ -140,7 +141,11 @@ type AppKeepers struct {
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasm.Keeper
 	// IBC hooks
-	IBCHooksKeeper ibchookskeeper.Keeper
+	IBCHooksKeeper         ibchookskeeper.Keeper
+	Ics20WasmHooks         ibchooks.WasmHooks
+	ContractKeeper         *wasmkeeper.PermissionedKeeper
+	HooksTransferIBCModule ibchooks.IBCMiddleware
+	HooksICS4Wrapper       ibchooks.ICS4Middleware
 
 	NftbackedloanKeeper nftbackedloankeeper.Keeper
 	NftfactoryKeeper    nftfactorykeeper.Keeper
@@ -376,13 +381,14 @@ func NewAppKeeper(
 	appKeepers.IBCHooksKeeper = ibchookskeeper.NewKeeper(
 		appKeepers.keys[ibchookstypes.StoreKey],
 	)
+	appKeepers.Ics20WasmHooks = ibchooks.NewWasmHooks(&appKeepers.IBCHooksKeeper, nil, accountAddressPrefix) // The contract keeper needs to be set later
 
 	// Create Transfer Keepers
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[ibctransfertypes.StoreKey],
 		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
-		appKeepers.IBCFeeKeeper,
+		appKeepers.HooksICS4Wrapper, // essentially still app.IBCKeeper.ChannelKeeper under the hood because no hook overrides
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
@@ -451,6 +457,14 @@ func NewAppKeeper(
 		wasmOpts...,
 	)
 
+	// Pass the contract keeper to all the structs (generally ICS4Wrappers for ibc middlewares) that need it
+	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper)
+	appKeepers.Ics20WasmHooks.ContractKeeper = &appKeepers.WasmKeeper
+	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.Ics20WasmHooks,
+	)
+
 	// Instantiate the builder keeper, store keys, and module manager
 	appKeepers.BuilderKeeper = builderkeeper.NewKeeper(
 		appCodec,
@@ -472,15 +486,15 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[nftbackedloantypes.StoreKey],
-		appKeepers.keys[nftbackedloantypes.MemStoreKey],
-		appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.UnUniFiNFTKeeper,
-	)
+	// nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[nftbackedloantypes.StoreKey],
+	// 	appKeepers.keys[nftbackedloantypes.MemStoreKey],
+	// 	appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
+	// 	appKeepers.AccountKeeper,
+	// 	appKeepers.BankKeeper,
+	// 	appKeepers.UnUniFiNFTKeeper,
+	// )
 
 	// appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 	// 	appCodec,
@@ -494,7 +508,7 @@ func NewAppKeeper(
 	// )
 
 	// create Keeper objects which have Hooks
-	appKeepers.NftbackedloanKeeper = nftbackedloanKeeper
+	// appKeepers.NftbackedloanKeeper = nftbackedloanKeeper
 	// appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
 
 	// appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(
@@ -637,6 +651,9 @@ func NewAppKeeper(
 	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
 	transferStack = records.NewIBCModule(appKeepers.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
+	// Add Hooks Middleware
+	appKeepers.HooksTransferIBCModule = ibchooks.NewIBCMiddleware(transferStack, &appKeepers.HooksICS4Wrapper)
+	transferStack = appKeepers.HooksTransferIBCModule
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
 	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
@@ -706,7 +723,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// original modules
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
-	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
 	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)

@@ -10,10 +10,13 @@ import (
 
 var _ sdk.Msg = &MsgCreateVault{}
 
-func NewMsgCreateVault(sender string, symbol string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
+
+func NewMsgCreateVault(sender string, symbol string, name, description string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
 	return &MsgCreateVault{
 		Sender:              sender,
 		Symbol:              symbol,
+		Name:                name,
+		Description:         description,
 		CommissionRate:      commissionRate,
 		StrategyWeights:     strategyWeights,
 		Fee:                 fee,
@@ -34,6 +37,13 @@ func (msg MsgCreateVault) ValidateBasic() error {
 
 	if msg.Symbol == "" {
 		return sdkerrors.ErrInvalidRequest.Wrapf("empty symbol is not allowed")
+
+	if msg.Description == "" {
+		return ErrInvalidVaultDescription
+	}
+
+	if err := sdk.ValidateDenom(msg.Denom); err != nil {
+		return err
 	}
 
 	if msg.CommissionRate.IsNegative() || msg.CommissionRate.GTE(sdk.OneDec()) {

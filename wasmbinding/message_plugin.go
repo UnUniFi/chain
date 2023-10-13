@@ -2,6 +2,7 @@ package wasmbinding
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -160,10 +161,15 @@ func PerformDeputyDepositToVault(bk *bankkeeper.BaseKeeper, iyaKeeper *yieldaggr
 		return sdkerrors.Wrap(err, "sending coins from contract to depositor account")
 	}
 
+	vaultId, err := strconv.ParseUint(deputyDepositToVault.VaultId, 10, 64)
+	if err != nil {
+		return err
+	}
+
 	err = iyaKeeper.DepositAndMintLPToken(
 		ctx,
 		depositor,
-		deputyDepositToVault.VaultId,
+		vaultId,
 		amount,
 	)
 	if err != nil {

@@ -22,6 +22,6 @@ type SubmitICQRequest struct {
 
 type DeputyDepositToVault struct {
 	Depositor string           `json:"depositor"`
-	VaultId   uint64           `json:"vault_id"`
+	VaultId   string           `json:"vault_id"`
 	Amount    wasmvmtypes.Coin `json:"amount"`
 }
