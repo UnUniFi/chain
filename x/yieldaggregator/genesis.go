@@ -16,7 +16,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	vaultCount := uint64(0)
 
 	for _, strategy := range genState.Strategies {
-		k.SetStrategy(ctx, strategy.Denom, strategy)
+		k.SetStrategy(ctx, strategy)
 
 		if strategy.Id+1 > strategyCountMap[strategy.Denom] {
 			strategyCountMap[strategy.Denom] = strategy.Id + 1

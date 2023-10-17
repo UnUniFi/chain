@@ -104,10 +104,10 @@ func (k Keeper) AppendStrategy(
 }
 
 // SetStrategy set a specific Strategy in the store
-func (k Keeper) SetStrategy(ctx sdk.Context, vaultDenom string, Strategy types.Strategy) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(vaultDenom))
-	b := k.cdc.MustMarshal(&Strategy)
-	store.Set(GetStrategyIDBytes(Strategy.Id), b)
+func (k Keeper) SetStrategy(ctx sdk.Context, strategy types.Strategy) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(strategy.Denom))
+	b := k.cdc.MustMarshal(&strategy)
+	store.Set(GetStrategyIDBytes(strategy.Id), b)
 }
 
 // GetStrategy returns a Strategy from its id
@@ -149,7 +149,7 @@ func (k Keeper) MigrateAllLegacyStrategies(ctx sdk.Context) {
 			Description:     "",
 			GitUrl:          legacyStrategy.GitUrl,
 		}
-		k.SetStrategy(ctx, strategy.Denom, strategy)
+		k.SetStrategy(ctx, strategy)
 	}
 }
 

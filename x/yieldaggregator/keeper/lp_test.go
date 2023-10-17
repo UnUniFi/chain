@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestVaultAmountUnbondingAmountInStrategies() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	vault := types.Vault{
 		Id:                     1,
@@ -123,7 +123,7 @@ func (suite *KeeperTestSuite) TestVaultAmountTotal() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	vault := types.Vault{
 		Id:                     1,
@@ -184,7 +184,7 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
 		Denom:  atomIbcDenom,
@@ -244,7 +244,7 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
 		Denom:  atomIbcDenom,
