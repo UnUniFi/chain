@@ -29,6 +29,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgRegisterDenomInfos{},
 		&MsgRegisterSymbolInfos{},
 		&MsgSetIntermediaryAccountInfo{},
+		&MsgReinitVaultTransfer{},
 	)
 
 	// Deprecated: Just for backward compatibility of query proposals
