@@ -357,3 +357,69 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 	amount = suite.app.YieldaggregatorKeeper.VaultUnbondingAmountInStrategies(suite.ctx, vault)
 	suite.Require().Equal(amount.String(), "0")
 }
+
+func (suite *KeeperTestSuite) TestSendCoinsFromVault() {
+	vault := types.Vault{
+		Id:     1,
+		Symbol: "ATOM",
+		StrategyWeights: []types.StrategyWeight{
+			{
+				Denom:      "uatom1",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+			{
+				Denom:      "uatom2",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+		},
+	}
+	recvAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+
+	coins := sdk.Coins{
+		sdk.NewInt64Coin("uatom1", 1000000),
+		sdk.NewInt64Coin("uatom2", 1000000),
+		sdk.NewInt64Coin("uosmo", 1000000),
+	}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uatom1",
+		Symbol: "ATOM",
+	})
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uatom2",
+		Symbol: "ATOM",
+	})
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uosmo",
+		Symbol: "OSMO",
+	})
+
+	err = suite.app.YieldaggregatorKeeper.SendCoinsFromVault(suite.ctx, vault, recvAddr, sdk.NewInt(1500000))
+	suite.Require().NoError(err)
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, recvAddr)
+	suite.Require().Equal(balances.String(), "1000000uatom1,500000uatom2")
+
+	vault = types.Vault{
+		Id:     1,
+		Symbol: "OSMO",
+		StrategyWeights: []types.StrategyWeight{
+			{
+				Denom:      "uosmo",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+		},
+	}
+	err = suite.app.YieldaggregatorKeeper.SendCoinsFromVault(suite.ctx, vault, recvAddr, sdk.NewInt(1000))
+	suite.Require().NoError(err)
+	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, recvAddr)
+	suite.Require().Equal(balances.String(), "1000000uatom1,500000uatom2,1000uosmo")
+}
