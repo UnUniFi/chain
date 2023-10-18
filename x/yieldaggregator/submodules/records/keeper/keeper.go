@@ -182,12 +182,6 @@ func (k Keeper) VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.
 		return err
 	}
 
-	// trigger transfer
-	_, err = k.TransferKeeper.Transfer(goCtx, msg)
-	if err != nil {
-		return err
-	}
-
 	// Store the callback data
 	callback := icacallbackstypes.CallbackData{
 		CallbackKey:  icacallbackstypes.PacketID(msg.SourcePort, msg.SourceChannel, sequence),
@@ -199,5 +193,11 @@ func (k Keeper) VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))
 	k.ICACallbacksKeeper.SetCallbackData(ctx, callback)
+
+	// trigger transfer
+	_, err = k.TransferKeeper.Transfer(goCtx, msg)
+	if err != nil {
+		return err
+	}
 	return nil
 }
