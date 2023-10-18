@@ -178,17 +178,17 @@ func VaultTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet
 		return fmt.Errorf("failed to marshal MessageDepositCallback: %v", err)
 	}
 
-	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
-	if err != nil {
-		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
-		return fmt.Errorf("failed to Sudo: %v", err)
-	}
-
 	amount, ok := sdk.NewIntFromString(data.Amount)
 	if !ok {
 		return fmt.Errorf("failed to parse transfer amount: %s", data.Amount)
 	}
 	k.DecreaseVaultPendingDeposit(ctx, unmarshalledTransferCallback.VaultId, amount)
+
+	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
+	if err != nil {
+		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
+		return fmt.Errorf("failed to Sudo: %v", err)
+	}
 
 	return nil
 }
