@@ -9,8 +9,9 @@ func (suite *KeeperTestSuite) TestDenomInfoStore() {
 			Symbol: "ATOM",
 			Channels: []types.TransferChannel{
 				{
-					ChainId:   "cosmoshub-4",
-					ChannelId: "channel-1",
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "neutron-1",
+					ChannelId:   "channel-1",
 				},
 			},
 		},
@@ -19,8 +20,9 @@ func (suite *KeeperTestSuite) TestDenomInfoStore() {
 			Symbol: "ATOM",
 			Channels: []types.TransferChannel{
 				{
-					ChainId:   "cosmoshub-4",
-					ChannelId: "channel-2",
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "osmosis-1",
+					ChannelId:   "channel-2",
 				},
 			},
 		},
@@ -29,12 +31,14 @@ func (suite *KeeperTestSuite) TestDenomInfoStore() {
 			Symbol: "ATOM",
 			Channels: []types.TransferChannel{
 				{
-					ChainId:   "osmosis-1",
-					ChannelId: "channel-1",
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "neutron-1",
+					ChannelId:   "channel-1",
 				},
 				{
-					ChainId:   "cosmoshub-4",
-					ChannelId: "channel-2",
+					RecvChainId: "neutron-1",
+					SendChainId: "osmosis-1",
+					ChannelId:   "channel-1",
 				},
 			},
 		},

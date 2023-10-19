@@ -67,8 +67,9 @@ func (suite *KeeperTestSuite) TestMsgServerReinitVaultTransfer() {
 		Symbol: "ATOM",
 		Channels: []types.TransferChannel{
 			{
-				ChainId:   "osmosis-1",
-				ChannelId: "channel-1",
+				SendChainId: "cosmoshub-4",
+				RecvChainId: "osmosis-1",
+				ChannelId:   "channel-1",
 			},
 		},
 	})
@@ -77,8 +78,9 @@ func (suite *KeeperTestSuite) TestMsgServerReinitVaultTransfer() {
 		Symbol: "ATOM",
 		Channels: []types.TransferChannel{
 			{
-				ChainId:   "neutron-1",
-				ChannelId: "channel-2",
+				SendChainId: "cosmoshub-4",
+				RecvChainId: "neutron-1",
+				ChannelId:   "channel-2",
 			},
 		},
 	})

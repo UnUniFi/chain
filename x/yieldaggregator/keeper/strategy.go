@@ -186,9 +186,10 @@ func CalculateTransferRoute(currChannels, tarChannels []types.TransferChannel) [
 	for index, currChan := range currChannels {
 		if len(tarChannels) <= index {
 			diffStartIndex = index
+			break
 		}
 		tarChan := tarChannels[index]
-		if currChan.ChainId != tarChan.ChainId {
+		if currChan.RecvChainId != tarChan.SendChainId {
 			diffStartIndex = index
 			break
 		}
@@ -224,7 +225,7 @@ func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.T
 		return "", nil
 	}
 	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
-	return k.GetIntermediaryReceiver(ctx, channels[0].ChainId), &PacketMetadata{
+	return k.GetIntermediaryReceiver(ctx, channels[0].RecvChainId), &PacketMetadata{
 		Forward: &ForwardMetadata{
 			Receiver: receiver,
 			Port:     ibctransfertypes.PortID,
@@ -306,7 +307,7 @@ func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strateg
 	symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
 	tarChannel := types.TransferChannel{}
 	for _, channel := range symbolInfo.Channels {
-		if channel.ChainId == info.TargetChainId {
+		if channel.RecvChainId == info.TargetChainId {
 			tarChannel = channel
 		}
 	}

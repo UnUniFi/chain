@@ -9,8 +9,9 @@ func (suite *KeeperTestSuite) TestSymbolInfoStore() {
 			NativeChainId: "cosmoshub-4",
 			Channels: []types.TransferChannel{
 				{
-					ChainId:   "osmosis-1",
-					ChannelId: "channel-1",
+					SendChainId: "cosmoshut-4",
+					RecvChainId: "osmosis-1",
+					ChannelId:   "channel-1",
 				},
 			},
 		},
@@ -19,8 +20,9 @@ func (suite *KeeperTestSuite) TestSymbolInfoStore() {
 			NativeChainId: "osmosis-1",
 			Channels: []types.TransferChannel{
 				{
-					ChainId:   "cosmoshub-4",
-					ChannelId: "channel-2",
+					SendChainId: "osmosis-1",
+					RecvChainId: "cosmoshub-4",
+					ChannelId:   "channel-2",
 				},
 			},
 		},

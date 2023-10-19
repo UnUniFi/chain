@@ -48,8 +48,9 @@ message Strategy {
 }
 
 message TransferChannel {
-  string chain_id   = 1;
-  string channel_id = 2;
+  string send_chain_id = 1;
+  string recv_chain_id = 2;
+  string channel_id    = 3;
 }
 message SymbolInfo {
   string                   symbol          = 1;
