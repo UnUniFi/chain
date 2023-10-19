@@ -186,7 +186,7 @@ func (suite *KeeperTestSuite) TestStakeToStrategy() {
 	// check the changes
 	record, found := suite.app.RecordsKeeper.GetDepositRecord(suite.ctx, 1)
 	suite.Require().True(found)
-	suite.Require().Equal(record.Amount, int64(1000_100))
+	suite.Require().Equal(record.Amount.String(), "1000100")
 
 	balance := suite.app.BankKeeper.GetAllBalances(suite.ctx, vaultModAddr)
 	suite.Require().Equal(balance.String(), "1000000stuatom")
@@ -247,9 +247,9 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 	unbondingRecord, found := suite.app.RecordsKeeper.GetEpochUnbondingRecord(suite.ctx, 1)
 	suite.Require().True(found)
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings, 1)
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount, uint64(1000_000))
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount.String(), "1000000")
 	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_UNBONDING_QUEUE)
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount, uint64(1000_000))
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount.String(), "1000000")
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings[0].UserRedemptionRecords, 1)
 }
 
