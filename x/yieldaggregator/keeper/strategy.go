@@ -279,7 +279,8 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 				if balance.Amount.LT(remaining) {
 					stakeAmount = balance.Amount
 				}
-				_, err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
+				msg, err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
+				k.Logger(ctx).Info("transfer_memo", msg.Memo)
 				if err != nil {
 					return err
 				}
@@ -303,7 +304,7 @@ func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strateg
 	}
 	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
 	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
-	denomInfo := k.GetDenomInfo(ctx, strategy.Denom)
+	denomInfo := k.GetDenomInfo(ctx, stakeCoin.Denom)
 	symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
 	tarChannel := types.TransferChannel{}
 	for _, channel := range symbolInfo.Channels {

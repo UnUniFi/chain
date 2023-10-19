@@ -142,6 +142,107 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 }
 
 // stake into strategy
+func (suite *KeeperTestSuite) TestMultipleDenomsVaultStakeStrategy() {
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-3", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+	atomOsmosisDenom := "uatom/osmosis"
+	prefixedDenom = transfertypes.GetPrefixedDenom("transfer", "channel-2", atomOsmosisDenom)
+	atomOsmosisIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
+	denomInfos := []types.DenomInfo{
+		{
+			Denom:  atomOsmosisIbcDenom,
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "",
+					ChannelId:   "channel-1",
+				},
+				{
+					RecvChainId: "",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-2",
+				},
+			},
+		},
+		{
+			Denom:  atomIbcDenom,
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-3",
+				},
+			},
+		},
+	}
+
+	symbolInfos := []types.SymbolInfo{
+		{
+			Symbol:        "ATOM",
+			NativeChainId: "cosmoshub-4",
+			Channels: []types.TransferChannel{
+				{
+					SendChainId: "cosmoshub-4",
+					RecvChainId: "", // osmosis-1 (since contract is not mocked target chain id is set as "")
+					ChannelId:   "channel-4",
+				},
+			},
+		},
+	}
+
+	for _, denomInfo := range denomInfos {
+		suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, denomInfo)
+	}
+
+	for _, symbolInfo := range symbolInfos {
+		suite.app.YieldaggregatorKeeper.SetSymbolInfo(suite.ctx, symbolInfo)
+	}
+
+	contractAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomStakingOnOsmosis",
+		ContractAddress: contractAddr.String(),
+		Denom:           atomOsmosisIbcDenom,
+	}
+
+	vault := types.Vault{
+		Id:                     1,
+		Symbol:                 "ATOM",
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomOsmosisIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	// mint coins to be spent on strategy deposit
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	coins := sdk.Coins{sdk.NewInt64Coin(atomIbcDenom, 1000000)}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	// stake to strategy
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, "channel-3", 1)
+	err = suite.app.YieldaggregatorKeeper.StakeToStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	suite.Require().Error(err)
+	suite.Require().Contains(err.Error(), "channel not found")
+}
+
+// stake into strategy
 func (suite *KeeperTestSuite) TestStakeToStrategy() {
 	suite.SetupTest()
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
