@@ -229,7 +229,7 @@ func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.T
 		Forward: &ForwardMetadata{
 			Receiver: receiver,
 			Port:     ibctransfertypes.PortID,
-			Channel:  channels[0].ChannelId,
+			Channel:  channels[1].ChannelId,
 			Timeout:  Duration(ibcTransferTimeoutNanos),
 			Retries:  &retries,
 			Next:     NewJSONObject(false, nextForwardBz, orderedmap.OrderedMap{}),
@@ -279,7 +279,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 				if balance.Amount.LT(remaining) {
 					stakeAmount = balance.Amount
 				}
-				err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
+				_, err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
 				if err != nil {
 					return err
 				}
@@ -292,18 +292,18 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 	}
 }
 
-func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strategy types.Strategy, stakeCoin sdk.Coin) error {
+func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strategy types.Strategy, stakeCoin sdk.Coin) (*ibctypes.MsgTransfer, error) {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 	info := k.GetStrategyDepositInfo(ctx, strategy)
 	params, err := k.GetParams(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
 	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
-	denomInfo := k.GetDenomInfo(ctx, info.Denom)
+	denomInfo := k.GetDenomInfo(ctx, strategy.Denom)
 	symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
 	tarChannel := types.TransferChannel{}
 	for _, channel := range symbolInfo.Channels {
@@ -314,7 +314,12 @@ func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strateg
 	transferRoute := CalculateTransferRoute(denomInfo.Channels, []types.TransferChannel{tarChannel})
 	initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
 	memo, err := json.Marshal(metadata)
-
+	if err != nil {
+		return nil, err
+	}
+	if metadata == nil {
+		memo = []byte{}
+	}
 	msg := ibctypes.NewMsgTransfer(
 		ibctransfertypes.PortID,
 		transferRoute[0].ChannelId,
@@ -326,7 +331,7 @@ func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strateg
 		string(memo),
 	)
 	err = k.recordsKeeper.VaultTransfer(ctx, vault.Id, contractAddr, msg)
-	return err
+	return msg, err
 }
 
 // unstake worth of withdrawal amount from the strategy

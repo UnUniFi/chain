@@ -25,7 +25,7 @@ func (k msgServer) ReinitVaultTransfer(ctx context.Context, msg *types.MsgReinit
 		return nil, types.ErrStrategyNotFound
 	}
 
-	err := k.Keeper.ExecuteVaultTransfer(sdkCtx, vault, strategy, msg.Amount)
+	_, err := k.Keeper.ExecuteVaultTransfer(sdkCtx, vault, strategy, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

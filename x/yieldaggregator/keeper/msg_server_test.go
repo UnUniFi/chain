@@ -85,7 +85,7 @@ func (suite *KeeperTestSuite) TestMsgServerReinitVaultTransfer() {
 		},
 	})
 
-	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, "", 1)
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, "channel-1", 1)
 	msgServer := keeper.NewMsgServerImpl(suite.app.YieldaggregatorKeeper)
 	_, err = msgServer.ReinitVaultTransfer(sdk.WrapSDKContext(suite.ctx), &types.MsgReinitVaultTransfer{
 		Sender:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
