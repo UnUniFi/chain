@@ -382,6 +382,10 @@ func NewAppKeeper(
 		appKeepers.keys[ibchookstypes.StoreKey],
 	)
 	appKeepers.Ics20WasmHooks = ibchooks.NewWasmHooks(&appKeepers.IBCHooksKeeper, nil, accountAddressPrefix) // The contract keeper needs to be set later
+	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		appKeepers.IBCKeeper.ChannelKeeper,
+		&appKeepers.Ics20WasmHooks,
+	)
 
 	// Create Transfer Keepers
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
@@ -454,10 +458,6 @@ func NewAppKeeper(
 	// Pass the contract keeper to all the structs (generally ICS4Wrappers for ibc middlewares) that need it
 	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper)
 	appKeepers.Ics20WasmHooks.ContractKeeper = &appKeepers.WasmKeeper
-	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.Ics20WasmHooks,
-	)
 
 	// Instantiate the builder keeper, store keys, and module manager
 	appKeepers.BuilderKeeper = builderkeeper.NewKeeper(
