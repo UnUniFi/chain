@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	DefaultFeeCollectorAddress = ""
+	DefaultFeeCollectorAddress            = ""
+	DefaultIBCTransferTimeoutNanos uint64 = 1800000000000 // 30 minutes
 )
 
 // NewParams creates a new Params instance
@@ -19,12 +20,14 @@ func NewParams(
 	vaultCreationFee sdk.Coin,
 	vaultCreationDeposit sdk.Coin,
 	feeCollectorAddress string,
+	ibcTransferTimeoutNanos uint64,
 ) Params {
 	return Params{
-		CommissionRate:       withdrawCommissionRate,
-		VaultCreationFee:     vaultCreationFee,
-		VaultCreationDeposit: vaultCreationDeposit,
-		FeeCollectorAddress:  feeCollectorAddress,
+		CommissionRate:          withdrawCommissionRate,
+		VaultCreationFee:        vaultCreationFee,
+		VaultCreationDeposit:    vaultCreationDeposit,
+		FeeCollectorAddress:     feeCollectorAddress,
+		IbcTransferTimeoutNanos: ibcTransferTimeoutNanos,
 	}
 }
 
@@ -35,6 +38,7 @@ func DefaultParams() Params {
 		sdk.NewInt64Coin("stake", 1000),
 		sdk.NewInt64Coin("stake", 1000),
 		DefaultFeeCollectorAddress,
+		DefaultIBCTransferTimeoutNanos,
 	)
 }
 

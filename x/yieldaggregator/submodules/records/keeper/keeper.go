@@ -188,7 +188,7 @@ func (k Keeper) VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.
 		PortId:       msg.SourcePort,
 		ChannelId:    msg.SourceChannel,
 		Sequence:     sequence,
-		CallbackId:   CONTRACT_TRANSFER,
+		CallbackId:   VAULT_TRANSFER,
 		CallbackArgs: marshalledCallbackArgs,
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))

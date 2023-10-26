@@ -280,7 +280,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 					stakeAmount = balance.Amount
 				}
 				msg, err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
-				k.Logger(ctx).Info("transfer_memo", msg.Memo)
+				k.Logger(ctx).Info("transfer_memo " + msg.Memo)
 				if err != nil {
 					return err
 				}
