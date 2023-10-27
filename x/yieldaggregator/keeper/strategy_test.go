@@ -533,7 +533,7 @@ func (suite *KeeperTestSuite) TestComposePacketForwardMetadata() {
 	suite.Require().Equal(receiver, "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t")
 	metadataJson, err = json.Marshal(metadata)
 	suite.Require().NoError(err)
-	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","retries":2,"next":null}}`)
+	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","timeout":1800000000000,"retries":2,"next":null}}`)
 
 	receiver, metadata = suite.app.YieldaggregatorKeeper.ComposePacketForwardMetadata(suite.ctx, []types.TransferChannel{
 		{
@@ -555,7 +555,7 @@ func (suite *KeeperTestSuite) TestComposePacketForwardMetadata() {
 	suite.Require().Equal(receiver, "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t")
 	metadataJson, err = json.Marshal(metadata)
 	suite.Require().NoError(err)
-	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t","port":"transfer","channel":"channel-3","retries":2,"next":{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","retries":2,"next":null}}}}`)
+	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t","port":"transfer","channel":"channel-3","timeout":1800000000000,"retries":2,"next":{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","timeout":1800000000000,"retries":2,"next":null}}}}`)
 }
 
 func (suite *KeeperTestSuite) TestExecuteVaultTransfer() {
@@ -647,5 +647,5 @@ func (suite *KeeperTestSuite) TestExecuteVaultTransfer() {
 
 	msgBz, err := suite.app.AppCodec().MarshalJSON(msg)
 	suite.Require().NoError(err)
-	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651379494838206464","memo":"{\"forward\":{\"port\":\"transfer\",\"channel\":\"channel-1\",\"retries\":2,\"next\":null}}"}`)
+	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651381294838206464","memo":"{\"forward\":{\"port\":\"transfer\",\"channel\":\"channel-1\",\"timeout\":1800000000000,\"retries\":2,\"next\":null}}"}`)
 }

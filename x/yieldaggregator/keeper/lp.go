@@ -55,9 +55,14 @@ func (k Keeper) VaultBalances(ctx sdk.Context, vault types.Vault) sdk.Coins {
 func (k Keeper) VaultWithdrawalAmount(ctx sdk.Context, vault types.Vault) sdk.Int {
 	amount := sdk.ZeroInt()
 	vaultBalances := k.VaultBalances(ctx, vault)
+	denoms := vault.StrategyDenoms()
+	denomsMap := make(map[string]bool)
+	for _, denom := range denoms {
+		denomsMap[denom] = true
+	}
 	for _, balance := range vaultBalances {
 		denomInfo := k.GetDenomInfo(ctx, balance.Denom)
-		if denomInfo.Symbol == vault.Symbol {
+		if denomInfo.Symbol == vault.Symbol || denomsMap[balance.Denom] {
 			amount = amount.Add(balance.Amount)
 		}
 	}
