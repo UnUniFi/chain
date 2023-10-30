@@ -284,7 +284,6 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 				if err != nil {
 					return err
 				}
-				k.recordsKeeper.IncreaseVaultPendingDeposit(ctx, vault.Id, stakeAmount)
 				remaining = remaining.Sub(stakeAmount)
 			}
 		}
@@ -306,13 +305,18 @@ func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strateg
 	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
 	denomInfo := k.GetDenomInfo(ctx, stakeCoin.Denom)
 	symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
-	tarChannel := types.TransferChannel{}
+	tarChannels := []types.TransferChannel{}
 	for _, channel := range symbolInfo.Channels {
 		if channel.RecvChainId == info.TargetChainId {
-			tarChannel = channel
+			tarChannels = []types.TransferChannel{channel}
+			break
 		}
 	}
-	transferRoute := CalculateTransferRoute(denomInfo.Channels, []types.TransferChannel{tarChannel})
+	// increase vault pending deposit
+	k.recordsKeeper.IncreaseVaultPendingDeposit(ctx, vault.Id, stakeCoin.Amount)
+
+	// calculate transfer route and execute the transfer
+	transferRoute := CalculateTransferRoute(denomInfo.Channels, tarChannels)
 	initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
 	memo, err := json.Marshal(metadata)
 	if err != nil {
@@ -344,19 +348,12 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 	}
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		{
-			err := k.stakeibcKeeper.RedeemStake(
-				ctx,
-				vaultModAddr,
-				sdk.NewCoin(strategy.Denom, amount),
-				recipient,
-			)
-			if err != nil {
-				return err
-			}
-
-			return nil
-		}
+		return k.stakeibcKeeper.RedeemStake(
+			ctx,
+			vaultModAddr,
+			sdk.NewCoin(strategy.Denom, amount),
+			recipient,
+		)
 	default:
 		version := k.GetStrategyVersion(ctx, strategy)
 		wasmMsg := ""

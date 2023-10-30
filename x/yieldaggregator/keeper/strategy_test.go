@@ -488,6 +488,24 @@ func (suite *KeeperTestSuite) TestCalculateTransferRoute() {
 			ChannelId:   "channel-3", // back channel
 		},
 	})
+
+	// ATOM.atom
+	currChannels = []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+	}
+	tarChannels = []types.TransferChannel{}
+	route = keeper.CalculateTransferRoute(currChannels, tarChannels)
+	suite.Require().Equal(route, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+	})
 }
 
 func (suite *KeeperTestSuite) TestComposePacketForwardMetadata() {
@@ -648,4 +666,90 @@ func (suite *KeeperTestSuite) TestExecuteVaultTransfer() {
 	msgBz, err := suite.app.AppCodec().MarshalJSON(msg)
 	suite.Require().NoError(err)
 	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651381294838206464","memo":"{\"forward\":{\"port\":\"transfer\",\"channel\":\"channel-1\",\"timeout\":1800000000000,\"retries\":2,\"next\":null}}"}`)
+}
+
+func (suite *KeeperTestSuite) TestExecuteVaultTransferDepositToHubVault() {
+	suite.app.YieldaggregatorKeeper.SetIntermediaryAccountInfo(suite.ctx, []types.ChainAddress{
+		{
+			ChainId: "cosmoshub-1",
+			Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "osmosis-1",
+			Address: "osmo1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "neutron-1",
+			Address: "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+	})
+
+	denomInfos := []types.DenomInfo{
+		{
+			Denom:  "ibc/01AAFF",
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-2",
+				},
+			},
+		},
+	}
+
+	symbolInfos := []types.SymbolInfo{
+		{
+			Symbol:        "ATOM",
+			NativeChainId: "cosmoshub-4",
+			Channels:      []types.TransferChannel{},
+		},
+	}
+
+	for _, denomInfo := range denomInfos {
+		suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, denomInfo)
+	}
+
+	for _, symbolInfo := range symbolInfos {
+		suite.app.YieldaggregatorKeeper.SetSymbolInfo(suite.ctx, symbolInfo)
+	}
+
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	vault := types.Vault{
+		Id:                     1,
+		Symbol:                 "ATOM",
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{Denom: denomInfos[0].Denom, StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	contractAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomStaking",
+		ContractAddress: contractAddr.String(),
+		Denom:           denomInfos[0].Denom,
+	}
+
+	coin := sdk.NewInt64Coin(denomInfos[0].Denom, 1000)
+
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, sdk.Coins{coin})
+	suite.Require().NoError(err)
+
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, denomInfos[0].Channels[0].ChannelId, 1)
+	msg, err := suite.app.YieldaggregatorKeeper.ExecuteVaultTransfer(suite.ctx, vault, strategy, coin)
+	suite.Require().Error(err)
+	suite.Require().Contains(err.Error(), "channel not found")
+
+	msgBz, err := suite.app.AppCodec().MarshalJSON(msg)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651381294838206464","memo":""}`)
 }

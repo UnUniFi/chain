@@ -134,16 +134,6 @@ func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Pac
 
 func VaultTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
 	k.Logger(ctx).Info("VaultTransferCallback executing", "packet", packet)
-	if ack.GetError() != "" {
-		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback does not handle errors %s", ack.GetError()))
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "VaultTransferCallback does not handle errors: %s", ack.GetError())
-	}
-	if ack == nil {
-		// timeout
-		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback timeout, ack is nil, packet %v", packet))
-		return nil
-	}
-
 	var data ibctransfertypes.FungibleTokenPacketData
 	if err := ibctransfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
 		k.Logger(ctx).Error(fmt.Sprintf("Error unmarshalling packet  %v", err.Error()))
@@ -183,6 +173,16 @@ func VaultTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet
 		return fmt.Errorf("failed to parse transfer amount: %s", data.Amount)
 	}
 	k.DecreaseVaultPendingDeposit(ctx, unmarshalledTransferCallback.VaultId, amount)
+
+	if ack.GetError() != "" {
+		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback does not handle errors %s", ack.GetError()))
+		return nil
+	}
+	if ack == nil {
+		// timeout
+		k.Logger(ctx).Error(fmt.Sprintf("VaultTransferCallback timeout, ack is nil, packet %v", packet))
+		return nil
+	}
 
 	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
 	if err != nil {
