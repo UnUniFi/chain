@@ -79,7 +79,7 @@ func (suite *KeeperTestSuite) TestVaultTransfer() {
 		PortId:       transfertypes.ModuleName,
 		ChannelId:    "channel-0",
 		Sequence:     1,
-		CallbackId:   keeper.CONTRACT_TRANSFER,
+		CallbackId:   keeper.VAULT_TRANSFER,
 		CallbackArgs: marshalledCallbackArgs,
 	})
 }
