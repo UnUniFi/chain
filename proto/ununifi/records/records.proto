@@ -71,28 +71,6 @@ message EpochUnbondingRecord {
   reserved 2;
 }
 
-message LSMTokenDeposit {
-  enum Status {
-    DEPOSIT_PENDING            = 0;
-    TRANSFER_QUEUE             = 1;
-    TRANSFER_IN_PROGRESS       = 2;
-    TRANSFER_FAILED            = 3;
-    DETOKENIZATION_QUEUE       = 4;
-    DETOKENIZATION_IN_PROGRESS = 5;
-    DETOKENIZATION_FAILED      = 6;
-  }
-
-  string deposit_id        = 1;
-  string chain_id          = 2;
-  string denom             = 3;
-  string ibc_denom         = 4;
-  string staker_address    = 5;
-  string validator_address = 6;
-  string amount = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin st_token = 8 [(gogoproto.nullable) = false];
-  Status                   status   = 9;
-}
-
 message PendingDeposit {
   uint64 vault_id = 1;
   string amount   = 2 [
