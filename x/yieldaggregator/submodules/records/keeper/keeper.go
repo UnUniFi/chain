@@ -6,6 +6,7 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
+	"github.com/golang/protobuf/proto"
 
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
 
@@ -157,5 +158,46 @@ func (k Keeper) ContractTransfer(ctx sdk.Context, msg *ibctypes.MsgTransfer) err
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))
 	k.ICACallbacksKeeper.SetCallbackData(ctx, callback)
+	return nil
+}
+
+func (k Keeper) VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.AccAddress, msg *ibctypes.MsgTransfer) error {
+	goCtx := sdk.WrapSDKContext(ctx)
+	sequence, found := k.IBCKeeper.ChannelKeeper.GetNextSequenceSend(ctx, msg.SourcePort, msg.SourceChannel)
+	if !found {
+		return sdkerrors.Wrapf(
+			channeltypes.ErrSequenceSendNotFound,
+			"source port: %s, source channel: %s", msg.SourcePort, msg.SourceChannel,
+		)
+	}
+
+	transferCallback := types.VaultTransferCallback{
+		VaultId:          vaultId,
+		StrategyContract: contractAddr.String(),
+	}
+	k.Logger(ctx).Info(fmt.Sprintf("Marshalling TransferCallback args: %v", transferCallback))
+	marshalledCallbackArgs, err := proto.Marshal(&transferCallback)
+	if err != nil {
+		k.Logger(ctx).Error(fmt.Sprintf("MarshalTransferCallbackArgs %v", err.Error()))
+		return err
+	}
+
+	// Store the callback data
+	callback := icacallbackstypes.CallbackData{
+		CallbackKey:  icacallbackstypes.PacketID(msg.SourcePort, msg.SourceChannel, sequence),
+		PortId:       msg.SourcePort,
+		ChannelId:    msg.SourceChannel,
+		Sequence:     sequence,
+		CallbackId:   VAULT_TRANSFER,
+		CallbackArgs: marshalledCallbackArgs,
+	}
+	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))
+	k.ICACallbacksKeeper.SetCallbackData(ctx, callback)
+
+	// trigger transfer
+	_, err = k.TransferKeeper.Transfer(goCtx, msg)
+	if err != nil {
+		return err
+	}
 	return nil
 }

@@ -26,7 +26,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			}
 			amountToUnbond := targetUnbonded.Sub(reserve.Add(unbonding))
 			for _, strategyWeight := range vault.StrategyWeights {
-				strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+				strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 				if !found {
 					continue
 				}

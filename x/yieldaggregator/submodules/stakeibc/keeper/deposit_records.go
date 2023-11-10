@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"strconv"
 
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
@@ -22,10 +21,10 @@ func (k Keeper) CreateDepositRecordsForEpoch(ctx sdk.Context, epochNumber uint64
 		k.Logger(ctx).Info(fmt.Sprintf("createDepositRecords, index: %d, zoneInfo: %s", index, zoneInfo.ConnectionId))
 		depositRecord := recordstypes.DepositRecord{
 			Id:                 0,
-			Amount:             0,
+			Amount:             sdk.ZeroInt(),
 			Denom:              zoneInfo.HostDenom,
 			HostZoneId:         zoneInfo.ChainId,
-			Status:             recordstypes.DepositRecord_TRANSFER,
+			Status:             recordstypes.DepositRecord_TRANSFER_QUEUE,
 			DepositEpochNumber: epochNumber,
 		}
 		k.RecordsKeeper.AppendDepositRecord(ctx, depositRecord)
@@ -36,7 +35,7 @@ func (k Keeper) CreateDepositRecordsForEpoch(ctx sdk.Context, epochNumber uint64
 
 func (k Keeper) TransferExistingDepositsToHostZones(ctx sdk.Context, epochNumber uint64, depositRecords []recordstypes.DepositRecord) {
 	transferDepositRecords := utils.FilterDepositRecords(depositRecords, func(record recordstypes.DepositRecord) (condition bool) {
-		isTransferRecord := record.Status == recordstypes.DepositRecord_TRANSFER
+		isTransferRecord := record.Status == recordstypes.DepositRecord_TRANSFER_QUEUE
 		isBeforeCurrentEpoch := record.DepositEpochNumber < epochNumber
 		return isTransferRecord && isBeforeCurrentEpoch
 	})
@@ -48,7 +47,7 @@ func (k Keeper) TransferExistingDepositsToHostZones(ctx sdk.Context, epochNumber
 		k.Logger(ctx).Info(pstr)
 
 		// if a TRANSFER record has 0 balance and was created in the previous epoch, it's safe to remove since it will never be updated or used"
-		if depositRecord.Amount <= 0 {
+		if depositRecord.Amount.LTE(sdk.ZeroInt()) {
 			k.Logger(ctx).Info("[TransferExistingDepositsToHostZones] Empty deposit record (ID: %s)! Removing.", depositRecord.Id)
 			k.RecordsKeeper.RemoveDepositRecord(ctx, depositRecord.Id)
 			continue
@@ -68,7 +67,7 @@ func (k Keeper) TransferExistingDepositsToHostZones(ctx sdk.Context, epochNumber
 		}
 		delegateAddress := delegateAccount.GetAddress()
 
-		transferCoin := sdk.NewCoin(hostZone.GetIBCDenom(), sdk.NewInt(depositRecord.Amount))
+		transferCoin := sdk.NewCoin(hostZone.GetIBCDenom(), depositRecord.Amount)
 		// timeout 30 min in the future
 		// NOTE: this assumes no clock drift between chains, which tendermint guarantees
 		// if we onboard non-tendermint chains, we need to use the time on the host chain to
@@ -90,7 +89,7 @@ func (k Keeper) TransferExistingDepositsToHostZones(ctx sdk.Context, epochNumber
 
 func (k Keeper) StakeExistingDepositsOnHostZones(ctx sdk.Context, epochNumber uint64, depositRecords []recordstypes.DepositRecord) {
 	stakeDepositRecords := utils.FilterDepositRecords(depositRecords, func(record recordstypes.DepositRecord) (condition bool) {
-		isStakeRecord := record.Status == recordstypes.DepositRecord_STAKE
+		isStakeRecord := record.Status == recordstypes.DepositRecord_DELEGATION_QUEUE
 		isBeforeCurrentEpoch := record.DepositEpochNumber < epochNumber
 		return isStakeRecord && isBeforeCurrentEpoch
 	})
@@ -116,7 +115,7 @@ func (k Keeper) StakeExistingDepositsOnHostZones(ctx sdk.Context, epochNumber ui
 		}
 
 		k.Logger(ctx).Info(fmt.Sprintf("\t[StakeExistingDepositsOnHostZones] Staking %d on %s", depositRecord.Amount, hostZone.HostDenom))
-		stakeAmount := sdk.NewCoin(hostZone.HostDenom, sdk.NewInt(depositRecord.Amount))
+		stakeAmount := sdk.NewCoin(hostZone.HostDenom, depositRecord.Amount)
 
 		err := k.DelegateOnHost(ctx, hostZone, stakeAmount, depositRecord.Id)
 		if err != nil {
@@ -130,7 +129,7 @@ func (k Keeper) StakeExistingDepositsOnHostZones(ctx sdk.Context, epochNumber ui
 			sdk.NewEvent(
 				sdk.EventTypeMessage,
 				sdk.NewAttribute("hostZone", hostZone.ChainId),
-				sdk.NewAttribute("newAmountStaked", strconv.FormatInt(depositRecord.Amount, 10)),
+				sdk.NewAttribute("newAmountStaked", depositRecord.Amount.String()),
 			),
 		)
 	}

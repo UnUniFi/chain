@@ -12,11 +12,12 @@ message Params {
   // TODO: add reserve_annual_commission_rate
   // TODO: rename to withdraw_commission_rate
   string commission_rate = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
+    (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  cosmos.base.v1beta1.Coin vault_creation_fee = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin vault_creation_deposit = 3 [(gogoproto.nullable) = false];
-  string fee_collector_address = 4;
+  cosmos.base.v1beta1.Coin vault_creation_fee         = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin vault_creation_deposit     = 3 [(gogoproto.nullable) = false];
+  string                   fee_collector_address      = 4;
+  uint64                   ibc_transfer_timeout_nanos = 5;
 }

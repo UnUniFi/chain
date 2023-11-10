@@ -23,17 +23,17 @@ func (suite *KeeperTestSuite) TestVaultAmountUnbondingAmountInStrategies() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -84,13 +84,13 @@ func (suite *KeeperTestSuite) TestVaultWithdrawalAmount() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -123,17 +123,17 @@ func (suite *KeeperTestSuite) TestVaultAmountTotal() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -184,17 +184,21 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)
@@ -210,17 +214,18 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().NoError(err)
 
-	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Denom, vault.Id, sdk.NewInt64Coin(atomIbcDenom, 100000))
+	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
 	suite.Require().Equal(estMintAmount.String(), "100000"+lpDenom)
 
-	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Denom, vault.Id, sdk.NewInt(100000))
-	suite.Require().Equal(estBurnAmount.String(), "100000"+atomIbcDenom)
+	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
+	suite.Require().Equal(estBurnAmount.String(), "100000")
 }
 
 func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 	atomHostDenom := "uatom"
 	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
 	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
 	// try execution with invalid vault id
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	err := suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
@@ -239,17 +244,21 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)
@@ -347,4 +356,70 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 	suite.Require().Equal(amount.String(), "90000")
 	amount = suite.app.YieldaggregatorKeeper.VaultUnbondingAmountInStrategies(suite.ctx, vault)
 	suite.Require().Equal(amount.String(), "0")
+}
+
+func (suite *KeeperTestSuite) TestSendCoinsFromVault() {
+	vault := types.Vault{
+		Id:     1,
+		Symbol: "ATOM",
+		StrategyWeights: []types.StrategyWeight{
+			{
+				Denom:      "uatom1",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+			{
+				Denom:      "uatom2",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+		},
+	}
+	recvAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+
+	coins := sdk.Coins{
+		sdk.NewInt64Coin("uatom1", 1000000),
+		sdk.NewInt64Coin("uatom2", 1000000),
+		sdk.NewInt64Coin("uosmo", 1000000),
+	}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uatom1",
+		Symbol: "ATOM",
+	})
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uatom2",
+		Symbol: "ATOM",
+	})
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  "uosmo",
+		Symbol: "OSMO",
+	})
+
+	err = suite.app.YieldaggregatorKeeper.SendCoinsFromVault(suite.ctx, vault, recvAddr, sdk.NewInt(1500000))
+	suite.Require().NoError(err)
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, recvAddr)
+	suite.Require().Equal(balances.String(), "1000000uatom1,500000uatom2")
+
+	vault = types.Vault{
+		Id:     1,
+		Symbol: "OSMO",
+		StrategyWeights: []types.StrategyWeight{
+			{
+				Denom:      "uosmo",
+				StrategyId: 1,
+				Weight:     sdk.OneDec(),
+			},
+		},
+	}
+	err = suite.app.YieldaggregatorKeeper.SendCoinsFromVault(suite.ctx, vault, recvAddr, sdk.NewInt(1000))
+	suite.Require().NoError(err)
+	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, recvAddr)
+	suite.Require().Equal(balances.String(), "1000000uatom1,500000uatom2,1000uosmo")
 }

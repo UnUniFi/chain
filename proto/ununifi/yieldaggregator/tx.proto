@@ -26,6 +26,10 @@ service Msg {
   rpc DeleteVault(MsgDeleteVault) returns (MsgDeleteVaultResponse);
   rpc UpdateVault(MsgUpdateVault) returns (MsgUpdateVaultResponse);
   rpc UpdateStrategy(MsgUpdateStrategy) returns (MsgUpdateStrategyResponse);
+  rpc RegisterDenomInfos(MsgRegisterDenomInfos) returns (MsgRegisterDenomInfosResponse);
+  rpc RegisterSymbolInfos(MsgRegisterSymbolInfos) returns (MsgRegisterSymbolInfosResponse);
+  rpc SetIntermediaryAccountInfo(MsgSetIntermediaryAccountInfo) returns (MsgSetIntermediaryAccountInfoResponse);
+  rpc ReinitVaultTransfer(MsgReinitVaultTransfer) returns (MsgReinitVaultTransferResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -77,7 +81,7 @@ message MsgCreateVault {
   option (gogoproto.goproto_getters) = false;
 
   string sender          = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string denom           = 2;
+  string symbol          = 2;
   string name            = 3;
   string description     = 4;
   string commission_rate = 5 [
@@ -183,3 +187,30 @@ message MsgDeleteVault {
 }
 
 message MsgDeleteVaultResponse {}
+
+message MsgRegisterDenomInfos {
+  string             sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated DenomInfo info   = 2 [(gogoproto.nullable) = false];
+}
+message MsgRegisterDenomInfosResponse {}
+
+message MsgRegisterSymbolInfos {
+  string              sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated SymbolInfo info   = 2 [(gogoproto.nullable) = false];
+}
+message MsgRegisterSymbolInfosResponse {}
+
+message MsgSetIntermediaryAccountInfo {
+  string                sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated ChainAddress addrs  = 2 [(gogoproto.nullable) = false];
+}
+message MsgSetIntermediaryAccountInfoResponse {}
+
+message MsgReinitVaultTransfer {
+  string                   sender         = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64                   vault_id       = 2;
+  string                   strategy_denom = 3;
+  uint64                   strategy_id    = 4;
+  cosmos.base.v1beta1.Coin amount         = 5 [(gogoproto.nullable) = false];
+}
+message MsgReinitVaultTransferResponse {}

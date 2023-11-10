@@ -17,10 +17,10 @@ import (
 
 func CmdTxCreateVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-vault [denom] [name] [description] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
+		Use:   "create-vault [symbol] [name] [description] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
 		Short: "create a new vault",
 		Long: `create a new vault
-			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu 1:0.1,2:0.9
+			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu ibc/XXXD:1:0.1,ibc/XXXD:2:0.9
 		`,
 		Args: cobra.ExactArgs(9),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -29,7 +29,7 @@ func CmdTxCreateVault() *cobra.Command {
 				return err
 			}
 
-			denom := args[0]
+			symbol := args[0]
 			name := args[1]
 			description := args[2]
 			commissionRate, err := sdk.NewDecFromStr(args[3])
@@ -54,19 +54,21 @@ func CmdTxCreateVault() *cobra.Command {
 			strategyWeights := make([]types.StrategyWeight, 0)
 			for _, strategyWeightStr := range strategyWeightStrs {
 				split := strings.Split(strategyWeightStr, ":")
-				if len(split) != 2 {
+				if len(split) != 3 {
 					return fmt.Errorf("invalid strategy weight: %s", strategyWeightStr)
 				}
-				strategyId, err := strconv.Atoi(split[0])
+				strategyDenom := split[0]
+				strategyId, err := strconv.Atoi(split[1])
 				if err != nil {
 					return err
 				}
-				weight, err := sdk.NewDecFromStr(split[1])
+				weight, err := sdk.NewDecFromStr(split[2])
 				if err != nil {
 					return err
 				}
 
 				strategyWeights = append(strategyWeights, types.StrategyWeight{
+					Denom:      strategyDenom,
 					StrategyId: uint64(strategyId),
 					Weight:     weight,
 				})
@@ -74,7 +76,7 @@ func CmdTxCreateVault() *cobra.Command {
 
 			msg := types.NewMsgCreateVault(
 				clientCtx.GetFromAddress().String(),
-				denom,
+				symbol,
 				name,
 				description,
 				commissionRate,

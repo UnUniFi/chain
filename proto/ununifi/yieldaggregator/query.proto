@@ -46,6 +46,18 @@ service Query {
   rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
     option (google.api.http).get = "/ununifi/yieldaggregator/vaults/{id}/estimate-redeem-amount";
   }
+
+  rpc DenomInfos(QueryDenomInfosRequest) returns (QueryDenomInfosResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/denom-infos";
+  }
+
+  rpc SymbolInfos(QuerySymbolInfosRequest) returns (QuerySymbolInfosResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/symbol-infos";
+  }
+
+  rpc IntermediaryAccountInfo(QueryIntermediaryAccountInfoRequest) returns (QueryIntermediaryAccountInfoResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/intermediary-account-info";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -76,6 +88,11 @@ message VaultContainer {
     (gogoproto.nullable)   = false
   ];
   string withdraw_reserve = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string total_pending_deposit = 5 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
@@ -116,7 +133,12 @@ message QueryGetVaultResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
-  repeated Strategy strategies = 5 [(gogoproto.nullable) = false];
+  string total_pending_deposit = 5 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  repeated Strategy strategies = 6 [(gogoproto.nullable) = false];
 }
 
 message QueryAllStrategyRequest {
@@ -172,8 +194,36 @@ message QueryEstimateRedeemAmountRequest {
 }
 
 message QueryEstimateRedeemAmountResponse {
-  cosmos.base.v1beta1.Coin share_amount  = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee           = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin total_amount  = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin share_amount = 1 [(gogoproto.nullable) = false];
+  string                   fee          = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string redeem_amount = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string total_amount = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message QueryDenomInfosRequest {}
+
+message QueryDenomInfosResponse {
+  repeated DenomInfo info = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySymbolInfosRequest {}
+message QuerySymbolInfosResponse {
+  repeated SymbolInfo info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryIntermediaryAccountInfoRequest {}
+message QueryIntermediaryAccountInfoResponse {
+  repeated ChainAddress addrs = 1 [(gogoproto.nullable) = false];
 }
