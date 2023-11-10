@@ -28,66 +28,71 @@ func CreateUpgradeHandler(mm *module.Manager,
 		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, iyaParam)
 
 		// initialize DenomInfos, SymbolInfos, IntermediaryAccountInfo
-		denomInfos := []yieldaggregatortypes.DenomInfo{
-			{ // ATOM.osmosis.ununifi
-				Denom:  "ibc/20D06D04E1BC1FAC482FECC06C2E2879A596904D64D8BA3285B4A3789DEAF910",
-				Symbol: "ATOM",
-				Channels: []yieldaggregatortypes.TransferChannel{
-					{
-						RecvChainId: "cosmoshub-4",
-						SendChainId: "osmosis-1",
-						ChannelId:   "channel-0",
-					},
-					{
-						RecvChainId: "osmosis-1",
-						SendChainId: "ununifi-beta-v1",
-						ChannelId:   "channel-4",
-					},
-				},
-			},
-			{ // ATOM.ununifi
-				Denom:  "ibc/25418646C017D377ADF3202FF1E43590D0DAE3346E594E8D78176A139A928F88",
-				Symbol: "ATOM",
-				Channels: []yieldaggregatortypes.TransferChannel{
-					{
-						RecvChainId: "cosmoshub-4",
-						SendChainId: "ununifi-beta-v1",
-						ChannelId:   "channel-7",
+		denomInfos := []yieldaggregatortypes.DenomInfo{}
+		symbolInfos := []yieldaggregatortypes.SymbolInfo{}
+		interAcc := yieldaggregatortypes.IntermediaryAccountInfo{}
+		if ctx.ChainID() == "ununifi-beta-v1" { // mainnet
+			denomInfos = []yieldaggregatortypes.DenomInfo{
+				{ // ATOM.osmosis.ununifi
+					Denom:  "ibc/20D06D04E1BC1FAC482FECC06C2E2879A596904D64D8BA3285B4A3789DEAF910",
+					Symbol: "ATOM",
+					Channels: []yieldaggregatortypes.TransferChannel{
+						{
+							RecvChainId: "cosmoshub-4",
+							SendChainId: "osmosis-1",
+							ChannelId:   "channel-0",
+						},
+						{
+							RecvChainId: "osmosis-1",
+							SendChainId: "ununifi-beta-v1",
+							ChannelId:   "channel-4",
+						},
 					},
 				},
-			},
-		}
+				{ // ATOM.ununifi
+					Denom:  "ibc/25418646C017D377ADF3202FF1E43590D0DAE3346E594E8D78176A139A928F88",
+					Symbol: "ATOM",
+					Channels: []yieldaggregatortypes.TransferChannel{
+						{
+							RecvChainId: "cosmoshub-4",
+							SendChainId: "ununifi-beta-v1",
+							ChannelId:   "channel-7",
+						},
+					},
+				},
+			}
 
-		symbolInfos := []yieldaggregatortypes.SymbolInfo{
-			{
-				Symbol:        "ATOM",
-				NativeChainId: "cosmoshub-4",
-				Channels: []yieldaggregatortypes.TransferChannel{
-					{
-						SendChainId: "cosmoshub-4",
-						RecvChainId: "osmosis-1",
-						ChannelId:   "channel-141",
-					},
-					{
-						SendChainId: "cosmoshub-4",
-						RecvChainId: "ununifi-beta-v1",
-						ChannelId:   "channel-683",
+			symbolInfos = []yieldaggregatortypes.SymbolInfo{
+				{
+					Symbol:        "ATOM",
+					NativeChainId: "cosmoshub-4",
+					Channels: []yieldaggregatortypes.TransferChannel{
+						{
+							SendChainId: "cosmoshub-4",
+							RecvChainId: "osmosis-1",
+							ChannelId:   "channel-141",
+						},
+						{
+							SendChainId: "cosmoshub-4",
+							RecvChainId: "ununifi-beta-v1",
+							ChannelId:   "channel-683",
+						},
 					},
 				},
-			},
-		}
+			}
 
-		interAcc := yieldaggregatortypes.IntermediaryAccountInfo{
-			Addrs: []yieldaggregatortypes.ChainAddress{
-				{
-					ChainId: "cosmoshub-4",
-					Address: "cosmos1fvhcnyddukcqfnt7nlwv3thm5we22lyxyxylr9h77cvgkcn43xfs60ggw8",
+			interAcc = yieldaggregatortypes.IntermediaryAccountInfo{
+				Addrs: []yieldaggregatortypes.ChainAddress{
+					{
+						ChainId: "cosmoshub-4",
+						Address: "cosmos1fvhcnyddukcqfnt7nlwv3thm5we22lyxyxylr9h77cvgkcn43xfs60ggw8",
+					},
+					{
+						ChainId: "osmosis-1",
+						Address: "osmo1fvhcnyddukcqfnt7nlwv3thm5we22lyxyxylr9h77cvgkcn43xfs0jssep",
+					},
 				},
-				{
-					ChainId: "osmosis-1",
-					Address: "osmo1fvhcnyddukcqfnt7nlwv3thm5we22lyxyxylr9h77cvgkcn43xfs0jssep",
-				},
-			},
+			}
 		}
 
 		for _, denomInfo := range denomInfos {
