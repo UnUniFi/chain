@@ -118,7 +118,7 @@ func (k Keeper) MigrateAllLegacyVaults(ctx sdk.Context) {
 			WithdrawCommissionRate: legacyVault.WithdrawCommissionRate,
 			WithdrawReserveRate:    legacyVault.WithdrawReserveRate,
 			StrategyWeights:        strategyWeights, // addition of denom on Vault.StrategyWeight
-			FeeCollectorAddress:    legacyVault.Owner,
+			FeeCollectorAddress:    legacyVault.FeeCollectorAddress,
 		}
 		k.SetVault(ctx, vault)
 	}
