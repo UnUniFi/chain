@@ -83,6 +83,8 @@ import (
 
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
+	irskeeper "github.com/UnUniFi/chain/x/irs/keeper"
+	irstypes "github.com/UnUniFi/chain/x/irs/types"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icacallbackskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/keeper"
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
@@ -151,6 +153,7 @@ type AppKeepers struct {
 	NftfactoryKeeper    nftfactorykeeper.Keeper
 
 	YieldaggregatorKeeper    yieldaggregatorkeeper.Keeper
+	IrsKeeper                irskeeper.Keeper
 	StakeibcKeeper           stakeibckeeper.Keeper
 	ScopedStakeibcKeeper     capabilitykeeper.ScopedKeeper
 	EpochsKeeper             epochskeeper.Keeper
@@ -613,6 +616,15 @@ func NewAppKeeper(
 		appKeepers.WasmKeeper,
 		appKeepers.StakeibcKeeper,
 		appKeepers.RecordsKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	appKeepers.IrsKeeper = irskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[irstypes.StoreKey],
+		appKeepers.BankKeeper,
+		wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper),
+		appKeepers.WasmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

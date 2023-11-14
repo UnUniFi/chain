@@ -1,0 +1,16 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+message InterestRateSwapVault {
+  string strategy_contract = 1;
+  string name              = 2;
+  string description       = 3;
+  uint64 max_maturity      = 4;  // e.g. 180 days
+  uint64 cycle             = 5;  // e.g. 90 days
+}

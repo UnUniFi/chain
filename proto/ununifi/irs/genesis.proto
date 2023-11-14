@@ -1,0 +1,16 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "ununifi/irs/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+import "ununifi/irs/irs.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+// GenesisState defines the irs module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+  repeated InterestRateSwapVault vaults = 2 [(gogoproto.nullable) = false];
+}

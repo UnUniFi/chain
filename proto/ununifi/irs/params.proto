@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+message Params {
+  string authority      = 1;
+  string trade_fee_rate = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

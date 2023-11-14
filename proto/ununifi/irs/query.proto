@@ -1,0 +1,73 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "ununifi/irs/params.proto";
+// this line is used by starport scaffolding # 1
+import "ununifi/irs/irs.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/irs/params";
+  }
+  // Vaults queries the InterestRateSwapVaults
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vaults";
+  }
+  // Vault queries a single InterestRateSwapVault
+  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}";
+  }
+  // VaultDetails queries the details of the vault
+  rpc VaultDetails(QueryVaultDetailsRequest) returns (QueryVaultDetailsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultsRequest is request type for the Query/Vaults RPC method.
+message QueryVaultsRequest {}
+
+// QueryVaultsResponse is response type for the Query/Vaults RPC method.
+message QueryVaultsResponse {
+  repeated InterestRateSwapVault vaults = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultRequest is request type for the Query/Vault RPC method.
+message QueryVaultRequest {
+  string strategy_contract = 1;
+}
+
+// QueryVaultResponse is response type for the Query/Vault RPC method.
+message QueryVaultResponse {
+  InterestRateSwapVault vault = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultDetailsRequest is request type for the Query/VaultDetails RPC method.
+message QueryVaultDetailsRequest {
+  string strategy_contract = 1;
+  string maturity          = 2;
+}
+
+// QueryVaultDetailsResponse is response type for the Query/VaultDetails RPC method.
+message QueryVaultDetailsResponse {
+  string liquidity_pool = 1;
+  string fy_rate        = 2;
+  string lvy_rate       = 3;
+}
