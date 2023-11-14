@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"strconv"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,10 +13,10 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func CmdTxWithdrawFromVaultWithUnbondingTime() *cobra.Command {
+func CmdTxWithdrawLiquidity() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-from-vault-with-unbonding-time [id] [lp-token-amount]",
-		Short: "withdraw from the vault with unbonding time",
+		Use:   "withdraw-liquidity [strategy_contract] [share-amount]",
+		Short: "withdraw liquidity",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -24,17 +24,14 @@ func CmdTxWithdrawFromVaultWithUnbondingTime() *cobra.Command {
 				return err
 			}
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
+			strategyContract := args[0]
+
+			amount, ok := sdk.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("error parsing amount")
 			}
 
-			lpAmount, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgWithdrawFromVaultWithUnbondingTime(clientCtx.GetFromAddress().String(), id, lpAmount.Amount)
+			msg := types.NewMsgWithdrawLiquidity(clientCtx.GetFromAddress().String(), strategyContract, amount)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

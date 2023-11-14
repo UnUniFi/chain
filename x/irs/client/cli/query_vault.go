@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -17,19 +16,11 @@ func CmdListVault() *cobra.Command {
 		Short: "list all vault",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllVaultRequest{
-				Pagination: pageReq,
-			}
+			params := &types.QueryVaultsRequest{}
 
-			res, err := queryClient.VaultAll(context.Background(), params)
+			res, err := queryClient.Vaults(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -46,7 +37,7 @@ func CmdListVault() *cobra.Command {
 
 func CmdShowVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-vault [id]",
+		Use:   "show-vault [strategy_contract]",
 		Short: "shows a vault",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -54,13 +45,8 @@ func CmdShowVault() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			params := &types.QueryGetVaultRequest{
-				Id: id,
+			params := &types.QueryVaultRequest{
+				StrategyContract: args[0],
 			}
 
 			res, err := queryClient.Vault(context.Background(), params)
@@ -77,89 +63,21 @@ func CmdShowVault() *cobra.Command {
 	return cmd
 }
 
-func CmdVaultAllByShareHolder() *cobra.Command {
+func CmdShowVaultDetails() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-vault-by-share-holder [holder]",
-		Short: "List vaults by share holder",
+		Use:   "show-vault-details [strategy_contract]",
+		Short: "shows a vault details",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllVaultByShareHolderRequest{
-				ShareHolder: args[0],
+			params := &types.QueryVaultDetailsRequest{
+				StrategyContract: args[0],
 			}
 
-			res, err := queryClient.VaultAllByShareHolder(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdVaultEstimatedMintAmount() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "estimate-mint-amount [id] [deposit-amount]",
-		Short: "Estimate mint amount",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			id, err := strconv.Atoi(args[0])
-			if err != nil {
-				return err
-			}
-
-			params := &types.QueryEstimateMintAmountRequest{
-				Id:            uint64(id),
-				DepositAmount: args[1],
-			}
-
-			res, err := queryClient.EstimateMintAmount(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdVaultEstimatedRedeemAmount() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "estimate-redeem-amount [id] [burn-amount]",
-		Short: "Estimate redeem amount",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			id, err := strconv.Atoi(args[0])
-			if err != nil {
-				return err
-			}
-
-			params := &types.QueryEstimateRedeemAmountRequest{
-				Id:         uint64(id),
-				BurnAmount: args[1],
-			}
-
-			res, err := queryClient.EstimateRedeemAmount(context.Background(), params)
+			res, err := queryClient.VaultDetails(context.Background(), params)
 			if err != nil {
 				return err
 			}
