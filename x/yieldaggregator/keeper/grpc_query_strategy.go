@@ -50,12 +50,14 @@ func (k Keeper) StrategyAll(c context.Context, req *types.QueryAllStrategyReques
 
 func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (types.StrategyContainer, error) {
 	strategyAddr, err := sdk.AccAddressFromBech32(strategy.ContractAddress)
+	denomInfo := k.GetDenomInfo(ctx, strategy.Denom)
 	if err != nil {
 		return types.StrategyContainer{
 			Strategy:           strategy,
 			DepositFeeRate:     math.LegacyZeroDec(),
 			WithdrawFeeRate:    math.LegacyZeroDec(),
 			PerformanceFeeRate: math.LegacyZeroDec(),
+			Symbol:             denomInfo.Symbol,
 		}, nil
 	}
 
@@ -67,6 +69,7 @@ func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (
 			DepositFeeRate:     math.LegacyZeroDec(),
 			WithdrawFeeRate:    math.LegacyZeroDec(),
 			PerformanceFeeRate: math.LegacyZeroDec(),
+			Symbol:             denomInfo.Symbol,
 		}, nil
 	}
 
@@ -78,6 +81,7 @@ func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (
 			DepositFeeRate:     math.LegacyZeroDec(),
 			WithdrawFeeRate:    math.LegacyZeroDec(),
 			PerformanceFeeRate: math.LegacyZeroDec(),
+			Symbol:             denomInfo.Symbol,
 		}, nil
 	}
 
@@ -102,6 +106,7 @@ func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (
 			DepositFeeRate:     depositFeeRate,
 			WithdrawFeeRate:    withdrawFeeRate,
 			PerformanceFeeRate: performanceFeeRate,
+			Symbol:             denomInfo.Symbol,
 		}, nil
 	default: // case 1+
 		depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
@@ -122,6 +127,7 @@ func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (
 			DepositFeeRate:     depositFeeRate,
 			WithdrawFeeRate:    withdrawFeeRate,
 			PerformanceFeeRate: performanceFeeRate,
+			Symbol:             denomInfo.Symbol,
 		}, nil
 	}
 }
