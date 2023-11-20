@@ -82,8 +82,9 @@ message MsgWithdrawLiquidity {
 message MsgWithdrawLiquidityResponse {}
 
 enum TrancheType {
-  FIXED_YIELD              = 0;
-  LEVERAGED_VARIABLE_YIELD = 1;
+  NORMAL_YIELD             = 0;
+  FIXED_YIELD              = 1;
+  LEVERAGED_VARIABLE_YIELD = 2;
 }
 
 message MsgDepositToTranche {

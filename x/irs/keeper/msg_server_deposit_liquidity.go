@@ -16,6 +16,8 @@ func (k msgServer) DepositLiquidity(goCtx context.Context, msg *types.MsgDeposit
 	}
 	_ = sender
 	_ = ctx
+	// TODO:
+	// Put tokens on tranche pool and get lp token
 
 	return &types.MsgDepositLiquidityResponse{}, nil
 }

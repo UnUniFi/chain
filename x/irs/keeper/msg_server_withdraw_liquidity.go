@@ -12,5 +12,7 @@ func (k msgServer) WithdrawLiquidity(goCtx context.Context, msg *types.MsgWithdr
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
 
+	// TODO:
+	// Burn lp tokens and get tokens from tranche pool for PT + ATOM
 	return &types.MsgWithdrawLiquidityResponse{}, nil
 }
