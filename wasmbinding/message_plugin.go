@@ -2,6 +2,7 @@ package wasmbinding
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -13,28 +14,31 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/UnUniFi/chain/wasmbinding/bindings"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
 	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
-func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, icqKeeper *icqkeeper.Keeper, recordsKeeper *recordskeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+func CustomMessageDecorator(bankKeeper *bankkeeper.BaseKeeper, icqKeeper *icqkeeper.Keeper, recordsKeeper *recordskeeper.Keeper, yieldaggregatorKeeper *yieldaggregatorkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
-			wrapped:       old,
-			bank:          bank,
-			icqKeeper:     icqKeeper,
-			recordsKeeper: recordsKeeper,
+			wrapped:               old,
+			bankKeeper:            bankKeeper,
+			icqKeeper:             icqKeeper,
+			recordsKeeper:         recordsKeeper,
+			yieldaggregatorKeeper: yieldaggregatorKeeper,
 		}
 	}
 }
 
 type CustomMessenger struct {
-	wrapped       wasmkeeper.Messenger
-	bank          *bankkeeper.BaseKeeper
-	icqKeeper     *icqkeeper.Keeper
-	recordsKeeper *recordskeeper.Keeper
+	wrapped               wasmkeeper.Messenger
+	bankKeeper            *bankkeeper.BaseKeeper
+	icqKeeper             *icqkeeper.Keeper
+	recordsKeeper         *recordskeeper.Keeper
+	yieldaggregatorKeeper *yieldaggregatorkeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -49,15 +53,21 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		if contractMsg.SubmitICQRequest != nil {
 			return m.submitICQRequest(ctx, contractAddr, contractMsg.SubmitICQRequest)
 		}
+		if contractMsg.RequestKvIcq != nil {
+			return m.submitICQRequest(ctx, contractAddr, contractMsg.RequestKvIcq)
+		}
 		if contractMsg.IBCTransfer != nil {
 			return m.ibcTransfer(ctx, contractAddr, contractMsg.IBCTransfer)
+		}
+		if contractMsg.DeputyDepositToVault != nil {
+			return m.deputyDepositToVault(ctx, contractAddr, contractMsg.DeputyDepositToVault)
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
 }
 
 func (m *CustomMessenger) submitICQRequest(ctx sdk.Context, contractAddr sdk.AccAddress, submitICQRequest *bindings.SubmitICQRequest) ([]sdk.Event, [][]byte, error) {
-	err := PerformSubmitICQRequest(m.icqKeeper, m.bank, ctx, contractAddr, submitICQRequest)
+	err := PerformSubmitICQRequest(m.icqKeeper, m.bankKeeper, ctx, contractAddr, submitICQRequest)
 	if err != nil {
 		return nil, nil, sdkerrors.Wrap(err, "perform icq request submission")
 	}
@@ -119,6 +129,51 @@ func PerformIBCTransfer(f *recordskeeper.Keeper, ctx sdk.Context, contractAddr s
 		})
 	if err != nil {
 		return sdkerrors.Wrap(err, "sending ibc transfer")
+	}
+	return nil
+}
+
+func (m *CustomMessenger) deputyDepositToVault(ctx sdk.Context, contractAddr sdk.AccAddress, deputyDepositToVault *bindings.DeputyDepositToVault) ([]sdk.Event, [][]byte, error) {
+	err := PerformDeputyDepositToVault(m.bankKeeper, m.yieldaggregatorKeeper, ctx, contractAddr, deputyDepositToVault)
+	if err != nil {
+		return nil, nil, sdkerrors.Wrap(err, "perform ibc transfer")
+	}
+	return nil, nil, nil
+}
+
+func PerformDeputyDepositToVault(bk *bankkeeper.BaseKeeper, iyaKeeper *yieldaggregatorkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, deputyDepositToVault *bindings.DeputyDepositToVault) error {
+	if deputyDepositToVault == nil {
+		return wasmvmtypes.InvalidRequest{Err: "icq request empty"}
+	}
+
+	amount, err := wasmkeeper.ConvertWasmCoinToSdkCoin(deputyDepositToVault.Amount)
+	if err != nil {
+		return err
+	}
+
+	depositor, err := sdk.AccAddressFromBech32(deputyDepositToVault.Depositor)
+	if err != nil {
+		return err
+	}
+
+	err = bk.SendCoins(ctx, contractAddr, depositor, sdk.Coins{amount})
+	if err != nil {
+		return sdkerrors.Wrap(err, "sending coins from contract to depositor account")
+	}
+
+	vaultId, err := strconv.ParseUint(deputyDepositToVault.VaultId, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	err = iyaKeeper.DepositAndMintLPToken(
+		ctx,
+		depositor,
+		vaultId,
+		amount,
+	)
+	if err != nil {
+		return sdkerrors.Wrap(err, "depositing to vault")
 	}
 	return nil
 }

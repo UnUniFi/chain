@@ -92,18 +92,33 @@ func (k Keeper) MigrateAllLegacyVaults(ctx sdk.Context) {
 		legacyVaults = append(legacyVaults, val)
 	}
 
+	denomInfo := k.GetAllDenomInfo(ctx)
+	denomSymbolMap := make(map[string]string)
+	for _, di := range denomInfo {
+		denomSymbolMap[di.Denom] = di.Symbol
+	}
+
 	for _, legacyVault := range legacyVaults {
+		strategyWeights := []types.StrategyWeight{}
+
+		for _, weight := range legacyVault.StrategyWeights {
+			strategyWeights = append(strategyWeights, types.StrategyWeight{
+				Denom:      legacyVault.Denom,
+				StrategyId: weight.StrategyId,
+				Weight:     weight.Weight,
+			})
+		}
 		vault := types.Vault{
 			Id:                     legacyVault.Id,
-			Denom:                  legacyVault.Denom,
-			Name:                   "",
-			Description:            "",
+			Symbol:                 denomSymbolMap[legacyVault.Denom], // modification of vault.Denom to vault.Symbol
+			Name:                   legacyVault.Name,
+			Description:            legacyVault.Description,
 			Owner:                  legacyVault.Owner,
 			OwnerDeposit:           legacyVault.OwnerDeposit,
 			WithdrawCommissionRate: legacyVault.WithdrawCommissionRate,
 			WithdrawReserveRate:    legacyVault.WithdrawReserveRate,
-			StrategyWeights:        legacyVault.StrategyWeights,
-			FeeCollectorAddress:    legacyVault.Owner,
+			StrategyWeights:        strategyWeights, // addition of denom on Vault.StrategyWeight
+			FeeCollectorAddress:    legacyVault.FeeCollectorAddress,
 		}
 		k.SetVault(ctx, vault)
 	}

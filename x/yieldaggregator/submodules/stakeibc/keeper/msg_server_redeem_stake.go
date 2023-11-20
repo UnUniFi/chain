@@ -86,7 +86,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 		Id:          redemptionId,
 		Sender:      senderAddr,
 		Receiver:    receiver,
-		Amount:      nativeAmount.Uint64(),
+		Amount:      nativeAmount,
 		Denom:       hostZone.HostDenom,
 		HostZoneId:  hostZone.ChainId,
 		EpochNumber: epochTracker.EpochNumber,
@@ -105,7 +105,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 	if !found {
 		return sdkerrors.Wrapf(types.ErrInvalidHostZone, "host zone not found in unbondings: %s", hostZone.ChainId)
 	}
-	hostZoneUnbonding.NativeTokenAmount += nativeAmount.Uint64()
+	hostZoneUnbonding.NativeTokenAmount = hostZoneUnbonding.NativeTokenAmount.Add(nativeAmount)
 	hostZoneUnbonding.UserRedemptionRecords = append(hostZoneUnbonding.UserRedemptionRecords, userRedemptionRecord.Id)
 
 	// Escrow user's balance
@@ -122,7 +122,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 
 	// record the number of stAssets that should be burned after unbonding
 	stTokenAmount := amount.Amount.Uint64()
-	hostZoneUnbonding.StTokenAmount += stTokenAmount
+	hostZoneUnbonding.StTokenAmount = hostZoneUnbonding.StTokenAmount.Add(sdk.NewInt(int64(stTokenAmount)))
 
 	// Actually set the records, we wait until now to prevent any errors
 	k.RecordsKeeper.SetUserRedemptionRecord(ctx, userRedemptionRecord)
@@ -220,7 +220,7 @@ func (k msgServer) RedeemStake(goCtx context.Context, msg *types.MsgRedeemStake)
 		Id:          redemptionId,
 		Sender:      senderAddr,
 		Receiver:    msg.Receiver,
-		Amount:      nativeAmount.Uint64(),
+		Amount:      nativeAmount,
 		Denom:       hostZone.HostDenom,
 		HostZoneId:  hostZone.ChainId,
 		EpochNumber: epochTracker.EpochNumber,
@@ -239,7 +239,7 @@ func (k msgServer) RedeemStake(goCtx context.Context, msg *types.MsgRedeemStake)
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidHostZone, "host zone not found in unbondings: %s", hostZone.ChainId)
 	}
-	hostZoneUnbonding.NativeTokenAmount += nativeAmount.Uint64()
+	hostZoneUnbonding.NativeTokenAmount = hostZoneUnbonding.NativeTokenAmount.Add(nativeAmount)
 	hostZoneUnbonding.UserRedemptionRecords = append(hostZoneUnbonding.UserRedemptionRecords, userRedemptionRecord.Id)
 
 	// Escrow user's balance
@@ -261,7 +261,7 @@ func (k msgServer) RedeemStake(goCtx context.Context, msg *types.MsgRedeemStake)
 		k.Logger(ctx).Error(errMsg)
 		return nil, sdkerrors.Wrapf(types.ErrIntCast, errMsg)
 	}
-	hostZoneUnbonding.StTokenAmount += stTokenAmount
+	hostZoneUnbonding.StTokenAmount = hostZoneUnbonding.StTokenAmount.Add(sdk.NewInt(int64(stTokenAmount)))
 
 	// Actually set the records, we wait until now to prevent any errors
 	k.RecordsKeeper.SetUserRedemptionRecord(ctx, userRedemptionRecord)

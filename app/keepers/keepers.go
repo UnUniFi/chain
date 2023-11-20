@@ -432,7 +432,13 @@ func NewAppKeeper(
 	// if we want to allow any custom callbacks
 	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
 
-	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&appKeepers.BankKeeper, &appKeepers.InterchainqueryKeeper, &appKeepers.RecordsKeeper), wasmOpts...)
+	wasmOpts = append(
+		wasmbinding.RegisterCustomPlugins(
+			&appKeepers.BankKeeper,
+			&appKeepers.InterchainqueryKeeper,
+			&appKeepers.RecordsKeeper,
+			&appKeepers.YieldaggregatorKeeper),
+		wasmOpts...)
 
 	appKeepers.WasmKeeper = wasm.NewKeeper(
 		appCodec,
@@ -541,6 +547,7 @@ func NewAppKeeper(
 		appKeepers.keys[interchainquerytypes.StoreKey],
 		appKeepers.IBCKeeper,
 		&appKeepers.WasmKeeper,
+		appKeepers.WasmKeeper,
 	)
 
 	scopedRecordsKeeper := appKeepers.CapabilityKeeper.ScopeToModule(recordstypes.ModuleName)
@@ -556,6 +563,7 @@ func NewAppKeeper(
 		*appKeepers.IBCKeeper,
 		appKeepers.IcacallbacksKeeper,
 		&appKeepers.WasmKeeper,
+		appKeepers.WasmKeeper,
 	)
 
 	scopedStakeibcKeeper := appKeepers.CapabilityKeeper.ScopeToModule(stakeibctypes.ModuleName)

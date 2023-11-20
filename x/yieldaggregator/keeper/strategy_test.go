@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -115,12 +116,12 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 		EpochNumber: 1,
 		HostZoneUnbondings: []*recordstypes.HostZoneUnbonding{
 			{
-				StTokenAmount:         0,
-				NativeTokenAmount:     0,
+				StTokenAmount:         sdk.ZeroInt(),
+				NativeTokenAmount:     sdk.ZeroInt(),
 				Denom:                 zone.HostDenom,
 				HostZoneId:            zone.ChainId,
 				UnbondingTime:         0,
-				Status:                recordstypes.HostZoneUnbonding_BONDED,
+				Status:                recordstypes.HostZoneUnbonding_UNBONDING_QUEUE,
 				UserRedemptionRecords: []string{},
 			},
 		},
@@ -129,15 +130,116 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 	// set deposit record for env
 	suite.app.RecordsKeeper.SetDepositRecord(suite.ctx, recordstypes.DepositRecord{
 		Id:                 1,
-		Amount:             100,
+		Amount:             sdk.NewInt(100),
 		Denom:              ibcDenom,
 		HostZoneId:         "hub-1",
-		Status:             recordstypes.DepositRecord_STAKE,
+		Status:             recordstypes.DepositRecord_DELEGATION_QUEUE,
 		DepositEpochNumber: 1,
 		Source:             recordstypes.DepositRecord_UNUNIFI,
 	})
 	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
 	return zone
+}
+
+// stake into strategy
+func (suite *KeeperTestSuite) TestMultipleDenomsVaultStakeStrategy() {
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-3", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+	atomOsmosisDenom := "uatom/osmosis"
+	prefixedDenom = transfertypes.GetPrefixedDenom("transfer", "channel-2", atomOsmosisDenom)
+	atomOsmosisIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
+	denomInfos := []types.DenomInfo{
+		{
+			Denom:  atomOsmosisIbcDenom,
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "",
+					ChannelId:   "channel-1",
+				},
+				{
+					RecvChainId: "",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-2",
+				},
+			},
+		},
+		{
+			Denom:  atomIbcDenom,
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-3",
+				},
+			},
+		},
+	}
+
+	symbolInfos := []types.SymbolInfo{
+		{
+			Symbol:        "ATOM",
+			NativeChainId: "cosmoshub-4",
+			Channels: []types.TransferChannel{
+				{
+					SendChainId: "cosmoshub-4",
+					RecvChainId: "", // osmosis-1 (since contract is not mocked target chain id is set as "")
+					ChannelId:   "channel-4",
+				},
+			},
+		},
+	}
+
+	for _, denomInfo := range denomInfos {
+		suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, denomInfo)
+	}
+
+	for _, symbolInfo := range symbolInfos {
+		suite.app.YieldaggregatorKeeper.SetSymbolInfo(suite.ctx, symbolInfo)
+	}
+
+	contractAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomStakingOnOsmosis",
+		ContractAddress: contractAddr.String(),
+		Denom:           atomOsmosisIbcDenom,
+	}
+
+	vault := types.Vault{
+		Id:                     1,
+		Symbol:                 "ATOM",
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomOsmosisIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	// mint coins to be spent on strategy deposit
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	coins := sdk.Coins{sdk.NewInt64Coin(atomIbcDenom, 1000000)}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	// stake to strategy
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, "channel-3", 1)
+	err = suite.app.YieldaggregatorKeeper.StakeToStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	suite.Require().Error(err)
+	suite.Require().Contains(err.Error(), "channel not found")
 }
 
 // stake into strategy
@@ -159,13 +261,13 @@ func (suite *KeeperTestSuite) TestStakeToStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -185,7 +287,7 @@ func (suite *KeeperTestSuite) TestStakeToStrategy() {
 	// check the changes
 	record, found := suite.app.RecordsKeeper.GetDepositRecord(suite.ctx, 1)
 	suite.Require().True(found)
-	suite.Require().Equal(record.Amount, int64(1000_100))
+	suite.Require().Equal(record.Amount.String(), "1000100")
 
 	balance := suite.app.BankKeeper.GetAllBalances(suite.ctx, vaultModAddr)
 	suite.Require().Equal(balance.String(), "1000000stuatom")
@@ -215,13 +317,13 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -239,16 +341,16 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 	suite.Require().NoError(err)
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check the changes
 	unbondingRecord, found := suite.app.RecordsKeeper.GetEpochUnbondingRecord(suite.ctx, 1)
 	suite.Require().True(found)
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings, 1)
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount, uint64(1000_000))
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_BONDED)
-	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount, uint64(1000_000))
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount.String(), "1000000")
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_UNBONDING_QUEUE)
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount.String(), "1000000")
 	suite.Require().Len(unbondingRecord.HostZoneUnbondings[0].UserRedemptionRecords, 1)
 }
 
@@ -269,13 +371,13 @@ func (suite *KeeperTestSuite) TestGetAmountAndUnbondingAmountFromStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -309,7 +411,7 @@ func (suite *KeeperTestSuite) TestGetAmountAndUnbondingAmountFromStrategy() {
 	suite.Require().Equal(amount.String(), "0"+atomIbcDenom)
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check amounts after unstake
@@ -320,4 +422,334 @@ func (suite *KeeperTestSuite) TestGetAmountAndUnbondingAmountFromStrategy() {
 	amount, err = suite.app.YieldaggregatorKeeper.GetUnbondingAmountFromStrategy(suite.ctx, vault, strategy)
 	suite.Require().NoError(err)
 	suite.Require().Equal(amount.String(), "1000000"+atomIbcDenom)
+}
+
+func (suite *KeeperTestSuite) TestCalculateTransferRoute() {
+	currChannels := []types.TransferChannel{}
+	tarChannels := []types.TransferChannel{}
+
+	route := keeper.CalculateTransferRoute(currChannels, tarChannels)
+	suite.Require().Equal(route, []types.TransferChannel{})
+
+	// ATOM
+	currChannels = []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+	}
+	tarChannels = []types.TransferChannel{
+		{
+			SendChainId: "cosmoshub-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-1", // forward channel
+		},
+	}
+	route = keeper.CalculateTransferRoute(currChannels, tarChannels)
+	suite.Require().Equal(route, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+		{
+			SendChainId: "cosmoshub-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-1", // forward channel
+		},
+	})
+
+	// ATOM.osmo
+	currChannels = []types.TransferChannel{
+		{
+			SendChainId: "osmosis-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-3", // back channel
+		},
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-3", // back channel
+		},
+	}
+	tarChannels = []types.TransferChannel{
+		{
+			SendChainId: "cosmoshub-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-1", // forward channel
+		},
+	}
+	route = keeper.CalculateTransferRoute(currChannels, tarChannels)
+	suite.Require().Equal(route, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-3", // back channel
+		},
+	})
+
+	// ATOM.atom
+	currChannels = []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+	}
+	tarChannels = []types.TransferChannel{}
+	route = keeper.CalculateTransferRoute(currChannels, tarChannels)
+	suite.Require().Equal(route, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+	})
+}
+
+func (suite *KeeperTestSuite) TestComposePacketForwardMetadata() {
+	suite.app.YieldaggregatorKeeper.SetIntermediaryAccountInfo(suite.ctx, []types.ChainAddress{
+		{
+			ChainId: "cosmoshub-1",
+			Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "osmosis-1",
+			Address: "osmo1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "neutron-1",
+			Address: "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+	})
+
+	receiver, metadata := suite.app.YieldaggregatorKeeper.ComposePacketForwardMetadata(suite.ctx, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-3", // back channel
+		},
+	}, "osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk")
+	suite.Require().Equal(receiver, "osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk")
+	metadataJson, err := json.Marshal(metadata)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(metadataJson), "null")
+
+	receiver, metadata = suite.app.YieldaggregatorKeeper.ComposePacketForwardMetadata(suite.ctx, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-2", // back channel
+		},
+		{
+			SendChainId: "cosmoshub-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-1", // forward channel
+		},
+	}, "osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk")
+	suite.Require().Equal(receiver, "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t")
+	metadataJson, err = json.Marshal(metadata)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","timeout":1800000000000,"retries":2,"next":null}}`)
+
+	receiver, metadata = suite.app.YieldaggregatorKeeper.ComposePacketForwardMetadata(suite.ctx, []types.TransferChannel{
+		{
+			SendChainId: "ununifi-1",
+			RecvChainId: "neutron-1",
+			ChannelId:   "channel-2", // back channel
+		},
+		{
+			SendChainId: "neutron-1",
+			RecvChainId: "cosmoshub-1",
+			ChannelId:   "channel-3", // back channel
+		},
+		{
+			SendChainId: "cosmoshub-1",
+			RecvChainId: "osmosis-1",
+			ChannelId:   "channel-1", // forward channel
+		},
+	}, "osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk")
+	suite.Require().Equal(receiver, "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t")
+	metadataJson, err = json.Marshal(metadata)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(metadataJson), `{"forward":{"receiver":"cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t","port":"transfer","channel":"channel-3","timeout":1800000000000,"retries":2,"next":{"forward":{"receiver":"osmo1aqvlxpk8dc4m2nkmxkf63a5zez9jkzgm6amkgddhfk0qj9j4rw3q662wuk","port":"transfer","channel":"channel-1","timeout":1800000000000,"retries":2,"next":null}}}}`)
+}
+
+func (suite *KeeperTestSuite) TestExecuteVaultTransfer() {
+	suite.app.YieldaggregatorKeeper.SetIntermediaryAccountInfo(suite.ctx, []types.ChainAddress{
+		{
+			ChainId: "cosmoshub-1",
+			Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "osmosis-1",
+			Address: "osmo1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "neutron-1",
+			Address: "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+	})
+
+	denomInfos := []types.DenomInfo{
+		{
+			Denom:  "ibc/01AAFF",
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-2",
+				},
+			},
+		},
+	}
+
+	symbolInfos := []types.SymbolInfo{
+		{
+			Symbol:        "ATOM",
+			NativeChainId: "cosmoshub-4",
+			Channels: []types.TransferChannel{
+				{
+					SendChainId: "cosmoshub-4",
+					RecvChainId: "", // osmosis-1 (since contract is not mocked target chain id is set as "")
+					ChannelId:   "channel-1",
+				},
+			},
+		},
+	}
+
+	for _, denomInfo := range denomInfos {
+		suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, denomInfo)
+	}
+
+	for _, symbolInfo := range symbolInfos {
+		suite.app.YieldaggregatorKeeper.SetSymbolInfo(suite.ctx, symbolInfo)
+	}
+
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	vault := types.Vault{
+		Id:                     1,
+		Symbol:                 "ATOM",
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{Denom: denomInfos[0].Denom, StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	contractAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomStaking",
+		ContractAddress: contractAddr.String(),
+		Denom:           denomInfos[0].Denom,
+	}
+
+	coin := sdk.NewInt64Coin(denomInfos[0].Denom, 1000)
+
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, sdk.Coins{coin})
+	suite.Require().NoError(err)
+
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, denomInfos[0].Channels[0].ChannelId, 1)
+	msg, err := suite.app.YieldaggregatorKeeper.ExecuteVaultTransfer(suite.ctx, vault, strategy, coin)
+	suite.Require().Error(err)
+	suite.Require().Contains(err.Error(), "channel not found")
+
+	msgBz, err := suite.app.AppCodec().MarshalJSON(msg)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651381294838206464","memo":"{\"forward\":{\"port\":\"transfer\",\"channel\":\"channel-1\",\"timeout\":1800000000000,\"retries\":2,\"next\":null}}"}`)
+}
+
+func (suite *KeeperTestSuite) TestExecuteVaultTransferDepositToHubVault() {
+	suite.app.YieldaggregatorKeeper.SetIntermediaryAccountInfo(suite.ctx, []types.ChainAddress{
+		{
+			ChainId: "cosmoshub-1",
+			Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "osmosis-1",
+			Address: "osmo1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+		{
+			ChainId: "neutron-1",
+			Address: "neutron1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+		},
+	})
+
+	denomInfos := []types.DenomInfo{
+		{
+			Denom:  "ibc/01AAFF",
+			Symbol: "ATOM",
+			Channels: []types.TransferChannel{
+				{
+					RecvChainId: "cosmoshub-4",
+					SendChainId: "ununifi-1",
+					ChannelId:   "channel-2",
+				},
+			},
+		},
+	}
+
+	symbolInfos := []types.SymbolInfo{
+		{
+			Symbol:        "ATOM",
+			NativeChainId: "cosmoshub-4",
+			Channels:      []types.TransferChannel{},
+		},
+	}
+
+	for _, denomInfo := range denomInfos {
+		suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, denomInfo)
+	}
+
+	for _, symbolInfo := range symbolInfos {
+		suite.app.YieldaggregatorKeeper.SetSymbolInfo(suite.ctx, symbolInfo)
+	}
+
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	vault := types.Vault{
+		Id:                     1,
+		Symbol:                 "ATOM",
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{Denom: denomInfos[0].Denom, StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	contractAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomStaking",
+		ContractAddress: contractAddr.String(),
+		Denom:           denomInfos[0].Denom,
+	}
+
+	coin := sdk.NewInt64Coin(denomInfos[0].Denom, 1000)
+
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, sdk.Coins{coin})
+	suite.Require().NoError(err)
+
+	suite.app.IBCKeeper.ChannelKeeper.SetNextSequenceSend(suite.ctx, transfertypes.ModuleName, denomInfos[0].Channels[0].ChannelId, 1)
+	msg, err := suite.app.YieldaggregatorKeeper.ExecuteVaultTransfer(suite.ctx, vault, strategy, coin)
+	suite.Require().Error(err)
+	suite.Require().Contains(err.Error(), "channel not found")
+
+	msgBz, err := suite.app.AppCodec().MarshalJSON(msg)
+	suite.Require().NoError(err)
+	suite.Require().Equal(string(msgBz), `{"source_port":"transfer","source_channel":"channel-2","token":{"denom":"ibc/01AAFF","amount":"1000"},"sender":"cosmos1rrxq3fae4jksmnmtd0k5z744am9hp307m8t429","receiver":"","timeout_height":{"revision_number":"0","revision_height":"0"},"timeout_timestamp":"11651381294838206464","memo":""}`)
 }

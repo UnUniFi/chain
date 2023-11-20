@@ -15,7 +15,7 @@ func (k Keeper) VaultAmountInStrategies(ctx sdk.Context, vault types.Vault) sdkm
 
 	// calculate amount in strategies
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -33,7 +33,7 @@ func (k Keeper) VaultUnbondingAmountInStrategies(ctx sdk.Context, vault types.Va
 
 	// calculate amount in strategies
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -46,25 +46,42 @@ func (k Keeper) VaultUnbondingAmountInStrategies(ctx sdk.Context, vault types.Va
 	return unbondingAmount
 }
 
-func (k Keeper) VaultWithdrawalAmount(ctx sdk.Context, vault types.Vault) sdk.Int {
+func (k Keeper) VaultBalances(ctx sdk.Context, vault types.Vault) sdk.Coins {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	balance := k.bankKeeper.GetBalance(ctx, vaultModAddr, vault.Denom)
-	return balance.Amount
+	return k.bankKeeper.GetAllBalances(ctx, vaultModAddr)
+}
+
+func (k Keeper) VaultWithdrawalAmount(ctx sdk.Context, vault types.Vault) sdk.Int {
+	amount := sdk.ZeroInt()
+	vaultBalances := k.VaultBalances(ctx, vault)
+	denoms := vault.StrategyDenoms()
+	denomsMap := make(map[string]bool)
+	for _, denom := range denoms {
+		denomsMap[denom] = true
+	}
+	for _, balance := range vaultBalances {
+		denomInfo := k.GetDenomInfo(ctx, balance.Denom)
+		if denomInfo.Symbol == vault.Symbol || denomsMap[balance.Denom] {
+			amount = amount.Add(balance.Amount)
+		}
+	}
+	return amount
 }
 
 func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
 	amountInStrategies := k.VaultAmountInStrategies(ctx, vault)
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
 	amountUnbonding := k.VaultUnbondingAmountInStrategies(ctx, vault)
+	pendingDeposit := k.recordsKeeper.GetVaultPendingDeposit(ctx, vault.Id)
 
-	totalAmount := amountInStrategies.Add(amountInVault).Add(amountUnbonding)
+	totalAmount := amountInStrategies.Add(amountInVault).Add(amountUnbonding).Add(pendingDeposit)
 	return totalAmount
 }
 
 // lpAmount = lpSupply * (principalAmountToMint / principalAmountInVault)
 // If principalAmountInVault is zero, lpAmount = principalAmountToMint
-func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, principalAmount sdkmath.Int) sdk.Coin {
+func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultId uint64, principalAmount sdk.Int) sdk.Coin {
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
@@ -84,47 +101,75 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, v
 
 // calculate principalAmount
 // principalAmount = principalAmountInVault * (lpAmountToBurn / lpSupply)
-func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, lpAmount sdkmath.Int) sdk.Coin {
+func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultId uint64, lpAmount sdkmath.Int) sdk.Int {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+		return sdk.ZeroInt()
 	}
 	principalInVault := k.VaultAmountTotal(ctx, vault)
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 
 	if lpSupply.IsZero() {
-		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+		return sdk.ZeroInt()
 	}
 	principalAmount := principalInVault.Mul(lpAmount).Quo(lpSupply)
 
-	return sdk.NewCoin(vaultDenom, principalAmount)
+	return principalAmount
 }
 
-func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
+func (k Keeper) SendCoinsFromVault(ctx sdk.Context, vault types.Vault, address sdk.AccAddress, amount sdk.Int) error {
+	vaultDenoms := vault.StrategyDenoms()
+	vaultBalances := k.VaultBalances(ctx, vault)
+	coins := sdk.Coins{}
+	remainingAmount := amount
+	for _, denom := range vaultDenoms {
+		denomAmount := vaultBalances.AmountOf(denom)
+		if denomAmount.IsZero() {
+			continue
+		}
+		if remainingAmount.GT(denomAmount) {
+			coins = coins.Add(sdk.NewCoin(denom, denomAmount))
+			remainingAmount = remainingAmount.Sub(denomAmount)
+		} else {
+			coins = coins.Add(sdk.NewCoin(denom, remainingAmount))
+			break
+		}
+	}
+
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	return k.bankKeeper.SendCoins(ctx, vaultModAddr, address, coins)
+}
+
+func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalCoin sdk.Coin) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		return types.ErrInvalidVaultId
 	}
 
-	// calculate lp token amount
-	lp := k.EstimateMintAmountInternal(ctx, vault.Denom, vaultId, principalAmount)
+	denomInfo := k.GetDenomInfo(ctx, principalCoin.Denom)
+	if denomInfo.Symbol != vault.Symbol {
+		return types.ErrDenomDoesNotMatchVaultSymbol
+	}
+
+	// calculate lpCoin token amount
+	lpCoin := k.EstimateMintAmountInternal(ctx, vaultId, principalCoin.Amount)
 
 	// transfer coins after lp amount calculation
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	principal := sdk.NewCoin(vault.Denom, principalAmount)
-	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(principal))
+	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(principalCoin))
 	if err != nil {
 		return err
 	}
 
-	// mint and trasnfer lp token
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
+	// mint and transfer lp token
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(lpCoin))
 	if err != nil {
 		return err
 	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(lp))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(lpCoin))
 	if err != nil {
 		return err
 	}
@@ -135,7 +180,7 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	newStrategyAmount := sdk.NewDecFromInt(totalAmount).Mul(sdk.OneDec().Sub(vault.WithdrawReserveRate)).RoundInt()
 	amountToInvest := newStrategyAmount.Sub(stratAmount)
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -163,11 +208,9 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		return err
 	}
 
-	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vaultId, lpAmount)
+	principal := k.EstimateRedeemAmountInternal(ctx, vaultId, lpAmount)
 
 	// burn lp tokens after calculating withdrawal amount
-	vaultModName := types.GetVaultModuleAccountName(vaultId)
-	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lp := sdk.NewCoin(lpDenom, lpAmount)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(lp))
@@ -179,8 +222,8 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		return err
 	}
 
-	// Unstake funds from Strategy
-	amountToUnbond := principal.Amount
+	// Unstake funds from the vault
+	amountToUnbond := principal
 
 	// implement fees on withdrawal
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
@@ -204,8 +247,8 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	// withdraw_fee = withdraw_fee_rate * amount_to_withdraw
 	// If reserve_maintenance_rate is close to 1, withdraw_fee_rate will be close to 0 and vice versa
 
-	withdrawFee := sdk.NewDecFromInt(principal.Amount).Mul(withdrawFeeRate).RoundInt()
-	withdrawAmount := principal.Amount.Sub(withdrawFee)
+	withdrawFee := sdk.NewDecFromInt(amountToUnbond).Mul(withdrawFeeRate).RoundInt()
+	withdrawAmount := amountToUnbond.Sub(withdrawFee)
 
 	withdrawModuleCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(params.CommissionRate).RoundInt()
 	withdrawVaultCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(vault.WithdrawCommissionRate).RoundInt()
@@ -216,7 +259,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		if err != nil {
 			return err
 		}
-		err = k.bankKeeper.SendCoins(ctx, vaultModAddr, feeCollector, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawModuleCommissionFee)))
+		err = k.SendCoinsFromVault(ctx, vault, feeCollector, withdrawModuleCommissionFee)
 		if err != nil {
 			return err
 		}
@@ -227,15 +270,53 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		if err != nil {
 			return err
 		}
-		err = k.bankKeeper.SendCoins(ctx, vaultModAddr, vaultOwner, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawVaultCommissionFee)))
+		err = k.SendCoinsFromVault(ctx, vault, vaultOwner, withdrawVaultCommissionFee)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission)))
+	err = k.SendCoinsFromVault(ctx, vault, address, withdrawAmountWithoutCommission)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) BurnLPTokenAndBeginUnbonding(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, lpAmount sdkmath.Int) error {
+	vault, found := k.GetVault(ctx, vaultId)
+	if !found {
+		return types.ErrInvalidVaultId
+	}
+
+	principal := k.EstimateRedeemAmountInternal(ctx, vaultId, lpAmount)
+
+	// burn lp tokens after calculating withdrawal amount
+	lpDenom := types.GetLPTokenDenom(vaultId)
+	lp := sdk.NewCoin(lpDenom, lpAmount)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(lp))
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
+	if err != nil {
+		return err
+	}
+
+	// Unstake funds from Strategy
+	amountToUnbond := principal
+	for _, strategyWeight := range vault.StrategyWeights {
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
+		if !found {
+			continue
+		}
+		strategyAmount := sdk.NewDecFromInt(amountToUnbond).Mul(strategyWeight.Weight).RoundInt()
+
+		err = k.UnstakeFromStrategy(ctx, vault, strategy, strategyAmount, address.String())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

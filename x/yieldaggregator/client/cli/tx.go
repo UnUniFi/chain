@@ -23,6 +23,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdTxDepositToVault(),
 		CmdTxWithdrawFromVault(),
+		CmdTxWithdrawFromVaultWithUnbondingTime(),
 		CmdTxCreateVault(),
 		CmdTxTransferVaultOwnership(),
 		CmdTxDeleteVault(),

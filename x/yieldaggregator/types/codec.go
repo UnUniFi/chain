@@ -18,6 +18,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgDepositToVault{},
 		&MsgWithdrawFromVault{},
+		&MsgWithdrawFromVaultWithUnbondingTime{},
 		&MsgCreateVault{},
 		&MsgTransferVaultOwnership{},
 		&MsgUpdateParams{},
@@ -25,6 +26,10 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDeleteVault{},
 		&MsgUpdateStrategy{},
 		&MsgUpdateVault{},
+		&MsgRegisterDenomInfos{},
+		&MsgRegisterSymbolInfos{},
+		&MsgSetIntermediaryAccountInfo{},
+		&MsgReinitVaultTransfer{},
 	)
 
 	// Deprecated: Just for backward compatibility of query proposals

@@ -4,7 +4,7 @@ info:
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
-  /ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}:
+  /ununifi/derivatives/estimate-dlp-token-amount:
     get:
       operationId: EstimateDLPTokenAmount
       responses:
@@ -236,16 +236,16 @@ paths:
                         }
       parameters:
         - name: mint_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
         - name: amount
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
-  /ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}:
+  /ununifi/derivatives/estimate-redeem-amount:
     get:
       operationId: EstimateRedeemTokenAmount
       responses:
@@ -477,12 +477,12 @@ paths:
                         }
       parameters:
         - name: redeem_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
         - name: lpt_amount
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
@@ -1865,7 +1865,7 @@ paths:
                         }
       tags:
         - Query
-  /ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}:
+  /ununifi/derivatives/perpetual-futures/market:
     get:
       operationId: PerpetualFuturesMarket
       responses:
@@ -2075,12 +2075,12 @@ paths:
                         }
       parameters:
         - name: base_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
         - name: quote_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
@@ -2285,7 +2285,7 @@ paths:
                         }
       tags:
         - Query
-  /ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}:
+  /ununifi/derivatives/perpetual-options/market:
     get:
       operationId: PerpetualOptionsMarket
       responses:
@@ -2486,12 +2486,12 @@ paths:
                         }
       parameters:
         - name: base_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
         - name: quote_denom
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
@@ -2720,228 +2720,6 @@ paths:
                         }
       tags:
         - Query
-  /ununifi/derivatives/pools/available-asset/{denom}:
-    get:
-      operationId: AvailableAssetInPoolByDenom
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              available_asset:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                    Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                    Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := anypb.New(foo)
-                         if err != nil {
-                           ...
-                         }
-                         ...
-                         foo := &pb.Foo{}
-                         if err := any.UnmarshalTo(foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: denom
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   /ununifi/derivatives/pools/available-assets:
     get:
       operationId: AvailableAssetsInPool
@@ -3159,6 +2937,11 @@ paths:
                           "@type": "type.googleapis.com/google.protobuf.Duration",
                           "value": "1.212s"
                         }
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /ununifi/derivatives/pools/dlp:
@@ -6952,6 +6735,101 @@ paths:
           type: boolean
       tags:
         - Query
+  /ununifi/yieldaggregator/denom-infos:
+    get:
+      operationId: DenomInfos
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              info:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    symbol:
+                      type: string
+                    channels:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          send_chain_id:
+                            type: string
+                          recv_chain_id:
+                            type: string
+                          channel_id:
+                            type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/yieldaggregator/intermediary-account-info:
+    get:
+      operationId: IntermediaryAccountInfo
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              addrs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    chain_id:
+                      type: string
+                    address:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
   /ununifi/yieldaggregator/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -7004,6 +6882,9 @@ paths:
                       signatures required by gogoproto.
                   fee_collector_address:
                     type: string
+                  ibc_transfer_timeout_nanos:
+                    type: string
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -7066,6 +6947,8 @@ paths:
                     withdraw_fee_rate:
                       type: string
                     performance_fee_rate:
+                      type: string
+                    symbol:
                       type: string
               pagination:
                 type: object
@@ -7203,6 +7086,8 @@ paths:
                     type: string
                   performance_fee_rate:
                     type: string
+                  symbol:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -7237,6 +7122,59 @@ paths:
           type: string
       tags:
         - Query
+  /ununifi/yieldaggregator/symbol-infos:
+    get:
+      operationId: SymbolInfos
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              info:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    symbol:
+                      type: string
+                    native_chain_id:
+                      type: string
+                    channels:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          send_chain_id:
+                            type: string
+                          recv_chain_id:
+                            type: string
+                          channel_id:
+                            type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
   /ununifi/yieldaggregator/vaults:
     get:
       summary: 'this line is used by starport scaffolding # 2'
@@ -7258,7 +7196,7 @@ paths:
                         id:
                           type: string
                           format: uint64
-                        denom:
+                        symbol:
                           type: string
                         name:
                           type: string
@@ -7291,6 +7229,8 @@ paths:
                           items:
                             type: object
                             properties:
+                              denom:
+                                type: string
                               strategy_id:
                                 type: string
                                 format: uint64
@@ -7303,6 +7243,8 @@ paths:
                     total_unbonding_amount:
                       type: string
                     withdraw_reserve:
+                      type: string
+                    total_pending_deposit:
                       type: string
               pagination:
                 type: object
@@ -7422,7 +7364,7 @@ paths:
                         id:
                           type: string
                           format: uint64
-                        denom:
+                        symbol:
                           type: string
                         name:
                           type: string
@@ -7455,6 +7397,8 @@ paths:
                           items:
                             type: object
                             properties:
+                              denom:
+                                type: string
                               strategy_id:
                                 type: string
                                 format: uint64
@@ -7467,6 +7411,8 @@ paths:
                     total_unbonding_amount:
                       type: string
                     withdraw_reserve:
+                      type: string
+                    total_pending_deposit:
                       type: string
         default:
           description: An unexpected error response.
@@ -7512,7 +7458,7 @@ paths:
                   id:
                     type: string
                     format: uint64
-                  denom:
+                  symbol:
                     type: string
                   name:
                     type: string
@@ -7544,6 +7490,8 @@ paths:
                     items:
                       type: object
                       properties:
+                        denom:
+                          type: string
                         strategy_id:
                           type: string
                           format: uint64
@@ -7556,6 +7504,8 @@ paths:
               total_unbonding_amount:
                 type: string
               withdraw_reserve:
+                type: string
+              total_pending_deposit:
                 type: string
               strategies:
                 type: array
@@ -7688,50 +7638,13 @@ paths:
 
                   signatures required by gogoproto.
               fee:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+                type: string
               redeem_amount:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+                type: string
               total_amount:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+                type: string
+              symbol:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -9434,21 +9347,6 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse:
-    type: object
-    properties:
-      available_asset:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
   ununifi.derivatives.QueryAvailableAssetsInPoolResponse:
     type: object
     properties:
@@ -11417,6 +11315,31 @@ definitions:
                     type: string
                 active:
                   type: boolean
+  ununifi.yieldaggregator.ChainAddress:
+    type: object
+    properties:
+      chain_id:
+        type: string
+      address:
+        type: string
+  ununifi.yieldaggregator.DenomInfo:
+    type: object
+    properties:
+      denom:
+        type: string
+      symbol:
+        type: string
+      channels:
+        type: array
+        items:
+          type: object
+          properties:
+            send_chain_id:
+              type: string
+            recv_chain_id:
+              type: string
+            channel_id:
+              type: string
   ununifi.yieldaggregator.Params:
     type: object
     properties:
@@ -11452,6 +11375,9 @@ definitions:
           signatures required by gogoproto.
       fee_collector_address:
         type: string
+      ibc_transfer_timeout_nanos:
+        type: string
+        format: uint64
   ununifi.yieldaggregator.QueryAllStrategyResponse:
     type: object
     properties:
@@ -11481,6 +11407,8 @@ definitions:
             withdraw_fee_rate:
               type: string
             performance_fee_rate:
+              type: string
+            symbol:
               type: string
       pagination:
         type: object
@@ -11521,7 +11449,7 @@ definitions:
                 id:
                   type: string
                   format: uint64
-                denom:
+                symbol:
                   type: string
                 name:
                   type: string
@@ -11553,6 +11481,8 @@ definitions:
                   items:
                     type: object
                     properties:
+                      denom:
+                        type: string
                       strategy_id:
                         type: string
                         format: uint64
@@ -11565,6 +11495,8 @@ definitions:
             total_unbonding_amount:
               type: string
             withdraw_reserve:
+              type: string
+            total_pending_deposit:
               type: string
   ununifi.yieldaggregator.QueryAllVaultResponse:
     type: object
@@ -11580,7 +11512,7 @@ definitions:
                 id:
                   type: string
                   format: uint64
-                denom:
+                symbol:
                   type: string
                 name:
                   type: string
@@ -11612,6 +11544,8 @@ definitions:
                   items:
                     type: object
                     properties:
+                      denom:
+                        type: string
                       strategy_id:
                         type: string
                         format: uint64
@@ -11624,6 +11558,8 @@ definitions:
             total_unbonding_amount:
               type: string
             withdraw_reserve:
+              type: string
+            total_pending_deposit:
               type: string
       pagination:
         type: object
@@ -11650,6 +11586,29 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  ununifi.yieldaggregator.QueryDenomInfosResponse:
+    type: object
+    properties:
+      info:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            symbol:
+              type: string
+            channels:
+              type: array
+              items:
+                type: object
+                properties:
+                  send_chain_id:
+                    type: string
+                  recv_chain_id:
+                    type: string
+                  channel_id:
+                    type: string
   ununifi.yieldaggregator.QueryEstimateMintAmountResponse:
     type: object
     properties:
@@ -11681,41 +11640,13 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       fee:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
       redeem_amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
       total_amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
+      symbol:
+        type: string
   ununifi.yieldaggregator.QueryGetStrategyResponse:
     type: object
     properties:
@@ -11744,6 +11675,8 @@ definitions:
             type: string
           performance_fee_rate:
             type: string
+          symbol:
+            type: string
   ununifi.yieldaggregator.QueryGetVaultResponse:
     type: object
     properties:
@@ -11753,7 +11686,7 @@ definitions:
           id:
             type: string
             format: uint64
-          denom:
+          symbol:
             type: string
           name:
             type: string
@@ -11785,6 +11718,8 @@ definitions:
             items:
               type: object
               properties:
+                denom:
+                  type: string
                 strategy_id:
                   type: string
                   format: uint64
@@ -11797,6 +11732,8 @@ definitions:
       total_unbonding_amount:
         type: string
       withdraw_reserve:
+        type: string
+      total_pending_deposit:
         type: string
       strategies:
         type: array
@@ -11815,6 +11752,18 @@ definitions:
             description:
               type: string
             git_url:
+              type: string
+  ununifi.yieldaggregator.QueryIntermediaryAccountInfoResponse:
+    type: object
+    properties:
+      addrs:
+        type: array
+        items:
+          type: object
+          properties:
+            chain_id:
+              type: string
+            address:
               type: string
   ununifi.yieldaggregator.QueryParamsResponse:
     type: object
@@ -11861,7 +11810,33 @@ definitions:
               signatures required by gogoproto.
           fee_collector_address:
             type: string
+          ibc_transfer_timeout_nanos:
+            type: string
+            format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  ununifi.yieldaggregator.QuerySymbolInfosResponse:
+    type: object
+    properties:
+      info:
+        type: array
+        items:
+          type: object
+          properties:
+            symbol:
+              type: string
+            native_chain_id:
+              type: string
+            channels:
+              type: array
+              items:
+                type: object
+                properties:
+                  send_chain_id:
+                    type: string
+                  recv_chain_id:
+                    type: string
+                  channel_id:
+                    type: string
   ununifi.yieldaggregator.Strategy:
     type: object
     properties:
@@ -11903,13 +11878,44 @@ definitions:
         type: string
       performance_fee_rate:
         type: string
+      symbol:
+        type: string
   ununifi.yieldaggregator.StrategyWeight:
     type: object
     properties:
+      denom:
+        type: string
       strategy_id:
         type: string
         format: uint64
       weight:
+        type: string
+  ununifi.yieldaggregator.SymbolInfo:
+    type: object
+    properties:
+      symbol:
+        type: string
+      native_chain_id:
+        type: string
+      channels:
+        type: array
+        items:
+          type: object
+          properties:
+            send_chain_id:
+              type: string
+            recv_chain_id:
+              type: string
+            channel_id:
+              type: string
+  ununifi.yieldaggregator.TransferChannel:
+    type: object
+    properties:
+      send_chain_id:
+        type: string
+      recv_chain_id:
+        type: string
+      channel_id:
         type: string
   ununifi.yieldaggregator.Vault:
     type: object
@@ -11917,7 +11923,7 @@ definitions:
       id:
         type: string
         format: uint64
-      denom:
+      symbol:
         type: string
       name:
         type: string
@@ -11946,6 +11952,8 @@ definitions:
         items:
           type: object
           properties:
+            denom:
+              type: string
             strategy_id:
               type: string
               format: uint64
@@ -11962,7 +11970,7 @@ definitions:
           id:
             type: string
             format: uint64
-          denom:
+          symbol:
             type: string
           name:
             type: string
@@ -11994,6 +12002,8 @@ definitions:
             items:
               type: object
               properties:
+                denom:
+                  type: string
                 strategy_id:
                   type: string
                   format: uint64
@@ -12006,4 +12016,6 @@ definitions:
       total_unbonding_amount:
         type: string
       withdraw_reserve:
+        type: string
+      total_pending_deposit:
         type: string

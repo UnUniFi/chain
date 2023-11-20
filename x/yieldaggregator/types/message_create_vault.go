@@ -10,10 +10,10 @@ import (
 
 var _ sdk.Msg = &MsgCreateVault{}
 
-func NewMsgCreateVault(sender string, denom string, name, description string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
+func NewMsgCreateVault(sender string, symbol string, name, description string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
 	return &MsgCreateVault{
 		Sender:              sender,
-		Denom:               denom,
+		Symbol:              symbol,
 		Name:                name,
 		Description:         description,
 		CommissionRate:      commissionRate,
@@ -26,6 +26,7 @@ func NewMsgCreateVault(sender string, denom string, name, description string, co
 }
 
 func (msg MsgCreateVault) ValidateBasic() error {
+
 	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
@@ -34,16 +35,12 @@ func (msg MsgCreateVault) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid fee collector address: %s", err)
 	}
 
-	if msg.Name == "" {
-		return ErrInvalidVaultName
+	if msg.Symbol == "" {
+		return sdkerrors.ErrInvalidRequest.Wrapf("empty symbol is not allowed")
 	}
 
 	if msg.Description == "" {
 		return ErrInvalidVaultDescription
-	}
-
-	if err := sdk.ValidateDenom(msg.Denom); err != nil {
-		return err
 	}
 
 	if msg.CommissionRate.IsNegative() || msg.CommissionRate.GTE(sdk.OneDec()) {

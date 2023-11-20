@@ -30,6 +30,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set depositRecord count
 	k.SetDepositRecordCount(ctx, genState.DepositRecordCount)
+
+	for _, deposit := range genState.PendingDeposits {
+		k.SetVaultPendingDeposit(ctx, deposit.VaultId, deposit.Amount)
+	}
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -41,6 +45,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.UserRedemptionRecordList = k.GetAllUserRedemptionRecord(ctx)
 	genesis.EpochUnbondingRecordList = k.GetAllEpochUnbondingRecord(ctx)
+	genesis.PendingDeposits = k.GetAllVaultPendingDeposits(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

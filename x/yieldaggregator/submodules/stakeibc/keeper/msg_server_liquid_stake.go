@@ -79,7 +79,7 @@ func (k Keeper) LiquidStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 	}
 
 	msgAmt := amount.Amount.Int64()
-	depositRecord.Amount += msgAmt
+	depositRecord.Amount = depositRecord.Amount.Add(sdk.NewInt(msgAmt))
 	k.RecordsKeeper.SetDepositRecord(ctx, *depositRecord)
 
 	return nil
@@ -165,7 +165,7 @@ func (k msgServer) LiquidStake(goCtx context.Context, msg *types.MsgLiquidStake)
 		k.Logger(ctx).Error("failed to convert msg.Amount to int64")
 		return nil, sdkerrors.Wrapf(err, "failed to convert msg.Amount to int64")
 	}
-	depositRecord.Amount += msgAmt
+	depositRecord.Amount = depositRecord.Amount.Add(sdk.NewInt(msgAmt))
 	k.RecordsKeeper.SetDepositRecord(ctx, *depositRecord)
 
 	return &types.MsgLiquidStakeResponse{}, nil

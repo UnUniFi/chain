@@ -40,4 +40,5 @@ const (
 	EpochUnbondingRecordCountKey = "EpochUnbondingRecord-count-"
 	DepositRecordKey             = "DepositRecord-value-"
 	DepositRecordCountKey        = "DepositRecord-count-"
+	PendingDepositKey            = "PendingDeposit-info-"
 )

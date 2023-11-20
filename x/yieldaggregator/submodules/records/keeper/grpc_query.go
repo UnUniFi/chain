@@ -185,3 +185,12 @@ func (k Keeper) DepositRecord(c context.Context, req *types.QueryGetDepositRecor
 
 	return &types.QueryGetDepositRecordResponse{DepositRecord: depositRecord}, nil
 }
+
+func (k Keeper) PendingVaultDepositAll(c context.Context, req *types.QueryAllPendingVaultDepositRequest) (*types.QueryPendingVaultDepositResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryPendingVaultDepositResponse{PendingDeposits: k.GetAllVaultPendingDeposits(ctx)}, nil
+}
