@@ -2,15 +2,60 @@ package keeper
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
+	"github.com/iancoleman/orderedmap"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
+
+func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategy types.Strategy) uint8 {
+	wasmQuery := fmt.Sprintf(`{"version":{}}`)
+	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+	result, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+	if err != nil {
+		return 0
+	}
+
+	jsonMap := make(map[string]uint8)
+	err = json.Unmarshal(result, &jsonMap)
+	if err != nil {
+		return 0
+	}
+
+	return jsonMap["version"]
+}
+
+type DenomInfo struct {
+	Denom            string `json:"denom"`
+	TargetChainId    string `json:"target_chain_id"`
+	TargetChainDenom string `json:"target_chain_denom"`
+	TargetChainAddr  string `json:"target_chain_addr"`
+}
+
+func (k Keeper) GetStrategyDepositInfo(ctx sdk.Context, strategy types.Strategy) (info DenomInfo) {
+	wasmQuery := fmt.Sprintf(`{"deposit_denom":{}}`)
+	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+	result, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(result, &info)
+	if err != nil {
+		return DenomInfo{}
+	}
+
+	return
+}
 
 // GetStrategyCount get the total number of Strategy
 func (k Keeper) GetStrategyCount(ctx sdk.Context, vaultDenom string) uint64 {
@@ -59,10 +104,10 @@ func (k Keeper) AppendStrategy(
 }
 
 // SetStrategy set a specific Strategy in the store
-func (k Keeper) SetStrategy(ctx sdk.Context, vaultDenom string, Strategy types.Strategy) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(vaultDenom))
-	b := k.cdc.MustMarshal(&Strategy)
-	store.Set(GetStrategyIDBytes(Strategy.Id), b)
+func (k Keeper) SetStrategy(ctx sdk.Context, strategy types.Strategy) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(strategy.Denom))
+	b := k.cdc.MustMarshal(&strategy)
+	store.Set(GetStrategyIDBytes(strategy.Id), b)
 }
 
 // GetStrategy returns a Strategy from its id
@@ -104,7 +149,7 @@ func (k Keeper) MigrateAllLegacyStrategies(ctx sdk.Context) {
 			Description:     "",
 			GitUrl:          legacyStrategy.GitUrl,
 		}
-		k.SetStrategy(ctx, strategy.Denom, strategy)
+		k.SetStrategy(ctx, strategy)
 	}
 }
 
@@ -136,51 +181,199 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
+func CalculateTransferRoute(currChannels, tarChannels []types.TransferChannel) []types.TransferChannel {
+	diffStartIndex := int(0)
+	for index, currChan := range currChannels {
+		if len(tarChannels) <= index {
+			diffStartIndex = index
+			break
+		}
+		tarChan := tarChannels[index]
+		if currChan.RecvChainId != tarChan.SendChainId {
+			diffStartIndex = index
+			break
+		}
+	}
+
+	route := []types.TransferChannel{}
+	for index := len(currChannels) - 1; index >= diffStartIndex; index-- {
+		route = append(route, currChannels[index])
+	}
+	for index := diffStartIndex; index < len(tarChannels); index++ {
+		route = append(route, tarChannels[index])
+	}
+	return route
+}
+
+func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.TransferChannel, finalReceiver string) (string, *PacketMetadata) {
+	if len(channels) == 0 {
+		return "", nil
+	}
+
+	if len(channels) == 1 {
+		return finalReceiver, nil
+	}
+
+	receiver, nextForward := k.ComposePacketForwardMetadata(ctx, channels[1:], finalReceiver)
+	nextForwardBz, err := json.Marshal(nextForward)
+	if err != nil {
+		return "", nil
+	}
+	retries := uint8(2)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return "", nil
+	}
+	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
+	return k.GetIntermediaryReceiver(ctx, channels[0].RecvChainId), &PacketMetadata{
+		Forward: &ForwardMetadata{
+			Receiver: receiver,
+			Port:     ibctransfertypes.PortID,
+			Channel:  channels[1].ChannelId,
+			Timeout:  Duration(ibcTransferTimeoutNanos),
+			Retries:  &retries,
+			Next:     NewJSONObject(false, nextForwardBz, orderedmap.OrderedMap{}),
+		},
+	}
+}
+
 // stake into strategy
 func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	stakeCoin := sdk.NewCoin(vault.Denom, amount)
+	balances := k.bankKeeper.GetAllBalances(ctx, vaultModAddr)
+
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
+		stakeCoin := sdk.NewCoin(strategy.Denom, amount)
 		return k.stakeibcKeeper.LiquidStake(
 			ctx,
 			vaultModAddr,
 			stakeCoin,
 		)
 	default:
-		wasmMsg := `{"stake":{}}`
+		version := k.GetStrategyVersion(ctx, strategy)
+		_ = version
 		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
-		return err
-	}
-}
+		strategyDenomAmount := amount
+		if balances.AmountOf(strategy.Denom).LT(amount) {
+			strategyDenomAmount = balances.AmountOf(strategy.Denom)
+		}
 
-// unstake worth of withdrawal amount from the strategy
-func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
-	vaultModName := types.GetVaultModuleAccountName(vault.Id)
-	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	switch strategy.ContractAddress {
-	case "x/ibc-staking":
-		{
-			err := k.stakeibcKeeper.RedeemStake(
-				ctx,
-				vaultModAddr,
-				sdk.NewCoin(vault.Denom, amount),
-				vaultModAddr.String(),
-			)
+		if strategyDenomAmount.IsPositive() {
+			wasmMsg := `{"stake":{}}`
+			_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{sdk.NewCoin(strategy.Denom, strategyDenomAmount)})
 			if err != nil {
 				return err
 			}
-
-			return nil
 		}
+
+		remaining := amount.Sub(strategyDenomAmount)
+		for _, balance := range balances {
+			if remaining.IsZero() {
+				return nil
+			}
+			denomInfo := k.GetDenomInfo(ctx, balance.Denom)
+			if balance.Denom != strategy.Denom && denomInfo.Symbol == vault.Symbol {
+				stakeAmount := remaining
+				if balance.Amount.LT(remaining) {
+					stakeAmount = balance.Amount
+				}
+				msg, err := k.ExecuteVaultTransfer(ctx, vault, strategy, sdk.NewCoin(balance.Denom, stakeAmount))
+				k.Logger(ctx).Info("transfer_memo " + msg.Memo)
+				if err != nil {
+					return err
+				}
+				remaining = remaining.Sub(stakeAmount)
+			}
+		}
+
+		return nil
+	}
+}
+
+func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, vault types.Vault, strategy types.Strategy, stakeCoin sdk.Coin) (*ibctypes.MsgTransfer, error) {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+	info := k.GetStrategyDepositInfo(ctx, strategy)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
+	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
+	denomInfo := k.GetDenomInfo(ctx, stakeCoin.Denom)
+	symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
+	tarChannels := []types.TransferChannel{}
+	for _, channel := range symbolInfo.Channels {
+		if channel.RecvChainId == info.TargetChainId {
+			tarChannels = []types.TransferChannel{channel}
+			break
+		}
+	}
+	// increase vault pending deposit
+	k.recordsKeeper.IncreaseVaultPendingDeposit(ctx, vault.Id, stakeCoin.Amount)
+
+	// calculate transfer route and execute the transfer
+	transferRoute := CalculateTransferRoute(denomInfo.Channels, tarChannels)
+	initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
+	memo, err := json.Marshal(metadata)
+	if err != nil {
+		return nil, err
+	}
+	if metadata == nil {
+		memo = []byte{}
+	}
+	msg := ibctypes.NewMsgTransfer(
+		ibctransfertypes.PortID,
+		transferRoute[0].ChannelId,
+		stakeCoin,
+		vaultModAddr.String(),
+		initialReceiver,
+		clienttypes.Height{},
+		timeoutTimestamp,
+		string(memo),
+	)
+	err = k.recordsKeeper.VaultTransfer(ctx, vault.Id, contractAddr, msg)
+	return msg, err
+}
+
+// unstake worth of withdrawal amount from the strategy
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int, recipient string) error {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	if recipient == "" {
+		recipient = vaultModAddr.String()
+	}
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		return k.stakeibcKeeper.RedeemStake(
+			ctx,
+			vaultModAddr,
+			sdk.NewCoin(strategy.Denom, amount),
+			recipient,
+		)
 	default:
-		wasmMsg := fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
+		version := k.GetStrategyVersion(ctx, strategy)
+		wasmMsg := ""
+		switch version {
+		case 0:
+			wasmMsg = fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
+		default: // case 1+
+			wasmMsg = fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), recipient)
+		}
 		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{})
 		return err
 	}
+}
+
+type AmountsResp struct {
+	TotalDeposited string `json:"total_deposited"`
+	BondingStandby string `json:"bonding_standby"`
+	Bonded         string `json:"bonded"`
+	Unbonding      string `json:"unbonding"`
 }
 
 func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
@@ -188,21 +381,44 @@ func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strate
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
-		return sdk.NewCoin(vault.Denom, updatedAmount), nil
+		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, strategy.Denom)
+		return sdk.NewCoin(strategy.Denom, updatedAmount), nil
 	default:
-		wasmQuery := fmt.Sprintf(`{"bonded":{"addr": "%s"}}`, vaultModAddr.String())
-		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
-		if err != nil {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+		version := k.GetStrategyVersion(ctx, strategy)
+		switch version {
+		case 0:
+			wasmQuery := fmt.Sprintf(`{"bonded":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+			amountStr := strings.ReplaceAll(string(resp), "\"", "")
+			amount, ok := sdk.NewIntFromString(amountStr)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
+		default: // case 1+
+			wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			parsedAmounts := AmountsResp{}
+			err = json.Unmarshal(resp, &parsedAmounts)
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			amount, ok := sdk.NewIntFromString(parsedAmounts.Bonded)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
 		}
-		amountStr := strings.ReplaceAll(string(resp), "\"", "")
-		amount, ok := sdk.NewIntFromString(amountStr)
-		if !ok {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
-		}
-		return sdk.NewCoin(strategy.Denom, amount), err
 	}
 }
 
@@ -211,24 +427,47 @@ func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vaul
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, vault.Denom)
+		zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, strategy.Denom)
 		if err != nil {
 			return sdk.Coin{}, err
 		}
 		unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
-		return sdk.NewCoin(vault.Denom, unbondingAmount), nil
+		return sdk.NewCoin(strategy.Denom, unbondingAmount), nil
 	default:
-		wasmQuery := fmt.Sprintf(`{"unbonding":{"addr": "%s"}}`, vaultModAddr.String())
-		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
-		if err != nil {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+		version := k.GetStrategyVersion(ctx, strategy)
+		switch version {
+		case 0:
+			wasmQuery := fmt.Sprintf(`{"unbonding":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+			amountStr := strings.ReplaceAll(string(resp), "\"", "")
+			amount, ok := sdk.NewIntFromString(amountStr)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
+		default: // case 1+
+			wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			parsedAmounts := AmountsResp{}
+			err = json.Unmarshal(resp, &parsedAmounts)
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			amount, ok := sdk.NewIntFromString(parsedAmounts.Unbonding)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
 		}
-		amountStr := strings.ReplaceAll(string(resp), "\"", "")
-		amount, ok := sdk.NewIntFromString(amountStr)
-		if !ok {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
-		}
-		return sdk.NewCoin(strategy.Denom, amount), err
 	}
 }

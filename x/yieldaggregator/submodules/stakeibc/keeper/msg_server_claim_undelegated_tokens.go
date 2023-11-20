@@ -119,7 +119,7 @@ func (k Keeper) GetClaimableRedemptionRecord(ctx sdk.Context, msg *types.MsgClai
 		return nil, sdkerrors.Wrapf(types.ErrInvalidUserRedemptionRecord, errMsg)
 	}
 	// records associated with host zone unbondings are claimable after the host zone unbonding tokens have been transferred to the redemption account
-	if hostZoneUnbonding.Status != recordstypes.HostZoneUnbonding_TRANSFERRED {
+	if hostZoneUnbonding.Status != recordstypes.HostZoneUnbonding_CLAIMABLE {
 		errMsg := fmt.Sprintf("User redemption record %s is not claimable, host zone unbonding has status: %s, requires status TRANSFERRED", userRedemptionRecord.Id, hostZoneUnbonding.Status)
 		k.Logger(ctx).Error(errMsg)
 		return nil, sdkerrors.Wrapf(types.ErrInvalidUserRedemptionRecord, errMsg)

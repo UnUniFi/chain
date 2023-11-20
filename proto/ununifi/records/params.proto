@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ununifi.records;
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types";
+
+// Params defines the parameters for the module.
+message Params {}

@@ -11,19 +11,20 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestBeforeEpochStart() {
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+	lpDenom := types.GetLPTokenDenom(1)
+
 	// try execution with invalid vault id
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	err := suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt(100000))
+	err := suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().Error(err)
 
 	// try execution with invalid vault id
 	err = suite.app.YieldaggregatorKeeper.BurnLPTokenAndRedeem(suite.ctx, addr1, 1, sdk.NewInt(100000))
 	suite.Require().Error(err)
 
-	atomHostDenom := "uatom"
-	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
-	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
-	lpDenom := types.GetLPTokenDenom(1)
 	_ = suite.SetupZoneAndEpoch(atomHostDenom, atomIbcDenom)
 
 	strategy := types.Strategy{
@@ -32,17 +33,21 @@ func (suite *KeeperTestSuite) TestBeforeEpochStart() {
 		ContractAddress: "x/ibc-staking",
 		Denom:           atomIbcDenom,
 	}
-	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
+	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)
@@ -55,7 +60,7 @@ func (suite *KeeperTestSuite) TestBeforeEpochStart() {
 	suite.Require().NoError(err)
 
 	// try execution after setup
-	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt(100000))
+	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().NoError(err)
 
 	// burn execution

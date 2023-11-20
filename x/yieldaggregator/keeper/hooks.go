@@ -26,17 +26,17 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			}
 			amountToUnbond := targetUnbonded.Sub(reserve.Add(unbonding))
 			for _, strategyWeight := range vault.StrategyWeights {
-				strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+				strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 				if !found {
 					continue
 				}
 				strategyAmount := sdk.NewDecFromInt(amountToUnbond).Mul(strategyWeight.Weight).RoundInt()
 				cacheCtx, _ := ctx.CacheContext()
-				err := k.UnstakeFromStrategy(cacheCtx, vault, strategy, strategyAmount)
+				err := k.UnstakeFromStrategy(cacheCtx, vault, strategy, strategyAmount, "")
 				if err != nil {
 					fmt.Println("Epoch unstaking error", err.Error())
 				} else {
-					err = k.UnstakeFromStrategy(ctx, vault, strategy, strategyAmount)
+					err = k.UnstakeFromStrategy(ctx, vault, strategy, strategyAmount, "")
 					if err != nil {
 						panic(fmt.Sprintln("Epoch unstaking error", err))
 					}
@@ -51,8 +51,16 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 		if err != nil {
 			continue
 		}
+
 		if epochIdentifier == epochstypes.BASE_EPOCH {
-			wasmMsg := `{"execute_epoch":{}}`
+			version := k.GetStrategyVersion(ctx, strategy)
+			wasmMsg := ""
+			switch version {
+			case 0:
+				wasmMsg = `{"execute_epoch":{}}`
+			default: // case 1+
+				wasmMsg = `{"epoch":{}}`
+			}
 			_, err := k.wasmKeeper.Execute(ctx, contractAddr, contractAddr, []byte(wasmMsg), sdk.Coins{})
 			if err != nil {
 				continue

@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var _ sdk.Msg = &MsgCreateVault{}
+var _ sdk.Msg = &MsgDeleteVault{}
 
 func NewMsgDeleteVault(sender string, vaultId uint64) *MsgDeleteVault {
 	return &MsgDeleteVault{

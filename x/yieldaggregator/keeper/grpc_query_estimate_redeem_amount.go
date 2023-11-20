@@ -29,10 +29,10 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vault.Id, burnAmount)
+	principal := k.EstimateRedeemAmountInternal(ctx, vault.Id, burnAmount)
 
 	// Unstake funds from Strategy
-	amountToUnbond := principal.Amount
+	amountToUnbond := principal
 
 	// implement fees on withdrawal
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
@@ -48,8 +48,8 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 		Quo(e.Power(osmomath.BigDecFromSDKDec(reserveMaintenanceRate).MulInt64(10))).
 		SDKDec()
 
-	withdrawFee := sdk.NewDecFromInt(principal.Amount).Mul(withdrawFeeRate).RoundInt()
-	withdrawAmount := principal.Amount.Sub(withdrawFee)
+	withdrawFee := sdk.NewDecFromInt(amountToUnbond).Mul(withdrawFeeRate).RoundInt()
+	withdrawAmount := amountToUnbond.Sub(withdrawFee)
 
 	withdrawModuleCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(params.CommissionRate).RoundInt()
 	withdrawVaultCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(vault.WithdrawCommissionRate).RoundInt()
@@ -58,8 +58,9 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 
 	return &types.QueryEstimateRedeemAmountResponse{
 		ShareAmount:  sdk.NewCoin(types.GetLPTokenDenom(vault.Id), burnAmount),
-		Fee:          sdk.NewCoin(principal.Denom, fee),
-		RedeemAmount: sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission),
+		Fee:          fee,
+		RedeemAmount: withdrawAmountWithoutCommission,
 		TotalAmount:  principal,
+		Symbol:       vault.Symbol,
 	}, nil
 }

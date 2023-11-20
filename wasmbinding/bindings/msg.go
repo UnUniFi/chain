@@ -5,8 +5,12 @@ import (
 )
 
 type UnunifiMsg struct {
-	SubmitICQRequest *SubmitICQRequest        `json:"submit_i_c_q_request,omitempty"`
-	IBCTransfer      *wasmvmtypes.TransferMsg `json:"ibc_transfer,omitempty"`
+	// v0 messages
+	SubmitICQRequest *SubmitICQRequest `json:"submit_i_c_q_request,omitempty"`
+	// v1 messages
+	IBCTransfer          *wasmvmtypes.TransferMsg `json:"ibc_transfer,omitempty"`
+	RequestKvIcq         *SubmitICQRequest        `json:"request_kv_icq,omitempty"`
+	DeputyDepositToVault *DeputyDepositToVault    `json:"deputy_deposit_to_vault,omitempty"`
 }
 
 type SubmitICQRequest struct {
@@ -14,4 +18,10 @@ type SubmitICQRequest struct {
 	ChainId      string `json:"chain_id"`
 	QueryPrefix  string `json:"query_prefix"`
 	QueryKey     []byte `json:"query_key"`
+}
+
+type DeputyDepositToVault struct {
+	Depositor string           `json:"depositor"`
+	VaultId   string           `json:"vault_id"`
+	Amount    wasmvmtypes.Coin `json:"amount"`
 }

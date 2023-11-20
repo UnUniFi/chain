@@ -14,13 +14,13 @@ func createNVault(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) [
 	for i := range items {
 		addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 		items[i] = types.Vault{
-			Denom:                  denom,
 			WithdrawCommissionRate: sdk.MustNewDecFromStr("0.001"),
 			WithdrawReserveRate:    sdk.MustNewDecFromStr("0.001"),
 			Owner:                  addr.String(),
 			OwnerDeposit:           sdk.NewInt64Coin("uguu", 1000_000),
 			StrategyWeights: []types.StrategyWeight{
 				{
+					Denom:      denom,
 					StrategyId: 1,
 					Weight:     sdk.OneDec(),
 				},
