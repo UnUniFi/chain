@@ -95,9 +95,9 @@ func CreateUpgradeHandler(mm *module.Manager,
 					NativeChainId: "osmosis-1",
 					Channels: []yieldaggregatortypes.TransferChannel{
 						{
-							SendChainId: "cosmoshub-4",
+							SendChainId: "osmosis-1",
 							RecvChainId: "ununifi-beta-v1",
-							ChannelId:   "channel-683",
+							ChannelId:   "channel-2638",
 						},
 					},
 				},
