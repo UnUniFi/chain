@@ -15,17 +15,19 @@ func (k msgServer) DepositToTranche(goCtx context.Context, msg *types.MsgDeposit
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
-	// TODO:
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	if msg.TrancheType == types.TrancheType_NORMAL_YIELD { // Both PT and YT
-		k.MintPtYtPair()
+		err := k.MintPtYtPair(ctx, sender, msg.StrategyContract, msg.TrancheMaturity, msg.Token)
+		if err != nil {
+			return nil, err
+		}
 	} else if msg.TrancheType == types.TrancheType_FIXED_YIELD {
 		// Buy PT from AMM with msg.TrancheMaturity for msg.SpendAmount
-		k.SwapPtToUt()
+		k.SwapUtToPt()
 	} else if msg.TrancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
 		// Borrow msg.AmountToBuy from AMM pool
-		// Open position
+		// MintPtYtPair
 		// Sell msg.AmountToBuy worth of PT
 		// Return borrowed amount
 		k.SwapUtToYt()

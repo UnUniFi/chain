@@ -12,14 +12,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/irs/types"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 )
 
 type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	bankKeeper types.BankKeeper
-	wasmKeeper wasmtypes.ContractOpsKeeper
-	wasmReader wasmkeeper.Keeper
+	cdc                   codec.BinaryCodec
+	storeKey              storetypes.StoreKey
+	bankKeeper            types.BankKeeper
+	wasmKeeper            wasmtypes.ContractOpsKeeper
+	wasmReader            wasmkeeper.Keeper
+	recordsKeeper         types.RecordsKeeper
+	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
 	authority string
 }
@@ -30,16 +33,20 @@ func NewKeeper(
 	bk types.BankKeeper,
 	wasmKeeper wasmtypes.ContractOpsKeeper,
 	wasmReader wasmkeeper.Keeper,
+	recordsKeeper types.RecordsKeeper,
+	yieldaggregatorKeeper yieldaggregatorkeeper.Keeper,
 	authority string,
 ) Keeper {
 
 	return Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		bankKeeper: bk,
-		wasmKeeper: wasmKeeper,
-		wasmReader: wasmReader,
-		authority:  authority,
+		cdc:                   cdc,
+		storeKey:              storeKey,
+		bankKeeper:            bk,
+		wasmKeeper:            wasmKeeper,
+		wasmReader:            wasmReader,
+		recordsKeeper:         recordsKeeper,
+		YieldaggregatorKeeper: yieldaggregatorKeeper,
+		authority:             authority,
 	}
 }
 
