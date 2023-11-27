@@ -6,7 +6,11 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 )
 
-const UpgradeName string = "v4"
+const UpgradeName string = "v4_0_1"
+
+const TotalAmountCampaign int64 = 2000000000000
+const FromAddress string = "ununifi15hggf3c67juhfytwcs55pawatl7t3mgmumr2pl"
+const Denom string = "uguu"
 
 type ResultList struct {
 	Campaign []BankSendTarget `json:"campaign"`
