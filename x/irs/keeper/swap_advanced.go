@@ -1,13 +1,39 @@
 package keeper
 
-// TODO:
-func (k Keeper) SwapUtToYt() {
-	// Internally combine MintPtYtPair and SwapPtToUt
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	// Borrow msg.AmountToBuy from AMM pool
-	// Open position
-	// Sell msg.AmountToBuy worth of PT
-	// Return borrowed amount
+	"github.com/UnUniFi/chain/x/irs/types"
+)
+
+func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Coin) error {
+	// Take loan from IRS vault account
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{requiredYtAmount})
+	if err != nil {
+		return err
+	}
+
+	// Mint Pt and Yt
+	ptAmount, err := k.MintPtYtPair(ctx, sender, pool, requiredYtAmount)
+	if err != nil {
+		return err
+	}
+
+	// Sell minted PT amount for underlying token
+	ptDenom := types.PtDenom(pool)
+	err = k.SwapPtToUt(ctx, sender, pool, sdk.NewCoin(ptDenom, ptAmount))
+	if err != nil {
+		return err
+	}
+
+	// Payback loan
+	err = k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{requiredYtAmount})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // TODO:

@@ -33,7 +33,6 @@ func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, st
 		return sdk.ZeroInt(), nil
 	}
 	return amount, err
-
 }
 
 func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, strategyContract string) (sdk.Int, error) {
@@ -95,4 +94,23 @@ func (k Keeper) GetStrategyDepositInfo(ctx sdk.Context, strategyContract string)
 	}
 
 	return
+}
+
+// unstake worth of withdrawal amount from the strategy
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, sender sdk.AccAddress, recipient string, strategyContract string, amount sdk.Int) error {
+	wasmMsg := fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), recipient)
+	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
+	_, err := k.wasmKeeper.Execute(ctx, contractAddr, sender, []byte(wasmMsg), sdk.Coins{})
+	return err
+}
+
+func PortionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
+	portionCoins := sdk.Coins{}
+	for _, coin := range coins {
+		portionAmount := sdk.NewDecFromInt(coin.Amount).Mul(portion).RoundInt()
+		portionCoins = portionCoins.Add(sdk.NewCoin(
+			coin.Denom, portionAmount,
+		))
+	}
+	return portionCoins
 }

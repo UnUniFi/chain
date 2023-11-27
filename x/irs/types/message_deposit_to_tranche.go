@@ -10,12 +10,13 @@ import (
 
 var _ sdk.Msg = &MsgDepositToTranche{}
 
-func NewMsgDepositToTranche(sender string, strategyContract string, trancheType TrancheType, trancheMaturity uint64) *MsgDepositToTranche {
+func NewMsgDepositToTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin, requiredYt sdk.Coin) *MsgDepositToTranche {
 	return &MsgDepositToTranche{
-		Sender:           sender,
-		StrategyContract: strategyContract,
-		TrancheType:      trancheType,
-		TrancheMaturity:  trancheMaturity,
+		Sender:      sender,
+		TrancheId:   trancheId,
+		TrancheType: trancheType,
+		Token:       token,
+		RequiredYt:  requiredYt,
 	}
 }
 
@@ -24,8 +25,8 @@ func (msg MsgDepositToTranche) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	if msg.StrategyContract == "" {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy contract")
+	if msg.TrancheId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty tranche id")
 	}
 
 	return nil

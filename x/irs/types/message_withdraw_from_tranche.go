@@ -8,11 +8,12 @@ import (
 
 var _ sdk.Msg = &MsgWithdrawFromTranche{}
 
-func NewMsgWithdrawFromTranche(sender string, strategyContract string, principalToken sdk.Coin) *MsgWithdrawFromTranche {
+func NewMsgWithdrawFromTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin) *MsgWithdrawFromTranche {
 	return &MsgWithdrawFromTranche{
-		Sender:           sender,
-		StrategyContract: strategyContract,
-		PrincipalToken:   principalToken,
+		Sender:      sender,
+		TrancheId:   trancheId,
+		TrancheType: trancheType,
+		Token:       token,
 	}
 }
 
@@ -21,12 +22,12 @@ func (msg MsgWithdrawFromTranche) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	if msg.StrategyContract == "" {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy contract")
+	if msg.TrancheId == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid tranche id")
 	}
 
-	if !msg.PrincipalToken.IsPositive() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, msg.PrincipalToken.String())
+	if !msg.Token.IsPositive() {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, msg.Token.String())
 	}
 
 	return nil

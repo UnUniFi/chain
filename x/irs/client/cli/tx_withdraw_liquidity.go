@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,23 +16,30 @@ import (
 
 func CmdTxWithdrawLiquidity() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-liquidity [strategy_contract] [share-amount]",
+		Use:   "withdraw-liquidity [trancheId] [share-amount] [token-out-mins]",
 		Short: "withdraw liquidity",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			strategyContract := args[0]
+			trancheId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			shareAmount, ok := sdk.NewIntFromString(args[1])
 			if !ok {
 				return fmt.Errorf("error parsing amount")
 			}
 
-			msg := types.NewMsgWithdrawLiquidity(clientCtx.GetFromAddress().String(), strategyContract, amount)
+			tokenOutMins, err := sdk.ParseCoinsNormalized(args[2])
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgWithdrawLiquidity(clientCtx.GetFromAddress().String(), uint64(trancheId), shareAmount, tokenOutMins)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

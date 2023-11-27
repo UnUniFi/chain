@@ -59,25 +59,27 @@ message MsgDepositLiquidity {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string sender            = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string strategy_contract = 2;
-  string amount            = 3 [
+  string sender           = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 tranche_id       = 2;
+  string share_out_amount = 3 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+  repeated cosmos.base.v1beta1.Coin token_in_maxs = 4 [(gogoproto.nullable) = false];
 }
 
 message MsgDepositLiquidityResponse {}
 
 message MsgWithdrawLiquidity {
-  string sender            = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string strategy_contract = 2;
-  string share_amount      = 3 [
+  string sender       = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 tranche_id   = 2;
+  string share_amount = 3 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+  repeated cosmos.base.v1beta1.Coin token_out_mins = 4 [(gogoproto.nullable) = false];
 }
 message MsgWithdrawLiquidityResponse {}
 
@@ -93,12 +95,11 @@ message MsgDepositToTranche {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string                   sender            = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string                   strategy_contract = 2;
-  TrancheType              tranche_type      = 3;
-  uint64                   tranche_maturity  = 4;                                 // maturity timestamp
-  cosmos.base.v1beta1.Coin token             = 5 [(gogoproto.nullable) = false];  // Underlying token to be spent
-  cosmos.base.v1beta1.Coin required_yt       = 6
+  string                   sender       = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64                   tranche_id   = 2;
+  TrancheType              tranche_type = 3;
+  cosmos.base.v1beta1.Coin token        = 4 [(gogoproto.nullable) = false];  // Underlying token to be spent
+  cosmos.base.v1beta1.Coin required_yt  = 5
       [(gogoproto.nullable) = false];  // Only valid for leveraged yield tranche type
 }
 
@@ -110,10 +111,10 @@ message MsgWithdrawFromTranche {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string                   sender            = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string                   strategy_contract = 2;
-  TrancheType              tranche_type      = 3;
-  cosmos.base.v1beta1.Coin token             = 4
+  string                   sender       = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64                   tranche_id   = 2;
+  TrancheType              tranche_type = 3;
+  cosmos.base.v1beta1.Coin token        = 4
       [(gogoproto.nullable) = false];  // YT if tranche type is yield, PT if tranche type is fixed yield
 }
 

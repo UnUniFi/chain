@@ -14,23 +14,23 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 )
 
-func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, strategyContract string, maturity uint64, underlyingAmount sdk.Coin) error {
+func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, underlyingAmount sdk.Coin) (sdk.Int, error) {
 	// Send coins from sender to IRS vault account
-	moduleAddr := types.GetVaultModuleAddress(strategyContract, maturity)
+	moduleAddr := types.GetVaultModuleAddress(pool)
 	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{underlyingAmount})
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
 
-	ptDenom := types.PtDenom(strategyContract, maturity)
-	ytDenom := types.YtDenom(strategyContract, maturity)
-	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
-	depositInfo := k.GetStrategyDepositInfo(ctx, strategyContract)
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 
-	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, strategyContract)
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
 
 	// Stake to strategy
@@ -38,13 +38,13 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, strategyCon
 		wasmMsg := `{"stake":{}}`
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, moduleAddr, []byte(wasmMsg), sdk.Coins{underlyingAmount})
 		if err != nil {
-			return err
+			return sdk.ZeroInt(), err
 		}
 	} else {
-		msg, err := k.ExecuteVaultTransfer(ctx, moduleAddr, strategyContract, underlyingAmount)
+		msg, err := k.ExecuteVaultTransfer(ctx, moduleAddr, pool.StrategyContract, underlyingAmount)
 		k.Logger(ctx).Info("transfer_memo " + msg.Memo)
 		if err != nil {
-			return err
+			return sdk.ZeroInt(), err
 		}
 	}
 
@@ -55,11 +55,11 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, strategyCon
 	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, ptCoins)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
 
 	// mint YT
@@ -67,13 +67,80 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, strategyCon
 	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, underlyingAmount.Amount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ytCoins)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, ytCoins)
 	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+	return ptAmount, nil
+}
+
+func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
+		return types.ErrVaultNotMatured
+	}
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ptAmount})
+	if err != nil {
 		return err
 	}
-	return nil
+
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{ptAmount})
+	if err != nil {
+		return err
+	}
+
+	ptDenom := types.PtDenom(pool)
+	if ptDenom != ptAmount.Denom {
+		return types.ErrInvalidPtDenom
+	}
+	if ptAmount.IsZero() {
+		return nil
+	}
+	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, ptAmount.Amount)
+}
+
+func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ytAmount sdk.Coin) error {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
+		return types.ErrVaultNotMatured
+	}
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ytAmount})
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{ytAmount})
+	if err != nil {
+		return err
+	}
+
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	if ytDenom != ytAmount.Denom {
+		return types.ErrInvalidYtDenom
+	}
+
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return err
+	}
+
+	if ytAmount.IsZero() || ytSupply.IsZero() {
+		return nil
+	}
+
+	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	if redeemAmount.IsZero() {
+		return nil
+	}
+
+	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemAmount)
 }
 
 func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, moduleAddr sdk.AccAddress, strategyContract string, stakeCoin sdk.Coin) (*ibctypes.MsgTransfer, error) {

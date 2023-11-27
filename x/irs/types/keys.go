@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "irs"
@@ -21,6 +25,12 @@ var (
 )
 
 const (
-	VaultKey      = "Vault/value/"
-	VaultCountKey = "Vault/count/"
+	VaultKey             = "Vault/value/"
+	VaultCountKey        = "Vault/count/"
+	TranchePoolKey       = "Tranche/value/"
+	TrancheByStrategyKey = "TrancheByStrategy/value/"
 )
+
+func KeyTrancheByStrategy(p TranchePool) []byte {
+	return append(append([]byte(p.StrategyContract), sdk.Uint64ToBigEndian(p.StartTime)...), sdk.Uint64ToBigEndian(p.Maturity)...)
+}

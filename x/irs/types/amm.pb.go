@@ -26,75 +26,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// TranchePoolParams defined the parameters that will be managed by the pool
-type TranchePoolParams struct {
-	SwapFee   cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=swap_fee,json=swapFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"swap_fee"`
-	ExitFee   cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=exit_fee,json=exitFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"exit_fee"`
-	StartTime uint64                      `protobuf:"varint,3,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	Duration  uint64                      `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`
-}
-
-func (m *TranchePoolParams) Reset()         { *m = TranchePoolParams{} }
-func (m *TranchePoolParams) String() string { return proto.CompactTextString(m) }
-func (*TranchePoolParams) ProtoMessage()    {}
-func (*TranchePoolParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2fe6e065b00bf65b, []int{0}
-}
-func (m *TranchePoolParams) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *TranchePoolParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_TranchePoolParams.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *TranchePoolParams) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TranchePoolParams.Merge(m, src)
-}
-func (m *TranchePoolParams) XXX_Size() int {
-	return m.Size()
-}
-func (m *TranchePoolParams) XXX_DiscardUnknown() {
-	xxx_messageInfo_TranchePoolParams.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TranchePoolParams proto.InternalMessageInfo
-
-func (m *TranchePoolParams) GetStartTime() uint64 {
-	if m != nil {
-		return m.StartTime
-	}
-	return 0
-}
-
-func (m *TranchePoolParams) GetDuration() uint64 {
-	if m != nil {
-		return m.Duration
-	}
-	return 0
-}
-
 type TranchePool struct {
-	Id         uint64            `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	Address    string            `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	PoolParams TranchePoolParams `protobuf:"bytes,3,opt,name=pool_params,json=poolParams,proto3" json:"pool_params"`
+	Id               uint64                      `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	StrategyContract string                      `protobuf:"bytes,2,opt,name=strategy_contract,json=strategyContract,proto3" json:"strategy_contract,omitempty"`
+	StartTime        uint64                      `protobuf:"varint,3,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	Maturity         uint64                      `protobuf:"varint,4,opt,name=maturity,proto3" json:"maturity,omitempty"`
+	SwapFee          cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=swap_fee,json=swapFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"swap_fee"`
+	ExitFee          cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=exit_fee,json=exitFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"exit_fee"`
 	// sum of all LP tokens sent out
-	TotalShares types.Coin `protobuf:"bytes,5,opt,name=total_shares,json=totalShares,proto3" json:"total_shares"`
+	TotalShares types.Coin `protobuf:"bytes,7,opt,name=total_shares,json=totalShares,proto3" json:"total_shares"`
 	// Pool assets are sorted by denomination
-	PoolAssets []types.Coin `protobuf:"bytes,6,rep,name=pool_assets,json=poolAssets,proto3" json:"pool_assets"`
+	PoolAssets []types.Coin `protobuf:"bytes,8,rep,name=pool_assets,json=poolAssets,proto3" json:"pool_assets"`
 }
 
-func (m *TranchePool) Reset()      { *m = TranchePool{} }
-func (*TranchePool) ProtoMessage() {}
+func (m *TranchePool) Reset()         { *m = TranchePool{} }
+func (m *TranchePool) String() string { return proto.CompactTextString(m) }
+func (*TranchePool) ProtoMessage()    {}
 func (*TranchePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2fe6e065b00bf65b, []int{1}
+	return fileDescriptor_2fe6e065b00bf65b, []int{0}
 }
 func (m *TranchePool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -123,96 +72,82 @@ func (m *TranchePool) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TranchePool proto.InternalMessageInfo
 
+func (m *TranchePool) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *TranchePool) GetStrategyContract() string {
+	if m != nil {
+		return m.StrategyContract
+	}
+	return ""
+}
+
+func (m *TranchePool) GetStartTime() uint64 {
+	if m != nil {
+		return m.StartTime
+	}
+	return 0
+}
+
+func (m *TranchePool) GetMaturity() uint64 {
+	if m != nil {
+		return m.Maturity
+	}
+	return 0
+}
+
+func (m *TranchePool) GetTotalShares() types.Coin {
+	if m != nil {
+		return m.TotalShares
+	}
+	return types.Coin{}
+}
+
+func (m *TranchePool) GetPoolAssets() []types.Coin {
+	if m != nil {
+		return m.PoolAssets
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*TranchePoolParams)(nil), "ununifi.irs.TranchePoolParams")
 	proto.RegisterType((*TranchePool)(nil), "ununifi.irs.TranchePool")
 }
 
 func init() { proto.RegisterFile("ununifi/irs/amm.proto", fileDescriptor_2fe6e065b00bf65b) }
 
 var fileDescriptor_2fe6e065b00bf65b = []byte{
-	// 448 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xbf, 0x6e, 0xd4, 0x40,
-	0x10, 0xc6, 0xed, 0xcb, 0xe5, 0xdf, 0x1a, 0x21, 0xc5, 0x02, 0xc9, 0x39, 0x84, 0xef, 0x14, 0x28,
-	0xd2, 0xb0, 0xab, 0x40, 0x47, 0x11, 0xc1, 0x01, 0x91, 0x90, 0x28, 0x22, 0x93, 0x34, 0x34, 0xd6,
-	0x9e, 0xbd, 0x39, 0x8f, 0x38, 0xef, 0x58, 0x3b, 0x6b, 0x48, 0xde, 0x80, 0x92, 0x0e, 0xca, 0x3c,
-	0x04, 0x0f, 0x11, 0x51, 0xa0, 0x94, 0x88, 0x22, 0x42, 0x77, 0x2f, 0x82, 0xbc, 0x36, 0x70, 0x12,
-	0x0d, 0xe9, 0x3c, 0x33, 0xfe, 0xcd, 0x7e, 0xf3, 0xcd, 0xb0, 0xdb, 0xb5, 0xae, 0x35, 0x9c, 0x80,
-	0x00, 0x43, 0x42, 0x96, 0x25, 0xaf, 0x0c, 0x5a, 0x0c, 0x83, 0x2e, 0xcd, 0xc1, 0xd0, 0xe0, 0xd6,
-	0x14, 0xa7, 0xe8, 0xf2, 0xa2, 0xf9, 0x6a, 0x7f, 0x19, 0x6c, 0x67, 0x48, 0x25, 0x52, 0xda, 0x16,
-	0xda, 0xa0, 0x2b, 0xc5, 0x6d, 0x24, 0x26, 0x92, 0x94, 0x78, 0xb7, 0x37, 0x51, 0x56, 0xee, 0x89,
-	0x0c, 0x41, 0xb7, 0xf5, 0x9d, 0x6f, 0x3e, 0xdb, 0x3a, 0x32, 0x52, 0x67, 0x85, 0x3a, 0x44, 0x9c,
-	0x1d, 0x4a, 0x23, 0x4b, 0x0a, 0xf7, 0xd9, 0x06, 0xbd, 0x97, 0x55, 0x7a, 0xa2, 0x54, 0xe4, 0x8f,
-	0xfc, 0xdd, 0xcd, 0xf1, 0xbd, 0x8b, 0xab, 0xa1, 0xf7, 0xe3, 0x6a, 0x78, 0xa7, 0xed, 0x47, 0xf9,
-	0x5b, 0x0e, 0x28, 0x4a, 0x69, 0x0b, 0xfe, 0x4a, 0x4d, 0x65, 0x76, 0xf6, 0x5c, 0x65, 0xc9, 0x7a,
-	0x03, 0x1d, 0x28, 0xd5, 0xf0, 0xea, 0x14, 0xac, 0xe3, 0x7b, 0xd7, 0xe0, 0x1b, 0xa8, 0xe1, 0xef,
-	0x32, 0x46, 0x56, 0x1a, 0x9b, 0x5a, 0x28, 0x55, 0xb4, 0x32, 0xf2, 0x77, 0xfb, 0xc9, 0xa6, 0xcb,
-	0x1c, 0x41, 0xa9, 0xc2, 0x01, 0xdb, 0xc8, 0x6b, 0x23, 0x2d, 0xa0, 0x8e, 0xfa, 0xae, 0xf8, 0x27,
-	0xde, 0xf9, 0xd4, 0x63, 0xc1, 0xd2, 0x40, 0xe1, 0x4d, 0xd6, 0x83, 0xdc, 0x89, 0xe8, 0x27, 0x3d,
-	0xc8, 0xc3, 0x88, 0xad, 0xcb, 0x3c, 0x37, 0x8a, 0xa8, 0x9d, 0x2c, 0xf9, 0x1d, 0x86, 0x2f, 0x58,
-	0x50, 0x21, 0xce, 0xd2, 0xca, 0x79, 0xe0, 0x5e, 0x0d, 0x1e, 0xc6, 0x7c, 0xc9, 0x7e, 0xfe, 0x8f,
-	0x53, 0xe3, 0x7e, 0x33, 0x57, 0xc2, 0xaa, 0xbf, 0xde, 0x8d, 0xd9, 0x0d, 0x8b, 0x56, 0xce, 0x52,
-	0x2a, 0xa4, 0x51, 0x14, 0xad, 0xba, 0x3e, 0xdb, 0xbc, 0x5b, 0x4b, 0xb3, 0x08, 0xde, 0x2d, 0x82,
-	0x3f, 0x43, 0xd0, 0x5d, 0x8b, 0xc0, 0x41, 0xaf, 0x1d, 0x13, 0x3e, 0xe9, 0xa4, 0x48, 0x22, 0x65,
-	0x29, 0x5a, 0x1b, 0xad, 0xfc, 0x4f, 0x0b, 0xa7, 0xe2, 0xa9, 0x43, 0x1e, 0x6f, 0x7d, 0x38, 0x1f,
-	0x7a, 0x9f, 0xcf, 0x87, 0xde, 0xd7, 0x2f, 0x0f, 0x56, 0x1b, 0xbd, 0x2f, 0xc7, 0xfb, 0x17, 0xf3,
-	0xd8, 0xbf, 0x9c, 0xc7, 0xfe, 0xcf, 0x79, 0xec, 0x7f, 0x5c, 0xc4, 0xde, 0xe5, 0x22, 0xf6, 0xbe,
-	0x2f, 0x62, 0xef, 0xcd, 0xfd, 0x29, 0xd8, 0xa2, 0x9e, 0xf0, 0x0c, 0x4b, 0x71, 0xac, 0x8f, 0x35,
-	0x1c, 0x80, 0xc8, 0x0a, 0x09, 0x5a, 0x9c, 0xba, 0x63, 0xb4, 0x67, 0x95, 0xa2, 0xc9, 0x9a, 0xbb,
-	0x98, 0x47, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x30, 0xce, 0xdc, 0x49, 0xa8, 0x02, 0x00, 0x00,
-}
-
-func (m *TranchePoolParams) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *TranchePoolParams) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *TranchePoolParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Duration != 0 {
-		i = encodeVarintAmm(dAtA, i, uint64(m.Duration))
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.StartTime != 0 {
-		i = encodeVarintAmm(dAtA, i, uint64(m.StartTime))
-		i--
-		dAtA[i] = 0x18
-	}
-	{
-		size := m.ExitFee.Size()
-		i -= size
-		if _, err := m.ExitFee.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintAmm(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size := m.SwapFee.Size()
-		i -= size
-		if _, err := m.SwapFee.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintAmm(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
+	// 401 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0x41, 0x6f, 0xd3, 0x40,
+	0x14, 0x84, 0xe3, 0x24, 0xb4, 0xe9, 0x1a, 0x21, 0xb0, 0x40, 0x72, 0x83, 0x70, 0x23, 0xe0, 0x10,
+	0x09, 0xc9, 0xab, 0xc2, 0xbd, 0x82, 0x14, 0xf5, 0xc4, 0x01, 0x85, 0xf6, 0xc2, 0xc5, 0xda, 0x6c,
+	0x5e, 0xed, 0x27, 0xe2, 0x7d, 0xd1, 0xee, 0x0b, 0xd4, 0xbf, 0x81, 0x0b, 0x3f, 0xab, 0xc7, 0x1e,
+	0x11, 0x87, 0x0a, 0x25, 0x7f, 0x04, 0xed, 0xda, 0x70, 0xa6, 0x37, 0xcf, 0x8c, 0xbf, 0x91, 0x76,
+	0x76, 0xc5, 0x93, 0x8d, 0xd9, 0x18, 0xbc, 0x44, 0x89, 0xd6, 0x49, 0x55, 0xd7, 0xf9, 0xda, 0x12,
+	0x53, 0x12, 0x77, 0x76, 0x8e, 0xd6, 0x8d, 0x1f, 0x97, 0x54, 0x52, 0xf0, 0xa5, 0xff, 0x6a, 0x7f,
+	0x19, 0x1f, 0x6a, 0x72, 0x35, 0xb9, 0xa2, 0x0d, 0x5a, 0xd1, 0x45, 0x59, 0xab, 0xe4, 0x42, 0x39,
+	0x90, 0x5f, 0x8f, 0x17, 0xc0, 0xea, 0x58, 0x6a, 0x42, 0xd3, 0xe6, 0xcf, 0xbf, 0x0f, 0x44, 0x7c,
+	0x6e, 0x95, 0xd1, 0x15, 0x7c, 0x24, 0x5a, 0x25, 0x0f, 0x44, 0x1f, 0x97, 0x69, 0x34, 0x89, 0xa6,
+	0xc3, 0x79, 0x1f, 0x97, 0xc9, 0x2b, 0xf1, 0xc8, 0xb1, 0x55, 0x0c, 0x65, 0x53, 0x68, 0x32, 0x6c,
+	0x95, 0xe6, 0xb4, 0x3f, 0x89, 0xa6, 0x07, 0xf3, 0x87, 0x7f, 0x83, 0xd3, 0xce, 0x4f, 0x9e, 0x09,
+	0xe1, 0x58, 0x59, 0x2e, 0x18, 0x6b, 0x48, 0x07, 0xa1, 0xe4, 0x20, 0x38, 0xe7, 0x58, 0x43, 0x32,
+	0x16, 0xa3, 0x5a, 0xf1, 0xc6, 0x22, 0x37, 0xe9, 0x30, 0x84, 0xff, 0x74, 0x72, 0x22, 0x46, 0xee,
+	0x9b, 0x5a, 0x17, 0x97, 0x00, 0xe9, 0x3d, 0x5f, 0x3f, 0x7b, 0x71, 0x7d, 0x7b, 0xd4, 0xfb, 0x75,
+	0x7b, 0xf4, 0xb4, 0x3d, 0x81, 0x5b, 0x7e, 0xc9, 0x91, 0x64, 0xad, 0xb8, 0xca, 0x3f, 0x40, 0xa9,
+	0x74, 0xf3, 0x1e, 0xf4, 0x7c, 0xdf, 0x43, 0x67, 0x00, 0x9e, 0x87, 0x2b, 0xe4, 0xc0, 0xef, 0xdd,
+	0x81, 0xf7, 0x90, 0xe7, 0x67, 0xe2, 0x3e, 0x13, 0xab, 0x55, 0xe1, 0x2a, 0x65, 0xc1, 0xa5, 0xfb,
+	0x93, 0x68, 0x1a, 0xbf, 0x3e, 0xcc, 0xbb, 0x31, 0xfd, 0x7c, 0x79, 0x37, 0x5f, 0x7e, 0x4a, 0x68,
+	0x66, 0x43, 0x5f, 0x3f, 0x8f, 0x03, 0xf4, 0x29, 0x30, 0xc9, 0x5b, 0x11, 0xaf, 0x89, 0x56, 0x85,
+	0x72, 0x0e, 0xd8, 0xa5, 0xa3, 0xc9, 0xe0, 0x7f, 0x2a, 0x84, 0x67, 0xde, 0x05, 0x64, 0x76, 0x72,
+	0xbd, 0xcd, 0xa2, 0x9b, 0x6d, 0x16, 0xfd, 0xde, 0x66, 0xd1, 0x8f, 0x5d, 0xd6, 0xbb, 0xd9, 0x65,
+	0xbd, 0x9f, 0xbb, 0xac, 0xf7, 0xf9, 0x65, 0x89, 0x5c, 0x6d, 0x16, 0xb9, 0xa6, 0x5a, 0x5e, 0x98,
+	0x0b, 0x83, 0x67, 0x28, 0x75, 0xa5, 0xd0, 0xc8, 0xab, 0xf0, 0x5e, 0xb8, 0x59, 0x83, 0x5b, 0xec,
+	0x85, 0x4b, 0x7d, 0xf3, 0x27, 0x00, 0x00, 0xff, 0xff, 0x5e, 0x9f, 0xe2, 0x13, 0x4b, 0x02, 0x00,
+	0x00,
 }
 
 func (m *TranchePool) Marshal() (dAtA []byte, err error) {
@@ -246,7 +181,7 @@ func (m *TranchePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintAmm(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x32
+			dAtA[i] = 0x42
 		}
 	}
 	{
@@ -258,28 +193,48 @@ func (m *TranchePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintAmm(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
+	dAtA[i] = 0x3a
 	{
-		size, err := m.PoolParams.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
+		size := m.ExitFee.Size()
+		i -= size
+		if _, err := m.ExitFee.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
-		i -= size
 		i = encodeVarintAmm(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
+	dAtA[i] = 0x32
+	{
+		size := m.SwapFee.Size()
+		i -= size
+		if _, err := m.SwapFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintAmm(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	if m.Maturity != 0 {
+		i = encodeVarintAmm(dAtA, i, uint64(m.Maturity))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.StartTime != 0 {
+		i = encodeVarintAmm(dAtA, i, uint64(m.StartTime))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.StrategyContract) > 0 {
+		i -= len(m.StrategyContract)
+		copy(dAtA[i:], m.StrategyContract)
+		i = encodeVarintAmm(dAtA, i, uint64(len(m.StrategyContract)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if m.Id != 0 {
 		i = encodeVarintAmm(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintAmm(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -295,39 +250,28 @@ func encodeVarintAmm(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *TranchePoolParams) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.SwapFee.Size()
-	n += 1 + l + sovAmm(uint64(l))
-	l = m.ExitFee.Size()
-	n += 1 + l + sovAmm(uint64(l))
-	if m.StartTime != 0 {
-		n += 1 + sovAmm(uint64(m.StartTime))
-	}
-	if m.Duration != 0 {
-		n += 1 + sovAmm(uint64(m.Duration))
-	}
-	return n
-}
-
 func (m *TranchePool) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovAmm(uint64(l))
-	}
 	if m.Id != 0 {
 		n += 1 + sovAmm(uint64(m.Id))
 	}
-	l = m.PoolParams.Size()
+	l = len(m.StrategyContract)
+	if l > 0 {
+		n += 1 + l + sovAmm(uint64(l))
+	}
+	if m.StartTime != 0 {
+		n += 1 + sovAmm(uint64(m.StartTime))
+	}
+	if m.Maturity != 0 {
+		n += 1 + sovAmm(uint64(m.Maturity))
+	}
+	l = m.SwapFee.Size()
+	n += 1 + l + sovAmm(uint64(l))
+	l = m.ExitFee.Size()
 	n += 1 + l + sovAmm(uint64(l))
 	l = m.TotalShares.Size()
 	n += 1 + l + sovAmm(uint64(l))
@@ -346,7 +290,7 @@ func sovAmm(x uint64) (n int) {
 func sozAmm(x uint64) (n int) {
 	return sovAmm(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *TranchePoolParams) Unmarshal(dAtA []byte) error {
+func (m *TranchePool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -369,13 +313,102 @@ func (m *TranchePoolParams) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: TranchePoolParams: wiretype end group for non-group")
+			return fmt.Errorf("proto: TranchePool: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: TranchePoolParams: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: TranchePool: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAmm
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StrategyContract", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAmm
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAmm
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAmm
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StrategyContract = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartTime", wireType)
+			}
+			m.StartTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAmm
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartTime |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Maturity", wireType)
+			}
+			m.Maturity = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAmm
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Maturity |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SwapFee", wireType)
 			}
@@ -409,7 +442,7 @@ func (m *TranchePoolParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ExitFee", wireType)
 			}
@@ -443,179 +476,7 @@ func (m *TranchePoolParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StartTime", wireType)
-			}
-			m.StartTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAmm
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.StartTime |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
-			}
-			m.Duration = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAmm
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Duration |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAmm(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAmm
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *TranchePool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAmm
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: TranchePool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: TranchePool: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAmm
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAmm
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAmm
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAmm
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PoolParams", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAmm
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAmm
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAmm
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PoolParams.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field TotalShares", wireType)
 			}
@@ -648,7 +509,7 @@ func (m *TranchePool) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PoolAssets", wireType)
 			}

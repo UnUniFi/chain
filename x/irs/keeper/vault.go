@@ -46,13 +46,3 @@ func (k Keeper) GetAllVault(ctx sdk.Context) (list []types.InterestRateSwapVault
 
 	return
 }
-
-// TODO:
-func (k Keeper) RedeemPtAtMaturity() {
-
-}
-
-// TODO:
-func (k Keeper) RedeemYtAtMaturity() {
-
-}

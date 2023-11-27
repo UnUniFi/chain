@@ -2,14 +2,14 @@ package types
 
 import "fmt"
 
-func LsDenom(strategyContract string, maturity uint64) string {
-	return fmt.Sprintf("%s/vaults/%s/maturity/%d/ls", ModuleName, strategyContract, maturity)
+func LsDenom(pool TranchePool) string {
+	return fmt.Sprintf("%s/tranche/%d/ls", ModuleName, pool.Id)
 }
 
-func PtDenom(strategyContract string, maturity uint64) string {
-	return fmt.Sprintf("%s/vaults/%s/maturity/%d/pt", ModuleName, strategyContract, maturity)
+func PtDenom(pool TranchePool) string {
+	return fmt.Sprintf("%s/tranche/%d/pt", ModuleName, pool.Id)
 }
 
-func YtDenom(strategyContract string, maturity uint64) string {
-	return fmt.Sprintf("%s/vaults/%s/maturity/%d/yt", ModuleName, strategyContract, maturity)
+func YtDenom(pool TranchePool) string {
+	return fmt.Sprintf("%s/tranche/%d/yt", ModuleName, pool.Id)
 }

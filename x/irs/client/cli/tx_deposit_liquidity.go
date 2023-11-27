@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,23 +16,31 @@ import (
 
 func CmdTxDepositLiquidity() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deposit-liquidity [strategy_contract] [principal-amount]",
+		Use:   "deposit-liquidity [tranche-id] [share-out-amount] [token-in-maxs]",
 		Short: "deposit liquidity",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			strategyContract := args[0]
+			trancheId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
 
-			amount, ok := sdk.NewIntFromString(args[1])
+			shareOutAmount, ok := sdk.NewIntFromString(args[1])
 			if !ok {
 				return fmt.Errorf("error parsing amount")
 			}
 
-			msg := types.NewMsgDepositLiquidity(clientCtx.GetFromAddress().String(), strategyContract, amount)
+			tokenInMaxs, err := sdk.ParseCoinsNormalized(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDepositLiquidity(clientCtx.GetFromAddress().String(), uint64(trancheId), shareOutAmount, tokenInMaxs)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

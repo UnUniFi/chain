@@ -8,11 +8,12 @@ import (
 
 var _ sdk.Msg = &MsgWithdrawLiquidity{}
 
-func NewMsgWithdrawLiquidity(sender string, strategyContract string, shareAmount sdk.Int) *MsgWithdrawLiquidity {
+func NewMsgWithdrawLiquidity(sender string, trancheId uint64, shareAmount sdk.Int, tokenOutMins sdk.Coins) *MsgWithdrawLiquidity {
 	return &MsgWithdrawLiquidity{
-		Sender:           sender,
-		StrategyContract: strategyContract,
-		ShareAmount:      shareAmount,
+		Sender:       sender,
+		TrancheId:    trancheId,
+		ShareAmount:  shareAmount,
+		TokenOutMins: tokenOutMins,
 	}
 }
 
@@ -21,7 +22,7 @@ func (msg MsgWithdrawLiquidity) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	if msg.StrategyContract == "" {
+	if msg.TrancheId == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy contract")
 	}
 

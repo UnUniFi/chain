@@ -10,9 +10,16 @@ import (
 
 func (k msgServer) WithdrawLiquidity(goCtx context.Context, msg *types.MsgWithdrawLiquidity) (*types.MsgWithdrawLiquidityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
 
-	// TODO:
-	// Burn lp tokens and get tokens from tranche pool for PT + ATOM
+	// Burn lp tokens and get tokens from tranche pool for PT + UT
+	_, err = k.WithdrawFromLiquidityPool(ctx, sender, msg.TrancheId, msg.ShareAmount, msg.TokenOutMins)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgWithdrawLiquidityResponse{}, nil
 }

@@ -9,6 +9,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "ununifi/irs/params.proto";
 // this line is used by starport scaffolding # 1
 import "ununifi/irs/irs.proto";
+import "ununifi/irs/amm.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/irs/types";
 
@@ -29,6 +30,14 @@ service Query {
   // VaultDetails queries the details of the vault
   rpc VaultDetails(QueryVaultDetailsRequest) returns (QueryVaultDetailsResponse) {
     option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
+  }
+  // Tranches by Strategy
+  rpc Tranches(QueryTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranches/{strategy_contract}";
+  }
+  // Tranche by id
+  rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}";
   }
 }
 
@@ -70,4 +79,24 @@ message QueryVaultDetailsResponse {
   string liquidity_pool = 1;
   string fy_rate        = 2;
   string lvy_rate       = 3;
+}
+
+// QueryTranchesRequest is request type for the Query/Tranches RPC method.
+message QueryTranchesRequest {
+  string strategy_contract = 1;
+}
+
+// QueryTranchesResponse is response type for the Query/Tranches RPC method.
+message QueryTranchesResponse {
+  repeated TranchePool tranches = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTranchRequest is request type for the Query/Tranches RPC method.
+message QueryTrancheRequest {
+  uint64 id = 1;
+}
+
+// QueryTranchResponse is response type for the Query/Tranch RPC method.
+message QueryTrancheResponse {
+  TranchePool tranche = 1 [(gogoproto.nullable) = false];
 }

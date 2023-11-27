@@ -7,25 +7,15 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/irs/types";
 
-// TranchePoolParams defined the parameters that will be managed by the pool
-message TranchePoolParams {
-  string swap_fee   = 1 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
-  string exit_fee   = 2 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
-  uint64 start_time = 3;
-  uint64 duration   = 4;
-}
-
 message TranchePool {
-  option (gogoproto.goproto_getters)         = false;
-  option (gogoproto.goproto_stringer)        = false;
-  option (cosmos_proto.implements_interface) = "PoolI";
-
-  uint64            id          = 2;
-  string            address     = 1;
-  TranchePoolParams pool_params = 3 [(gogoproto.nullable) = false];
-
+  uint64 id                = 1;  // unique id across all the tranches
+  string strategy_contract = 2;
+  uint64 start_time        = 3;
+  uint64 maturity          = 4;
+  string swap_fee          = 5 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  string exit_fee          = 6 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
   // sum of all LP tokens sent out
-  cosmos.base.v1beta1.Coin total_shares = 5 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_shares = 7 [(gogoproto.nullable) = false];
   // Pool assets are sorted by denomination
-  repeated cosmos.base.v1beta1.Coin pool_assets = 6 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin pool_assets = 8 [(gogoproto.nullable) = false];
 }
