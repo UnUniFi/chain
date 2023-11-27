@@ -26,7 +26,7 @@ const BANK_SEND_LIST string = `{
       "amount": 9407000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 2,
@@ -34,7 +34,7 @@ const BANK_SEND_LIST string = `{
       "amount": 31852000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 3,
@@ -42,7 +42,7 @@ const BANK_SEND_LIST string = `{
       "amount": 5960000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 4,
@@ -50,7 +50,7 @@ const BANK_SEND_LIST string = `{
       "amount": 9799000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 5,
@@ -58,7 +58,7 @@ const BANK_SEND_LIST string = `{
       "amount": 75882000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 6,
@@ -66,7 +66,7 @@ const BANK_SEND_LIST string = `{
       "amount": 15156000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 7,
@@ -74,7 +74,7 @@ const BANK_SEND_LIST string = `{
       "amount": 195559000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 8,
@@ -82,7 +82,7 @@ const BANK_SEND_LIST string = `{
       "amount": 95893000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 9,
@@ -90,7 +90,7 @@ const BANK_SEND_LIST string = `{
       "amount": 33756000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 10,
@@ -98,7 +98,7 @@ const BANK_SEND_LIST string = `{
       "amount": 329928000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 11,
@@ -106,7 +106,7 @@ const BANK_SEND_LIST string = `{
       "amount": 4039000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 12,
@@ -114,7 +114,7 @@ const BANK_SEND_LIST string = `{
       "amount": 5775000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 13,
@@ -122,7 +122,7 @@ const BANK_SEND_LIST string = `{
       "amount": 29613000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 14,
@@ -130,7 +130,7 @@ const BANK_SEND_LIST string = `{
       "amount": 19558000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 15,
@@ -138,7 +138,7 @@ const BANK_SEND_LIST string = `{
       "amount": 53628000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 16,
@@ -146,7 +146,7 @@ const BANK_SEND_LIST string = `{
       "amount": 46393000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 17,
@@ -154,7 +154,7 @@ const BANK_SEND_LIST string = `{
       "amount": 22179000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 18,
@@ -162,7 +162,7 @@ const BANK_SEND_LIST string = `{
       "amount": 20254000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 19,
@@ -170,7 +170,7 @@ const BANK_SEND_LIST string = `{
       "amount": 16835000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 20,
@@ -178,7 +178,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3126000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 21,
@@ -186,7 +186,7 @@ const BANK_SEND_LIST string = `{
       "amount": 19907000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 22,
@@ -194,7 +194,7 @@ const BANK_SEND_LIST string = `{
       "amount": 4016000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 23,
@@ -202,7 +202,7 @@ const BANK_SEND_LIST string = `{
       "amount": 20381000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 24,
@@ -210,7 +210,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3332000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 25,
@@ -218,7 +218,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3517000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 26,
@@ -226,7 +226,7 @@ const BANK_SEND_LIST string = `{
       "amount": 5275000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 27,
@@ -234,7 +234,7 @@ const BANK_SEND_LIST string = `{
       "amount": 36006000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 28,
@@ -242,7 +242,7 @@ const BANK_SEND_LIST string = `{
       "amount": 35487000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 29,
@@ -250,7 +250,7 @@ const BANK_SEND_LIST string = `{
       "amount": 188861000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 30,
@@ -258,7 +258,7 @@ const BANK_SEND_LIST string = `{
       "amount": 15614000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 31,
@@ -266,7 +266,7 @@ const BANK_SEND_LIST string = `{
       "amount": 49163000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 32,
@@ -274,7 +274,7 @@ const BANK_SEND_LIST string = `{
       "amount": 34381000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 33,
@@ -282,7 +282,7 @@ const BANK_SEND_LIST string = `{
       "amount": 42415000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 34,
@@ -290,7 +290,7 @@ const BANK_SEND_LIST string = `{
       "amount": 48288000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 35,
@@ -298,7 +298,7 @@ const BANK_SEND_LIST string = `{
       "amount": 16532000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 36,
@@ -306,7 +306,7 @@ const BANK_SEND_LIST string = `{
       "amount": 26286000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 37,
@@ -314,7 +314,7 @@ const BANK_SEND_LIST string = `{
       "amount": 21465000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 38,
@@ -322,7 +322,7 @@ const BANK_SEND_LIST string = `{
       "amount": 38084000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 39,
@@ -330,7 +330,7 @@ const BANK_SEND_LIST string = `{
       "amount": 37436000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 40,
@@ -338,7 +338,7 @@ const BANK_SEND_LIST string = `{
       "amount": 91845000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 41,
@@ -346,7 +346,7 @@ const BANK_SEND_LIST string = `{
       "amount": 11170000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 42,
@@ -354,7 +354,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3183000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 43,
@@ -362,7 +362,7 @@ const BANK_SEND_LIST string = `{
       "amount": 57645000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 44,
@@ -370,7 +370,7 @@ const BANK_SEND_LIST string = `{
       "amount": 27030000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 45,
@@ -378,7 +378,7 @@ const BANK_SEND_LIST string = `{
       "amount": 38084000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 46,
@@ -386,7 +386,7 @@ const BANK_SEND_LIST string = `{
       "amount": 22850000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 47,
@@ -394,7 +394,7 @@ const BANK_SEND_LIST string = `{
       "amount": 29082000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 48,
@@ -402,7 +402,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3109000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 49,
@@ -410,7 +410,7 @@ const BANK_SEND_LIST string = `{
       "amount": 15493000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 50,
@@ -418,7 +418,7 @@ const BANK_SEND_LIST string = `{
       "amount": 3072000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     },
 		{
 			"number": 51,
@@ -426,7 +426,7 @@ const BANK_SEND_LIST string = `{
       "amount": 26399000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1730419200				
     }
   ]
 }`
