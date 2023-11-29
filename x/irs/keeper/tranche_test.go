@@ -1,5 +1,90 @@
 package keeper_test
 
 import (
-// sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/irs/types"
 )
+
+func (suite *KeeperTestSuite) TestSetTranchePool() {
+	id := uint64(1)
+	pool := types.TranchePool{
+		Id:               id,
+		StrategyContract: "address",
+		StartTime:        1698796800,
+		Maturity:         1714521600,
+		SwapFee:          sdk.ZeroDec(),
+		ExitFee:          sdk.OneDec(),
+		TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+		PoolAssets: sdk.Coins{
+			sdk.NewInt64Coin("uatom", 1000000),
+			sdk.NewInt64Coin("uosmo", 1000000),
+		},
+	}
+
+	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
+	pool2, found := suite.app.IrsKeeper.GetTranchePool(suite.ctx, id)
+	suite.Require().True(found)
+
+	suite.Require().Equal(pool, pool2)
+}
+
+func (suite *KeeperTestSuite) TestRemoveTranchePool() {
+	id := uint64(1)
+	pool := types.TranchePool{
+		Id:               id,
+		StrategyContract: "address",
+		StartTime:        1698796800,
+		Maturity:         1714521600,
+		SwapFee:          sdk.ZeroDec(),
+		ExitFee:          sdk.OneDec(),
+		TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+		PoolAssets: sdk.Coins{
+			sdk.NewInt64Coin("uatom", 1000000),
+			sdk.NewInt64Coin("uosmo", 1000000),
+		},
+	}
+
+	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
+	suite.app.IrsKeeper.RemoveTranchePool(suite.ctx, pool)
+	_, found := suite.app.IrsKeeper.GetTranchePool(suite.ctx, id)
+	suite.Require().False(found)
+}
+
+func (suite *KeeperTestSuite) TestGetTranchesByStrategy() {
+	address := "address"
+	pools := []types.TranchePool{
+		{
+			Id:               1,
+			StrategyContract: address,
+			StartTime:        1698796800,
+			Maturity:         1714521600,
+			SwapFee:          sdk.ZeroDec(),
+			ExitFee:          sdk.OneDec(),
+			TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+			PoolAssets: sdk.Coins{
+				sdk.NewInt64Coin("uatom", 1000000),
+				sdk.NewInt64Coin("uosmo", 1000000),
+			},
+		},
+		{
+			Id:               2,
+			StrategyContract: address,
+			StartTime:        1698796800,
+			Maturity:         1730419200,
+			SwapFee:          sdk.ZeroDec(),
+			ExitFee:          sdk.ZeroDec(),
+			TotalShares:      sdk.NewInt64Coin("uatom", 500000),
+			PoolAssets: sdk.Coins{
+				sdk.NewInt64Coin("uatom", 1000000),
+				sdk.NewInt64Coin("uosmo", 1000000),
+			},
+		},
+	}
+
+	for _, p := range pools {
+		suite.app.IrsKeeper.SetTranchePool(suite.ctx, p)
+	}
+	pools2 := suite.app.IrsKeeper.GetTranchesByStrategy(suite.ctx, address)
+	suite.Require().Equal(pools, pools2)
+}
