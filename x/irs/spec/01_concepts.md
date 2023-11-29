@@ -1,60 +1,78 @@
 # Concepts
 
-## introduction  
+## Introduction
 
-UnUniFi's NFTFi feature does not have an automatic earning function.
+IRS (InterestRateSwap) module is to tokenize underlying yield asset (UT) into principal tokens and yield tokens.
+Principal tokens (PT) for fixed yield searchers and yield tokens (YT) for leverage yield users.
 
-Users have to use NFTi's functionality to Borrow and invest on their own.
+## InterestRateSwap Vault
 
-## about yield-aggregator (YA)
+Vault is periodically creating Tranche pools based on cycle.
 
-`yield-aggregator` module provides the function for yield aggregation.
+## Tranche pool
 
-It find the optimal target of funds for asset management (e.g. the highest interest rate pool).
+Tranche pool is the place where users can mint/burn PT/YT tokens.
 
-`nft-marketmaker` module and CosmWasm contracts will call the keeper of this module.
+## Liquidity pool for PT/UT
 
-NFTFi will be able to use this feature and automatically earning
+Liquidity for PT/UT is provided by the users who would like to get swap fees by providing liquidity for PT/UT pair.
+The swap fee income is stable and it has low Impermanent Loss.
 
-## yield-aggregator abstract work flow
+PT's price will automatically fluctuate following the maturity because PT is zero-coupon bond (fixed yield).
+Hence if it is vanilla AMM, it will force LPers to have impermanent loss inevitably.
 
-```mermaid
-graph TD;
+## Module Params
 
-  User[User];
-  YA[yield-aggregator];
-  YF[selected-yield-farming];
-
-  User--1_deposit_denom-->YA;
-  YA--2_deposit_denom-->YF;
-  YF--3_earning_denom-->YA;
-  YA--4_withdraw_denom-->User;
-
+```go
+type Params struct {
+	Authority    string
+	TradeFeeRate sdk.Dec
+}
 ```
 
-## Yield Farming(YF)
+## Module Queries
 
-Yield farming is the process of using decentralized finance (DeFi) to maximize returns.
+```proto
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/irs/params";
+  }
+  // Vaults queries the InterestRateSwapVaults
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vaults";
+  }
+  // Vault queries a single InterestRateSwapVault
+  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}";
+  }
+  // VaultDetails queries the details of the vault
+  rpc VaultDetails(QueryVaultDetailsRequest) returns (QueryVaultDetailsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
+  }
+  // Tranches by Strategy
+  rpc Tranches(QueryTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranches/{strategy_contract}";
+  }
+  // Tranche by id
+  rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}";
+  }
+}
+```
 
-Users lend or borrow crypto on a DeFi platform and earn cryptocurrency in return for their services.
+## Module Messages
 
-## DailyPercent
-
-`yield-aggregator` computes the amount deposited with YF and the amount returned from YF
-Let it be DailyPercent.
-
-Annual percent rate (APR) and annual percent yield (APY) can be calculated with recent `n` (you can choose) days' `DailyPercent` data.
-
-## Farming Order(FO)
-
-YA can create complex investment strategies by combining multiple FOs.
-
-Each FO operates on an event and determines the amount invested from a percentage of the balance
-
-## Farming Order Event
-
-Events that make the FO work
-
-1. deposit msg with execute_orders flag thrown.
-1. ExecuteOrders msg thrown.
-1. When received the Denom from YF.
+```proto
+// Msg defines the Msg service.
+service Msg {
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc RegisterInterestRateSwapVault(MsgRegisterInterestRateSwapVault)
+      returns (MsgRegisterInterestRateSwapVaultResponse);
+  rpc DepositLiquidity(MsgDepositLiquidity) returns (MsgDepositLiquidityResponse);
+  rpc WithdrawLiquidity(MsgWithdrawLiquidity) returns (MsgWithdrawLiquidityResponse);
+  rpc DepositToTranche(MsgDepositToTranche) returns (MsgDepositToTrancheResponse);
+  rpc WithdrawFromTranche(MsgWithdrawFromTranche) returns (MsgWithdrawFromTrancheResponse);
+}
+```

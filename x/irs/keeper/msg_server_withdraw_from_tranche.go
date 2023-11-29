@@ -24,21 +24,27 @@ func (k msgServer) WithdrawFromTranche(goCtx context.Context, msg *types.MsgWith
 	if msg.TrancheType == types.TrancheType_FIXED_YIELD {
 		// If matured, send required amount from unbonded from the share
 		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
-			err := k.RedeemPtAtMaturity(ctx, sender, tranche, msg.Token)
+			if len(msg.Tokens) != 1 {
+				return nil, sdkerrors.ErrInvalidCoins
+			}
+			err := k.RedeemPtAtMaturity(ctx, sender, tranche, msg.Tokens[0])
 			if err != nil {
 				return nil, err
 			}
 		}
 
 		// Else, sell PT from AMM with msg.TrancheMaturity for msg.PTAmount
-		err := k.SwapPtToUt(ctx, sender, tranche, msg.Token)
+		err := k.SwapPtToUt(ctx, sender, tranche, msg.Tokens[0])
 		if err != nil {
 			return nil, err
 		}
 	} else if msg.TrancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
 		// If matured, send required amount from unbonded from the share
 		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
-			err := k.RedeemYtAtMaturity(ctx, sender, tranche, msg.Token)
+			if len(msg.Tokens) != 1 {
+				return nil, sdkerrors.ErrInvalidCoins
+			}
+			err := k.RedeemYtAtMaturity(ctx, sender, tranche, msg.Tokens[0])
 			if err != nil {
 				return nil, err
 			}
@@ -50,7 +56,10 @@ func (k msgServer) WithdrawFromTranche(goCtx context.Context, msg *types.MsgWith
 		// Start redemption for strategy share
 		// k.SwapYtToUt()
 	} else { // All yield
-		panic("Not possible to withdraw both tokens")
+		err := k.RedeemPtYtPair(ctx, sender, tranche, msg.RequiredUt, msg.Tokens)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &types.MsgWithdrawFromTrancheResponse{}, nil

@@ -21,7 +21,7 @@ func CmdTxDepositToTranche() *cobra.Command {
 			ununifid tx irs deposit-to-tranche ununifi1unyuj8qnmygvzuex3dwmg9yzt9alhvyeat0uu0jedg2wj33efl5q5gcjfn FIXED_YIELD	1699977229
 			ununifid tx irs deposit-to-tranche ununifi1unyuj8qnmygvzuex3dwmg9yzt9alhvyeat0uu0jedg2wj33efl5q5gcjfn LEVERAGED_VARIABLE_YIELD 1699977229
 		`,
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -37,9 +37,10 @@ func CmdTxDepositToTranche() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			requiredYt, err := sdk.ParseCoinNormalized(args[3])
-			if err != nil {
-				return err
+
+			requiredYt, ok := sdk.NewIntFromString(args[3])
+			if !ok {
+				requiredYt = sdk.ZeroInt()
 			}
 
 			msg := types.NewMsgDepositToTranche(

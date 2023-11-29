@@ -8,12 +8,13 @@ import (
 
 var _ sdk.Msg = &MsgWithdrawFromTranche{}
 
-func NewMsgWithdrawFromTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin) *MsgWithdrawFromTranche {
+func NewMsgWithdrawFromTranche(sender string, trancheId uint64, trancheType TrancheType, tokens sdk.Coins, requiredUt sdk.Int) *MsgWithdrawFromTranche {
 	return &MsgWithdrawFromTranche{
 		Sender:      sender,
 		TrancheId:   trancheId,
 		TrancheType: trancheType,
-		Token:       token,
+		Tokens:      tokens,
+		RequiredUt:  requiredUt,
 	}
 }
 
@@ -26,8 +27,8 @@ func (msg MsgWithdrawFromTranche) ValidateBasic() error {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid tranche id")
 	}
 
-	if !msg.Token.IsPositive() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, msg.Token.String())
+	if sdk.Coins(msg.Tokens).Empty() {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, sdk.Coins(msg.Tokens).String())
 	}
 
 	return nil
