@@ -15,7 +15,12 @@ func (k Keeper) Vault(c context.Context, req *types.QueryVaultRequest) (*types.Q
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	vault, found := k.GetVault(ctx, req.StrategyContract)
+	if !found {
+		return nil, types.ErrVaultNotFound
+	}
 
-	return &types.QueryVaultResponse{}, nil
+	return &types.QueryVaultResponse{
+		Vault: vault,
+	}, nil
 }
