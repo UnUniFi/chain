@@ -10,7 +10,7 @@ import (
 
 var _ sdk.Msg = &MsgDepositToTranche{}
 
-func NewMsgDepositToTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin, requiredYt sdk.Coin) *MsgDepositToTranche {
+func NewMsgDepositToTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin, requiredYt sdk.Int) *MsgDepositToTranche {
 	return &MsgDepositToTranche{
 		Sender:      sender,
 		TrancheId:   trancheId,

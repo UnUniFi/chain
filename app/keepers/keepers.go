@@ -625,6 +625,8 @@ func NewAppKeeper(
 		appKeepers.BankKeeper,
 		wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper),
 		appKeepers.WasmKeeper,
+		appKeepers.RecordsKeeper,
+		appKeepers.YieldaggregatorKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

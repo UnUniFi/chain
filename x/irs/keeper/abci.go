@@ -13,7 +13,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	}
 	vaults := k.GetAllVault(ctx)
 	for _, vault := range vaults {
-		if int64((vault.Cycle*86400)+vault.LastTrancheTime) < ctx.BlockTime().Unix() {
+		if int64(vault.Cycle+vault.LastTrancheTime) < ctx.BlockTime().Unix() {
 			k.SetTranchePool(ctx, types.TranchePool{
 				Id:               k.GetLastTrancheId(ctx) + 1,
 				StrategyContract: vault.StrategyContract,

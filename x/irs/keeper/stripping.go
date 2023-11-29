@@ -76,6 +76,43 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	return ptAmount, nil
 }
 
+// RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
+// The ratio between Pt Supply : Yt Supply and Pt / Yt amount redeemed should be same
+func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, redeemUt sdk.Int, maxPtYtIns sdk.Coins) error {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return err
+	}
+
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+
+	requiredPtAmount := ptSupply.Amount.Mul(redeemUt).Quo(amountFromStrategy)
+	requiredYtAmount := ytSupply.Amount.Mul(redeemUt).Quo(amountFromStrategy)
+
+	coins := sdk.Coins{}
+	requiredPtYt := coins.Add(sdk.NewCoin(ptDenom, requiredPtAmount)).Add(sdk.NewCoin(ytDenom, requiredYtAmount))
+	if !maxPtYtIns.IsAllGTE(requiredPtYt) {
+		return types.ErrInSufficientTokenInMaxs
+	}
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, requiredPtYt)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, requiredPtYt)
+	if err != nil {
+		return err
+	}
+
+	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemUt)
+}
+
 func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {

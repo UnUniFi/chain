@@ -6,16 +6,19 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Coin) error {
+func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int) error {
+	ytDenom := types.YtDenom(pool)
+
 	// Take loan from IRS vault account
 	moduleAddr := types.GetVaultModuleAddress(pool)
-	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{requiredYtAmount})
+	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{sdk.NewCoin(ytDenom, requiredYtAmount)})
 	if err != nil {
 		return err
 	}
 
 	// Mint Pt and Yt
-	ptAmount, err := k.MintPtYtPair(ctx, sender, pool, requiredYtAmount)
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	ptAmount, err := k.MintPtYtPair(ctx, sender, pool, sdk.NewCoin(depositInfo.Denom, requiredYtAmount))
 	if err != nil {
 		return err
 	}
@@ -28,7 +31,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	}
 
 	// Payback loan
-	err = k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{requiredYtAmount})
+	err = k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{sdk.NewCoin(depositInfo.Denom, requiredYtAmount)})
 	if err != nil {
 		return err
 	}

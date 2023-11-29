@@ -11,7 +11,7 @@ message InterestRateSwapVault {
   string strategy_contract = 1;
   string name              = 2;
   string description       = 3;
-  uint64 max_maturity      = 4;  // e.g. 180 days
-  uint64 cycle             = 5;  // e.g. 90 days
-  uint64 last_tranche_time = 6;  // last tranche creation time
+  uint64 max_maturity      = 4;  // e.g. 180 days - 180 * 86400
+  uint64 cycle             = 5;  // e.g. 90 days - 90 * 86400
+  uint64 last_tranche_time = 6;  // last tranche creation timestamp
 }
