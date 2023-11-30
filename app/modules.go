@@ -83,6 +83,9 @@ import (
 	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc/types"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
+	irs "github.com/UnUniFi/chain/x/irs"
+	irstypes "github.com/UnUniFi/chain/x/irs/types"
+
 	nftbackedloan "github.com/UnUniFi/chain/x/nftbackedloan"
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
@@ -121,6 +124,7 @@ var maccPerms = map[string][]string{
 	nftfactorytypes.ModuleName: nil,
 
 	yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+	irstypes.ModuleName:             nil,
 	stakeibctypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	interchainquerytypes.ModuleName: nil,
 
@@ -182,6 +186,7 @@ var ModuleBasics = module.NewBasicManager(
 	ecosystemincentive.AppModuleBasic{},
 
 	yieldaggregator.AppModuleBasic{},
+	irs.AppModuleBasic{},
 	stakeibc.AppModuleBasic{},
 	epochs.AppModuleBasic{},
 	interchainquery.AppModuleBasic{},
@@ -239,6 +244,7 @@ func appModules(
 		// derivatives.NewAppModule(appCodec, app.AppKeepers.DerivativesKeeper, app.AppKeepers.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.AppKeepers.YieldaggregatorKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		irs.NewAppModule(appCodec, app.AppKeepers.IrsKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.AppKeepers.StakeibcKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
 		epochs.NewAppModule(appCodec, app.AppKeepers.EpochsKeeper),
 		interchainquery.NewAppModule(appCodec, app.AppKeepers.InterchainqueryKeeper),
@@ -308,6 +314,7 @@ func orderBeginBlockers() []string {
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		irstypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -363,6 +370,7 @@ func orderEndBlockers() []string {
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		irstypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -421,6 +429,7 @@ func orderInitGenesis() []string {
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		irstypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,

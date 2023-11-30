@@ -751,6 +751,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Deprecated: Just for migration
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
+	paramsKeeper.Subspace(irstypes.ModuleName)
 
 	return paramsKeeper
 }
