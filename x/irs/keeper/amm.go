@@ -24,16 +24,22 @@ func (k Keeper) DepositToLiquidityPool(
 	// we do an abstract calculation on the lp liquidity coins needed to have
 	// the designated amount of given shares of the pool without performing swap
 	neededLpLiquidity := getMaximalNoSwapLPAmount(ctx, pool, shareOutAmount)
+	fmt.Println("neededLpLiquidity", neededLpLiquidity)
 
 	// check that needed lp liquidity does not exceed the given `tokenInMaxs` parameter. Return error if so.
 	// if tokenInMaxs == 0, don't do this check.
 	if tokenInMaxs.Len() != 0 {
 		if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
+			fmt.Println("a:", neededLpLiquidity)
+			fmt.Println("b:", tokenInMaxs)
+			fmt.Println("hoge1")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
+			println("hoge2")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		}
 		if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
+			println("hoge3")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		}
 	}
@@ -121,6 +127,15 @@ func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.TranchePool
 		return err
 	}
 
+	// update pool
+	pool.TotalShares = pool.TotalShares.Add(sdk.NewCoin(types.LsDenom(pool), numShares))
+	for _, coin := range joinCoins {
+		for i, poolCoin := range pool.PoolAssets {
+			if coin.Denom == poolCoin.Denom {
+				pool.PoolAssets[i].Amount = poolCoin.Amount.Add(coin.Amount)
+			}
+		}
+	}
 	k.SetTranchePool(ctx, pool)
 
 	return nil
@@ -137,6 +152,15 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.TranchePool
 		return err
 	}
 
+	// update pool
+	pool.TotalShares = pool.TotalShares.Sub(sdk.NewCoin(types.LsDenom(pool), numShares))
+	for _, coin := range exitCoins {
+		for i, poolCoin := range pool.PoolAssets {
+			if coin.Denom == poolCoin.Denom {
+				pool.PoolAssets[i].Amount = poolCoin.Amount.Sub(coin.Amount)
+			}
+		}
+	}
 	k.SetTranchePool(ctx, pool)
 
 	return nil
