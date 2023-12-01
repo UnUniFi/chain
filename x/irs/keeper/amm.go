@@ -61,8 +61,7 @@ func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutA
 	totalSharesAmount := pool.TotalShares.Amount
 	// shareRatio is the desired number of shares, divided by the total number of
 	// shares currently in the pool. It is intended to be used in scenarios where you want
-	// Fixed: divided by total number of shares currently + the desired number of shares (avoid zero division)
-	shareRatio := sdk.NewDecFromInt(shareOutAmount).QuoInt(shareOutAmount.Add(totalSharesAmount))
+	shareRatio := sdk.NewDecFromInt(shareOutAmount).QuoInt(totalSharesAmount)
 
 	poolLiquidity := pool.PoolAssets
 	neededLpLiquidity = sdk.Coins{}
@@ -122,15 +121,6 @@ func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.TranchePool
 		return err
 	}
 
-	// update pool
-	pool.TotalShares = pool.TotalShares.Add(sdk.NewCoin(types.LsDenom(pool), numShares))
-	for _, coin := range joinCoins {
-		for i, poolCoin := range pool.PoolAssets {
-			if coin.Denom == poolCoin.Denom {
-				pool.PoolAssets[i].Amount = poolCoin.Amount.Add(coin.Amount)
-			}
-		}
-	}
 	k.SetTranchePool(ctx, pool)
 
 	return nil
@@ -147,15 +137,6 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.TranchePool
 		return err
 	}
 
-	// update pool
-	pool.TotalShares = pool.TotalShares.Sub(sdk.NewCoin(types.LsDenom(pool), numShares))
-	for _, coin := range exitCoins {
-		for i, poolCoin := range pool.PoolAssets {
-			if coin.Denom == poolCoin.Denom {
-				pool.PoolAssets[i].Amount = poolCoin.Amount.Sub(coin.Amount)
-			}
-		}
-	}
 	k.SetTranchePool(ctx, pool)
 
 	return nil
