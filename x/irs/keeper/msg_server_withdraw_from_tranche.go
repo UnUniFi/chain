@@ -10,10 +10,6 @@ import (
 )
 
 func (k msgServer) WithdrawFromTranche(goCtx context.Context, msg *types.MsgWithdrawFromTranche) (*types.MsgWithdrawFromTrancheResponse, error) {
-	if k.authority != msg.Sender {
-		return nil, sdkerrors.ErrUnauthorized
-	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	tranche, found := k.GetTranchePool(ctx, msg.TrancheId)
