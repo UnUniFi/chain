@@ -116,7 +116,7 @@ func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool type
 func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
 	}
 
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ptAmount})
@@ -142,7 +142,7 @@ func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ytAmount sdk.Coin) error {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
 	}
 
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ytAmount})

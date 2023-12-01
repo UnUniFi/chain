@@ -21,6 +21,14 @@ func (k Keeper) DepositToLiquidityPool(
 		return nil, sdk.ZeroInt(), types.ErrTrancheNotFound
 	}
 
+	// TODO: ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
+
+	// When liquidity is added to the empty pool
+	if pool.TotalShares.IsZero() {
+		err = k.applyJoinPoolStateChange(ctx, pool, sender, types.OneShare, tokenInMaxs)
+		return tokenInMaxs, types.OneShare, err
+	}
+
 	// we do an abstract calculation on the lp liquidity coins needed to have
 	// the designated amount of given shares of the pool without performing swap
 	neededLpLiquidity := getMaximalNoSwapLPAmount(ctx, pool, shareOutAmount)
