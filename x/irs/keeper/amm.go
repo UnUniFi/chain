@@ -24,22 +24,16 @@ func (k Keeper) DepositToLiquidityPool(
 	// we do an abstract calculation on the lp liquidity coins needed to have
 	// the designated amount of given shares of the pool without performing swap
 	neededLpLiquidity := getMaximalNoSwapLPAmount(ctx, pool, shareOutAmount)
-	fmt.Println("neededLpLiquidity", neededLpLiquidity)
 
 	// check that needed lp liquidity does not exceed the given `tokenInMaxs` parameter. Return error if so.
 	// if tokenInMaxs == 0, don't do this check.
 	if tokenInMaxs.Len() != 0 {
 		if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
-			fmt.Println("a:", neededLpLiquidity)
-			fmt.Println("b:", tokenInMaxs)
-			fmt.Println("hoge1")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
-			println("hoge2")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		}
 		if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
-			println("hoge3")
 			return nil, sdk.ZeroInt(), types.ErrInSufficientTokenInMaxs
 		}
 	}
@@ -67,7 +61,8 @@ func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutA
 	totalSharesAmount := pool.TotalShares.Amount
 	// shareRatio is the desired number of shares, divided by the total number of
 	// shares currently in the pool. It is intended to be used in scenarios where you want
-	shareRatio := sdk.NewDecFromInt(shareOutAmount).QuoInt(totalSharesAmount)
+	// Fixed: divided by total number of shares currently + the desired number of shares (avoid zero division)
+	shareRatio := sdk.NewDecFromInt(shareOutAmount).QuoInt(shareOutAmount.Add(totalSharesAmount))
 
 	poolLiquidity := pool.PoolAssets
 	neededLpLiquidity = sdk.Coins{}

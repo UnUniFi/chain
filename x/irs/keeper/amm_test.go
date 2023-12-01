@@ -22,7 +22,6 @@ func (suite *KeeperTestSuite) TestDepositToLiquidityPool() {
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
 		ExitFee:          sdk.OneDec(),
-		TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
 		PoolAssets: sdk.Coins{
 			sdk.NewInt64Coin("uatom", 1000000),
 			sdk.NewInt64Coin("uosmo", 1000000),
@@ -32,13 +31,68 @@ func (suite *KeeperTestSuite) TestDepositToLiquidityPool() {
 	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokenInMaxs)
 	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tokenInMaxs)
 
+	// no pool
 	_, _, err := suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, tokenInMaxs)
 	suite.Require().Error(err)
 	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
+	// todo: no tokenInMaxs
 	_, _, err = suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, noTokenInMaxs)
 	suite.Require().NoError(err)
-	tokenIn, shareOut, err := suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, tokenInMaxs)
+
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokenInMaxs)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tokenInMaxs)
+
+	// share < tokenInMaxs
+	// tokenInMaxs < share
+}
+
+func (suite *KeeperTestSuite) TestMintPoolShareToAccount() {
+	address := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	poolId := uint64(1)
+	shareAmount := sdk.NewInt(200000)
+	pool := types.TranchePool{
+		Id:               poolId,
+		StrategyContract: "address",
+		StartTime:        1698796800,
+		Maturity:         1572800,
+		SwapFee:          sdk.ZeroDec(),
+		ExitFee:          sdk.OneDec(),
+		PoolAssets: sdk.Coins{
+			sdk.NewInt64Coin("uatom", 1000000),
+			sdk.NewInt64Coin("uosmo", 1000000),
+		},
+	}
+	pool.TotalShares = sdk.NewInt64Coin(types.LsDenom(pool), 1000000)
+
+	err := suite.app.IrsKeeper.MintPoolShareToAccount(suite.ctx, pool, address, shareAmount)
 	suite.Require().NoError(err)
-	suite.Require().Equal(share.Amount, shareOut)
-	suite.Require().Equal(tokenInMaxs, tokenIn)
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, address)
+	suite.Require().Equal(shareAmount, balances[0].Amount)
+}
+
+func (suite *KeeperTestSuite) TestBurnPoolShareFromAccount() {
+	address := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	poolId := uint64(1)
+	shareAmount := sdk.NewInt(200000)
+	burnAmount := sdk.NewInt(100000)
+	pool := types.TranchePool{
+		Id:               poolId,
+		StrategyContract: "address",
+		StartTime:        1698796800,
+		Maturity:         1572800,
+		SwapFee:          sdk.ZeroDec(),
+		ExitFee:          sdk.OneDec(),
+		PoolAssets: sdk.Coins{
+			sdk.NewInt64Coin("uatom", 1000000),
+			sdk.NewInt64Coin("uosmo", 1000000),
+		},
+	}
+
+	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
+	err := suite.app.IrsKeeper.MintPoolShareToAccount(suite.ctx, pool, address, shareAmount)
+	suite.Require().NoError(err)
+	err = suite.app.IrsKeeper.BurnPoolShareFromAccount(suite.ctx, pool, address, burnAmount)
+	suite.Require().NoError(err)
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, address)
+	suite.Require().Equal(shareAmount.Sub(burnAmount), balances[0].Amount)
 }
