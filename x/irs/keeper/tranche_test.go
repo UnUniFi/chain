@@ -15,12 +15,12 @@ func (suite *KeeperTestSuite) TestSetTranchePool() {
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
 		ExitFee:          sdk.OneDec(),
-		TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
 		PoolAssets: sdk.Coins{
 			sdk.NewInt64Coin("uatom", 1000000),
 			sdk.NewInt64Coin("uosmo", 1000000),
 		},
 	}
+	pool.TotalShares = sdk.NewInt64Coin(types.LsDenom(pool), 1000000)
 
 	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
 	pool2, found := suite.app.IrsKeeper.GetTranchePool(suite.ctx, id)
@@ -38,12 +38,12 @@ func (suite *KeeperTestSuite) TestRemoveTranchePool() {
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
 		ExitFee:          sdk.OneDec(),
-		TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
 		PoolAssets: sdk.Coins{
 			sdk.NewInt64Coin("uatom", 1000000),
 			sdk.NewInt64Coin("uosmo", 1000000),
 		},
 	}
+	pool.TotalShares = sdk.NewInt64Coin(types.LsDenom(pool), 1000000)
 
 	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
 	suite.app.IrsKeeper.RemoveTranchePool(suite.ctx, pool)
@@ -61,7 +61,7 @@ func (suite *KeeperTestSuite) TestGetTranchesByStrategy() {
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.OneDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/1/ls", 1000000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestGetTranchesByStrategy() {
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.ZeroDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 500000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/2/ls", 500000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
@@ -98,7 +98,7 @@ func (suite *KeeperTestSuite) TestGetAllTranchePool() {
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.OneDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/1/ls", 1000000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
@@ -111,7 +111,7 @@ func (suite *KeeperTestSuite) TestGetAllTranchePool() {
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.ZeroDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 500000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/2/ls", 500000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestGetLastTrancheId() {
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.OneDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 1000000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/1/ls", 1000000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
@@ -150,7 +150,7 @@ func (suite *KeeperTestSuite) TestGetLastTrancheId() {
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
 			ExitFee:          sdk.ZeroDec(),
-			TotalShares:      sdk.NewInt64Coin("uatom", 500000),
+			TotalShares:      sdk.NewInt64Coin("irs/tranche/2/ls", 500000),
 			PoolAssets: sdk.Coins{
 				sdk.NewInt64Coin("uatom", 1000000),
 				sdk.NewInt64Coin("uosmo", 1000000),
