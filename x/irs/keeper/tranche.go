@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/irs/types"
 )
@@ -82,4 +83,85 @@ func (k Keeper) GetLastTrancheId(ctx sdk.Context) uint64 {
 	}
 
 	return 0
+}
+
+func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, token sdk.Coin, requiredYt sdk.Int) error {
+	tranche, found := k.GetTranchePool(ctx, trancheId)
+	if !found {
+		return types.ErrTrancheNotFound
+	}
+
+	if trancheType == types.TrancheType_NORMAL_YIELD { // Both PT and YT
+		_, err := k.MintPtYtPair(ctx, sender, tranche, token)
+		if err != nil {
+			return err
+		}
+	} else if trancheType == types.TrancheType_FIXED_YIELD {
+		// Buy PT from AMM with msg.TrancheMaturity for msg.SpendAmount
+		err := k.SwapUtToPt(ctx, sender, tranche, token)
+		if err != nil {
+			return err
+		}
+	} else if trancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
+		// Borrow msg.AmountToBuy from AMM pool
+		// MintPtYtPair
+		// Sell msg.AmountToBuy worth of PT
+		// Return borrowed amount
+		k.SwapUtToYt(ctx, sender, tranche, requiredYt)
+	} else {
+		return types.ErrInvalidTrancheType
+	}
+	return nil
+}
+
+func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, tokens sdk.Coins, requiredUt sdk.Int) error {
+	tranche, found := k.GetTranchePool(ctx, trancheId)
+	if !found {
+		return types.ErrTrancheNotFound
+	}
+
+	if trancheType == types.TrancheType_NORMAL_YIELD { // Both PT and YT
+		err := k.RedeemPtYtPair(ctx, sender, tranche, requiredUt, tokens)
+		if err != nil {
+			return err
+		}
+	} else if trancheType == types.TrancheType_FIXED_YIELD {
+		// If matured, send required amount from unbonded from the share
+		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
+			if len(tokens) != 1 {
+				return sdkerrors.ErrInvalidCoins
+			}
+			err := k.RedeemPtAtMaturity(ctx, sender, tranche, tokens[0])
+			if err != nil {
+				return err
+			}
+		} else {
+			// Else, sell PT from AMM with msg.TrancheMaturity for msg.PTAmount
+			err := k.SwapPtToUt(ctx, sender, tranche, tokens[0])
+			if err != nil {
+				return err
+			}
+		}
+	} else if trancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
+		// If matured, send required amount from unbonded from the share
+		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
+			if len(tokens) != 1 {
+				return sdkerrors.ErrInvalidCoins
+			}
+			err := k.RedeemYtAtMaturity(ctx, sender, tranche, tokens[0])
+			if err != nil {
+				return err
+			}
+		} else {
+			// Else
+			panic("not allowed to withdraw yt before being matured")
+			// Put required amount of msg.PT from user wallet
+			// Close position
+			// Start redemption for strategy share
+			// k.SwapYtToUt()
+		}
+	} else {
+		return types.ErrInvalidTrancheType
+	}
+	return nil
 }

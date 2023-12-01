@@ -22,4 +22,5 @@ var (
 	ErrLimitMinAmount          = errors.Register(ModuleName, 14, "calculated amount is lower than min amount")
 	ErrZeroAmount              = errors.Register(ModuleName, 15, "zero amount")
 	ErrSupplyNotFound          = errors.Register(ModuleName, 16, "supply not found")
+	ErrInvalidTrancheType      = errors.Register(ModuleName, 17, "invalid tranche type")
 )
