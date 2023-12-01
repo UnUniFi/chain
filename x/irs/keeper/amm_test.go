@@ -59,114 +59,119 @@ func (suite *KeeperTestSuite) TestBurnPoolShareFromAccount() {
 	suite.Require().Equal(shareAmount.Sub(burnAmount), balances[0].Amount)
 }
 
-func (suite *KeeperTestSuite) TestDepositToLiquidityPool() {
+func (suite *KeeperTestSuite) TestDepositToLiquidityPool__NotAvailableTranchePool() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	poolId := uint64(1)
 	share := sdk.NewInt64Coin("uatom", 200000)
-	noTokenInMaxs := sdk.Coins{}
 	tokenInMaxs := sdk.Coins{sdk.NewInt64Coin("uatom", 300000), sdk.NewInt64Coin("uosmo", 300000)}
-	pool := types.TranchePool{
-		Id:               poolId,
-		StrategyContract: "address",
-		StartTime:        1698796800,
-		Maturity:         1572800,
-		SwapFee:          sdk.ZeroDec(),
-		ExitFee:          sdk.OneDec(),
-		PoolAssets: sdk.Coins{
-			sdk.NewInt64Coin("uatom", 1000000),
-			sdk.NewInt64Coin("uosmo", 1000000),
-		},
-	}
 
-	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokenInMaxs)
-	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tokenInMaxs)
-
-	// no pool
-	_, _, err := suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, tokenInMaxs)
-	suite.Require().Error(err)
-	suite.app.IrsKeeper.SetTranchePool(suite.ctx, pool)
-	// todo: no tokenInMaxs
-	_, _, err = suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, noTokenInMaxs)
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokenInMaxs)
 	suite.Require().NoError(err)
 
-	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokenInMaxs)
-	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tokenInMaxs)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tokenInMaxs)
+	suite.Require().NoError(err)
 
-	// share < tokenInMaxs
-	// tokenInMaxs < share
+	_, _, err = suite.app.IrsKeeper.DepositToLiquidityPool(suite.ctx, sender, poolId, share.Amount, tokenInMaxs)
+	suite.Require().Error(err)
 }
 
-func (s *KeeperTestSuite) TestDepositToLiquidityPool2() {
+func (s *KeeperTestSuite) TestDepositToLiquidityPool() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	strategyContract := sdk.AccAddress("strategy_contract_address")
 	ut := "uatom"
 	pt := types.PtDenom(types.TranchePool{Id: 1})
 	lp := types.LsDenom(types.TranchePool{Id: 1})
 
+	ptUt100 := sdk.NewCoins(sdk.NewCoin(ut, sdk.NewInt(100)), sdk.NewCoin(pt, sdk.NewInt(100))).Sort()
 	ptUt5k := sdk.NewCoins(sdk.NewCoin(ut, sdk.NewInt(5000)), sdk.NewCoin(pt, sdk.NewInt(5000))).Sort()
 	tests := []struct {
 		name            string
 		txSender        sdk.AccAddress
 		sharesRequested sdk.Int
+		existingShares  sdk.Int
+		poolTokens      sdk.Coins
 		tokenInMaxs     sdk.Coins
 		expectPass      bool
 	}{
 		{
-			name:            "basic join no swap",
+			name:            "basic add liquidity",
 			txSender:        sender,
 			sharesRequested: types.OneShare.MulRaw(50),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs:     sdk.Coins{},
 			expectPass:      true,
 		},
 		{
-			name:            "join no swap with zero shares requested",
+			name:            "add liquidity with zero shares requested",
 			txSender:        sender,
 			sharesRequested: sdk.NewInt(0),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs:     sdk.Coins{},
 			expectPass:      false,
 		},
 		{
-			name:            "join no swap with negative shares requested",
+			name:            "add liquidity with negative shares requested",
 			txSender:        sender,
 			sharesRequested: sdk.NewInt(-1),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs:     sdk.Coins{},
 			expectPass:      false,
 		},
 		{
-			name:            "join no swap with insufficient funds",
+			name:            "add liquidity with insufficient funds",
 			txSender:        sender,
 			sharesRequested: sdk.NewInt(-1),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs: sdk.Coins{
-				sdk.NewCoin("bar", sdk.NewInt(4999)), sdk.NewCoin("foo", sdk.NewInt(4999)),
+				sdk.NewCoin(pt, sdk.NewInt(4999)), sdk.NewCoin(ut, sdk.NewInt(4999)),
 			},
 			expectPass: false,
 		},
 		{
-			name:            "join no swap with exact tokenInMaxs",
+			name:            "add liquidity with exact tokenInMaxs",
 			txSender:        sender,
 			sharesRequested: types.OneShare.MulRaw(50),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs: sdk.Coins{
 				ptUt5k[0], ptUt5k[1],
 			},
 			expectPass: true,
 		},
 		{
-			name:            "join no swap with arbitrary extra token in tokenInMaxs",
+			name:            "add liquidity with arbitrary extra token in tokenInMaxs",
 			txSender:        sender,
 			sharesRequested: types.OneShare.MulRaw(50),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs: sdk.Coins{
 				ptUt5k[0], ptUt5k[1], sdk.NewCoin("baz", sdk.NewInt(5000)),
 			},
 			expectPass: false,
 		},
 		{
-			name:            "join no swap with TokenInMaxs not containing every token in pool",
+			name:            "add liquidity with TokenInMaxs not containing every token in pool",
 			txSender:        sender,
 			sharesRequested: types.OneShare.MulRaw(50),
+			existingShares:  types.OneShare,
+			poolTokens:      ptUt100,
 			tokenInMaxs: sdk.Coins{
 				ptUt5k[0],
 			},
 			expectPass: false,
+		},
+		{
+			name:            "adding liquidity to empty pool",
+			txSender:        sender,
+			sharesRequested: types.OneShare,
+			existingShares:  sdk.ZeroInt(),
+			poolTokens:      sdk.Coins{},
+			tokenInMaxs:     ptUt5k,
+			expectPass:      true,
 		},
 	}
 
@@ -185,8 +190,8 @@ func (s *KeeperTestSuite) TestDepositToLiquidityPool2() {
 			Maturity:         86400 * 180,
 			SwapFee:          sdk.NewDecWithPrec(3, 3), // 0.3%
 			ExitFee:          sdk.ZeroDec(),
-			TotalShares:      sdk.Coin{},
-			PoolAssets:       sdk.Coins{},
+			TotalShares:      sdk.NewCoin(lp, test.existingShares),
+			PoolAssets:       test.poolTokens,
 		}
 		irsKeeper.SetTranchePool(ctx, tranchePool)
 
