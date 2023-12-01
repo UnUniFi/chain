@@ -236,17 +236,17 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	poolTokenOutBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenOutDenom))
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
-	outWeight := sdk.OneDec()
-	inWeight := sdk.OneDec()
-
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
-	tokenAmountOut := solveConstantFunctionInvariant(
+	t := sdk.OneDec().Sub(sdk.NewDec(ctx.BlockTime().Unix() - int64(p.StartTime)).Quo(sdk.NewDec(int64(p.Maturity))))
+	if !t.IsPositive() {
+		return sdk.Coin{}, sdkerrors.Wrapf(ErrTrancheAlreadyMatured, "tranche has been already matured")
+	}
+	tokenAmountOut := solve1tConstantFunctionInvariant(
+		t,
 		poolTokenInBalance,
 		poolPostSwapInBalance,
-		inWeight,
 		poolTokenOutBalance,
-		outWeight,
 	)
 
 	// We ignore the decimal component, as we round down the token amount out.
@@ -268,32 +268,16 @@ func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.
 	return nil
 }
 
-// solveConstantFunctionInvariant solves the constant function of an AMM
-// that determines the relationship between the differences of two sides
-// of assets inside the pool.
-// For fixed balanceXBefore, balanceXAfter, weightX, balanceY, weightY,
-// we could deduce the balanceYDelta, calculated by:
-// balanceYDelta = balanceY * (1 - (balanceXBefore/balanceXAfter)^(weightX/weightY))
-// balanceYDelta is positive when the balance liquidity decreases.
-// balanceYDelta is negative when the balance liquidity increases.
-//
-// panics if tokenWeightUnknown is 0.
-func solveConstantFunctionInvariant(
+func solve1tConstantFunctionInvariant(
+	t,
 	tokenBalanceFixedBefore,
 	tokenBalanceFixedAfter,
-	tokenWeightFixed,
-	tokenBalanceUnknownBefore,
-	tokenWeightUnknown sdk.Dec,
+	tokenBalanceUnknownBefore sdk.Dec,
 ) sdk.Dec {
-	// weightRatio = (weightX/weightY)
-	weightRatio := tokenWeightFixed.Quo(tokenWeightUnknown)
-
-	// y = balanceXBefore/balanceXAfter
-	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
-
-	// amountY = balanceY * (1 - (y ^ weightRatio))
-	yToWeightRatio := Pow(y, weightRatio)
-	paranthetical := sdk.OneDec().Sub(yToWeightRatio)
-	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
-	return amountY
+	exp := sdk.OneDec().Sub(t)
+	// x1^(1-t) + y1^(1-t)
+	k := Pow(tokenBalanceFixedBefore, exp).Add(Pow(tokenBalanceUnknownBefore, exp))
+	y2exp := k.Sub(Pow(tokenBalanceUnknownBefore, exp))
+	y2 := Pow(y2exp, sdk.OneDec().Quo(exp))
+	return y2
 }

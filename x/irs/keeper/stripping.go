@@ -122,7 +122,7 @@ func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool type
 
 func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
 	}
 	ptDenom := types.PtDenom(pool)
 	if ptDenom != ptAmount.Denom {
@@ -148,7 +148,7 @@ func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 
 func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ytAmount sdk.Coin) error {
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
 	}
 	ptDenom := types.PtDenom(pool)
 	ytDenom := types.YtDenom(pool)
