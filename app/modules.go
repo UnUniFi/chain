@@ -124,7 +124,7 @@ var maccPerms = map[string][]string{
 	nftfactorytypes.ModuleName: nil,
 
 	yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	irstypes.ModuleName:             nil,
+	irstypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
 	stakeibctypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	interchainquerytypes.ModuleName: nil,
 
