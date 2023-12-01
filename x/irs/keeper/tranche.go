@@ -108,6 +108,8 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 		// Sell msg.AmountToBuy worth of PT
 		// Return borrowed amount
 		k.SwapUtToYt(ctx, sender, tranche, requiredYt)
+	} else {
+		return types.ErrInvalidTrancheType
 	}
 	return nil
 }
@@ -118,7 +120,12 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 		return types.ErrTrancheNotFound
 	}
 
-	if trancheType == types.TrancheType_FIXED_YIELD {
+	if trancheType == types.TrancheType_NORMAL_YIELD { // Both PT and YT
+		err := k.RedeemPtYtPair(ctx, sender, tranche, requiredUt, tokens)
+		if err != nil {
+			return err
+		}
+	} else if trancheType == types.TrancheType_FIXED_YIELD {
 		// If matured, send required amount from unbonded from the share
 		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
 			if len(tokens) != 1 {
@@ -128,12 +135,12 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			if err != nil {
 				return err
 			}
-		}
-
-		// Else, sell PT from AMM with msg.TrancheMaturity for msg.PTAmount
-		err := k.SwapPtToUt(ctx, sender, tranche, tokens[0])
-		if err != nil {
-			return err
+		} else {
+			// Else, sell PT from AMM with msg.TrancheMaturity for msg.PTAmount
+			err := k.SwapPtToUt(ctx, sender, tranche, tokens[0])
+			if err != nil {
+				return err
+			}
 		}
 	} else if trancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
 		// If matured, send required amount from unbonded from the share
@@ -145,18 +152,16 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			if err != nil {
 				return err
 			}
+		} else {
+			// Else
+			panic("not allowed to withdraw yt before being matured")
+			// Put required amount of msg.PT from user wallet
+			// Close position
+			// Start redemption for strategy share
+			// k.SwapYtToUt()
 		}
-		// Else
-		panic("not allowed to withdraw yt before being matured")
-		// Put required amount of msg.PT from user wallet
-		// Close position
-		// Start redemption for strategy share
-		// k.SwapYtToUt()
-	} else { // All yield
-		err := k.RedeemPtYtPair(ctx, sender, tranche, requiredUt, tokens)
-		if err != nil {
-			return err
-		}
+	} else {
+		return types.ErrInvalidTrancheType
 	}
 	return nil
 }
