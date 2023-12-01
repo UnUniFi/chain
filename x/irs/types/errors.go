@@ -20,4 +20,6 @@ var (
 	ErrDenomNotFoundInPool     = errors.Register(ModuleName, 12, "denom not found on the pool")
 	ErrInvalidMathApprox       = errors.Register(ModuleName, 13, "invalid math approximation")
 	ErrLimitMinAmount          = errors.Register(ModuleName, 14, "calculated amount is lower than min amount")
+	ErrZeroAmount              = errors.Register(ModuleName, 15, "zero amount")
+	ErrSupplyNotFound          = errors.Register(ModuleName, 16, "supply not found")
 )
