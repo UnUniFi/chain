@@ -14,6 +14,8 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/UnUniFi/chain/wasmbinding/bindings"
+	irskeeper "github.com/UnUniFi/chain/x/irs/keeper"
+	irstypes "github.com/UnUniFi/chain/x/irs/types"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
@@ -39,6 +41,7 @@ type CustomMessenger struct {
 	icqKeeper             *icqkeeper.Keeper
 	recordsKeeper         *recordskeeper.Keeper
 	yieldaggregatorKeeper *yieldaggregatorkeeper.Keeper
+	irsKeeper             *irskeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -61,6 +64,9 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 		if contractMsg.DeputyDepositToVault != nil {
 			return m.deputyDepositToVault(ctx, contractAddr, contractMsg.DeputyDepositToVault)
+		}
+		if contractMsg.DeputyDepositToTranche != nil {
+			return nil, nil, sdkerrors.Wrap(wasmvmtypes.UnsupportedRequest{Kind: "deposit to tranche"}, "ununifi msg")
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
@@ -172,6 +178,55 @@ func PerformDeputyDepositToVault(bk *bankkeeper.BaseKeeper, iyaKeeper *yieldaggr
 		vaultId,
 		amount,
 	)
+	if err != nil {
+		return sdkerrors.Wrap(err, "depositing to vault")
+	}
+	return nil
+}
+
+func (m *CustomMessenger) DeputyDepositToTranche(ctx sdk.Context, contractAddr sdk.AccAddress, deputyDepositToTranche *bindings.DeputyDepositToTranche) ([]sdk.Event, [][]byte, error) {
+	err := PerformDeputyDepositToTranche(m.bankKeeper, m.irsKeeper, ctx, contractAddr, deputyDepositToTranche)
+	if err != nil {
+		return nil, nil, sdkerrors.Wrap(err, "perform ibc transfer")
+	}
+	return nil, nil, nil
+}
+
+func PerformDeputyDepositToTranche(bk *bankkeeper.BaseKeeper, irsKeeper *irskeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, deputyDepositToTranche *bindings.DeputyDepositToTranche) error {
+	if deputyDepositToTranche == nil {
+		return wasmvmtypes.InvalidRequest{Err: "icq request empty"}
+	}
+
+	amount, err := wasmkeeper.ConvertWasmCoinsToSdkCoins(deputyDepositToTranche.Amount)
+	if err != nil {
+		return err
+	}
+
+	depositor, err := sdk.AccAddressFromBech32(deputyDepositToTranche.Depositor)
+	if err != nil {
+		return err
+	}
+
+	err = bk.SendCoins(ctx, contractAddr, depositor, amount)
+	if err != nil {
+		return sdkerrors.Wrap(err, "sending coins from contract to depositor account")
+	}
+
+	trancheId, err := strconv.ParseUint(deputyDepositToTranche.TrancheId, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	typeInt, err := strconv.ParseInt(deputyDepositToTranche.TrancheType, 10, 32)
+	if err != nil {
+		return err
+	}
+	trancheType := irstypes.TrancheType(typeInt)
+	if err != nil {
+		return err
+	}
+
+	err = irsKeeper.DepositToTranchePool(ctx, depositor, trancheId, trancheType, amount[0], sdk.ZeroInt())
 	if err != nil {
 		return sdkerrors.Wrap(err, "depositing to vault")
 	}
