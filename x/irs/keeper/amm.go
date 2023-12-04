@@ -25,6 +25,7 @@ func (k Keeper) DepositToLiquidityPool(
 
 	// When liquidity is added to the empty pool
 	if pool.TotalShares.IsZero() {
+		pool.IncreaseLiquidity(types.OneShare, tokenInMaxs)
 		err = k.applyJoinPoolStateChange(ctx, pool, sender, types.OneShare, tokenInMaxs)
 		return tokenInMaxs, types.OneShare, err
 	}
@@ -96,7 +97,7 @@ func (k Keeper) WithdrawFromLiquidityPool(
 	}
 
 	totalSharesAmount := pool.GetTotalShares()
-	if shareInAmount.GTE(totalSharesAmount.Amount) {
+	if shareInAmount.GT(totalSharesAmount.Amount) {
 		return sdk.Coins{}, types.ErrInvalidTotalShares
 	} else if shareInAmount.LTE(sdk.ZeroInt()) {
 		return sdk.Coins{}, types.ErrInvalidTotalShares
