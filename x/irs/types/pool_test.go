@@ -113,7 +113,41 @@ func TestEnsureDenomInPool(t *testing.T) {
 	}
 }
 
-func TestMaximalExactRatioJoin(t *testing.T) {}
+func TestMaximalExactRatioJoin(t *testing.T) {
+	emptyContext := sdk.Context{}
+
+	tranchePoolAssets := sdk.NewCoins(sdk.NewInt64Coin("foo", 100), sdk.NewInt64Coin("bar", 100))
+	pool := poolStructFromAssets(tranchePoolAssets, defaultTwoAssetScalingFactors)
+
+	tests := []struct {
+		name        string
+		pool        TranchePool
+		tokensIn    sdk.Coins
+		expNumShare sdk.Int
+		expRemCoin  sdk.Coins
+	}{
+		{
+			name:        "two asset pool, same tokenIn ratio",
+			tokensIn:    sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(10)), sdk.NewCoin("bar", sdk.NewInt(10))),
+			expNumShare: sdk.NewIntFromUint64(10000000000000000000),
+			expRemCoin:  sdk.Coins{},
+		},
+		{
+			name:        "two asset pool, different tokenIn ratio with pool",
+			tokensIn:    sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(10)), sdk.NewCoin("bar", sdk.NewInt(11))),
+			expNumShare: sdk.NewIntFromUint64(10000000000000000000),
+			expRemCoin:  sdk.NewCoins(sdk.NewCoin("bar", sdk.NewIntFromUint64(1))),
+		},
+	}
+
+	for _, test := range tests {
+		numShare, remCoins, err := MaximalExactRatioJoin(&pool, emptyContext, test.tokensIn)
+
+		require.NoError(t, err)
+		require.Equal(t, test.expNumShare, numShare)
+		require.Equal(t, test.expRemCoin, remCoins)
+	}
+}
 
 func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 	tenPercentOfTwoPool := int64(1000000000 / 10)
