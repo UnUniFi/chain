@@ -55,23 +55,6 @@ var (
 	)
 )
 
-// we create a pool struct directly to bypass checks in NewStableswapPool()
-func poolStructFromAssets(assets sdk.Coins, scalingFactors []uint64) TranchePool {
-
-	p := TranchePool{
-		Id:               defaultPoolId,
-		StrategyContract: defaultContractAddr,
-		StartTime:        defaultStartTime,
-		Maturity:         defaultMaturity,
-		SwapFee:          defaultSwapDee,
-		ExitFee:          defaultExitFee,
-		TotalShares:      sdk.Coin{},
-		PoolAssets:       assets,
-	}
-	InitPoolSharesSupply := OneShare.MulRaw(100)
-	p.TotalShares = sdk.NewCoin(LsDenom(p), InitPoolSharesSupply)
-	return p
-}
 func TestEnsureDenomInPool(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -321,4 +304,110 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 	}
 }
 
-func TestIncreaseLiquidity(t *testing.T) {}
+func TestCalcExitPool(t *testing.T) {
+	emptyContext := sdk.Context{}
+
+	twoStablePoolAssets := sdk.NewCoins(
+		sdk.NewInt64Coin("foo", 1000000000),
+		sdk.NewInt64Coin("bar", 1000000000),
+	)
+	threePoolAssets := sdk.NewCoins(sdk.NewInt64Coin("foo", 2000000000), sdk.NewInt64Coin("bar", 3000000000), sdk.NewInt64Coin("baz", 4000000000))
+
+	// create these pools used for testing
+	twoAssetPool := poolStructFromAssets(twoStablePoolAssets, defaultTwoAssetScalingFactors)
+	threeAssetPool := poolStructFromAssets(threePoolAssets, defaultThreeAssetScalingFactors)
+
+	twoAssetPoolWithExitFee := poolStructFromAssets(twoStablePoolAssets, defaultTwoAssetScalingFactors)
+	twoAssetPoolWithExitFee.ExitFee = sdk.MustNewDecFromStr("0.0001")
+
+	threeAssetPoolWithExitFee := poolStructFromAssets(threePoolAssets, defaultThreeAssetScalingFactors)
+	threeAssetPoolWithExitFee.ExitFee = sdk.MustNewDecFromStr("0.0002")
+
+	tests := []struct {
+		name          string
+		pool          TranchePool
+		exitingShares sdk.Int
+		expError      bool
+	}{
+		{
+			name:          "two-asset pool, exiting shares grater than total shares",
+			pool:          twoAssetPool,
+			exitingShares: twoAssetPool.GetTotalShares().Amount.AddRaw(1),
+			expError:      true,
+		},
+		{
+			name:          "three-asset pool, exiting shares grater than total shares",
+			pool:          threeAssetPool,
+			exitingShares: threeAssetPool.GetTotalShares().Amount.AddRaw(1),
+			expError:      true,
+		},
+		{
+			name:          "two-asset pool, valid exiting shares",
+			pool:          twoAssetPool,
+			exitingShares: twoAssetPool.GetTotalShares().Amount.QuoRaw(2),
+			expError:      false,
+		},
+		{
+			name:          "three-asset pool, valid exiting shares",
+			pool:          threeAssetPool,
+			exitingShares: sdk.NewIntFromUint64(3000000000000),
+			expError:      false,
+		},
+		{
+			name:          "two-asset pool with exit fee, valid exiting shares",
+			pool:          twoAssetPoolWithExitFee,
+			exitingShares: twoAssetPoolWithExitFee.GetTotalShares().Amount.QuoRaw(2),
+			expError:      false,
+		},
+		{
+			name:          "three-asset pool with exit fee, valid exiting shares",
+			pool:          threeAssetPoolWithExitFee,
+			exitingShares: sdk.NewIntFromUint64(7000000000000),
+			expError:      false,
+		},
+	}
+
+	for _, test := range tests {
+		// using empty context since, currently, the context is not used anyway. This might be changed in the future
+		exitFee := test.pool.ExitFee
+		exitCoins, err := CalcExitPool(emptyContext, &test.pool, test.exitingShares, exitFee)
+		if test.expError {
+			require.Error(t, err, "test: %v", test.name)
+		} else {
+			require.NoError(t, err, "test: %v", test.name)
+
+			// exitCoins = ( (1 - exitFee) * exitingShares / poolTotalShares ) * poolTotalLiquidity
+			expExitCoins := mulCoins(test.pool.GetPoolAssets(), (sdk.OneDec().Sub(exitFee)).MulInt(test.exitingShares).QuoInt(test.pool.GetTotalShares().Amount))
+			require.Equal(t, expExitCoins.Sort().String(), exitCoins.Sort().String(), "test: %v", test.name)
+		}
+	}
+}
+
+// we create a pool struct directly to bypass checks in NewStableswapPool()
+func poolStructFromAssets(assets sdk.Coins, scalingFactors []uint64) TranchePool {
+
+	p := TranchePool{
+		Id:               defaultPoolId,
+		StrategyContract: defaultContractAddr,
+		StartTime:        defaultStartTime,
+		Maturity:         defaultMaturity,
+		SwapFee:          defaultSwapDee,
+		ExitFee:          defaultExitFee,
+		TotalShares:      sdk.Coin{},
+		PoolAssets:       assets,
+	}
+	InitPoolSharesSupply := OneShare.MulRaw(100)
+	p.TotalShares = sdk.NewCoin(LsDenom(p), InitPoolSharesSupply)
+	return p
+}
+
+func mulCoins(coins sdk.Coins, multiplier sdk.Dec) sdk.Coins {
+	outCoins := sdk.Coins{}
+	for _, coin := range coins {
+		outCoin := sdk.NewCoin(coin.Denom, multiplier.MulInt(coin.Amount).TruncateInt())
+		if !outCoin.Amount.IsZero() {
+			outCoins = append(outCoins, outCoin)
+		}
+	}
+	return outCoins
+}
