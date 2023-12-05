@@ -242,7 +242,7 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	if !t.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(ErrTrancheAlreadyMatured, "tranche has been already matured")
 	}
-	tokenAmountOut := solve1tConstantFunctionInvariant(
+	tokenAmountOut := solveConstantFunctionInvariant(
 		t,
 		poolTokenInBalance,
 		poolPostSwapInBalance,
@@ -268,7 +268,7 @@ func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.
 	return nil
 }
 
-func solve1tConstantFunctionInvariant(
+func solveConstantFunctionInvariant(
 	t,
 	tokenBalanceFixedBefore,
 	tokenBalanceFixedAfter,
