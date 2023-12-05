@@ -274,6 +274,8 @@ func solveConstantFunctionInvariant(
 	tokenBalanceFixedAfter,
 	tokenBalanceUnknownBefore sdk.Dec,
 ) sdk.Dec {
+	// todo: fix panic: base must be lesser than two
+	// tokenBalanceFixedBefore, tokenBalanceUnknownBefore > 2
 	exp := sdk.OneDec().Sub(t)
 	// x1^(1-t) + y1^(1-t)
 	k := Pow(tokenBalanceFixedBefore, exp).Add(Pow(tokenBalanceUnknownBefore, exp))
