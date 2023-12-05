@@ -1,8 +1,14 @@
 package types
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
+	tmdb "github.com/cometbft/cometbft-db"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
@@ -13,8 +19,8 @@ var (
 	defaultExitFee      = sdk.ZeroDec()
 	defaultPoolId       = uint64(1)
 	defaultContractAddr = sdk.AccAddress([]byte("contract")).String()
-	defaultStartTime    = uint64(1560000000)
-	defaultMaturity     = uint64(31536000) // 1year
+	defaultStartTime    = uint64(1701388800) // 2023-12-01 00:00:00 +0000 UTC
+	defaultMaturity     = uint64(31536000)   // 1 year
 
 	defaultTwoAssetScalingFactors   = []uint64{1, 1}
 	defaultThreeAssetScalingFactors = []uint64{1, 1, 1}
@@ -411,3 +417,102 @@ func mulCoins(coins sdk.Coins, multiplier sdk.Dec) sdk.Coins {
 	}
 	return outCoins
 }
+
+func TestSwapOutAmtGivenIn(t *testing.T) {
+	tests := map[string]struct {
+		poolAssets            sdk.Coins
+		scalingFactors        []uint64
+		tokenIn               sdk.Coin
+		expectedTokenOut      sdk.Coin
+		expectedPoolLiquidity sdk.Coins
+		spreadFactor          sdk.Dec
+		expError              bool
+	}{
+		"even pool basic trade": {
+			poolAssets:            twoEvenStablePoolAssets,
+			scalingFactors:        defaultTwoAssetScalingFactors,
+			tokenIn:               sdk.NewInt64Coin("foo", 100),
+			expectedTokenOut:      sdk.NewInt64Coin("bar", 99),
+			expectedPoolLiquidity: twoEvenStablePoolAssets.Add(sdk.NewInt64Coin("foo", 100)).Sub(sdk.NewCoins(sdk.NewInt64Coin("bar", 99))...),
+			spreadFactor:          sdk.ZeroDec(),
+			expError:              false,
+		},
+		"100:1 scaling factor ratio, even swap": {
+			poolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("bar", 1000000000),
+				sdk.NewInt64Coin("foo", 10000000),
+			),
+			scalingFactors:   []uint64{100, 1},
+			tokenIn:          sdk.NewInt64Coin("foo", 100),
+			expectedTokenOut: sdk.NewInt64Coin("bar", 9999),
+			expectedPoolLiquidity: sdk.NewCoins(
+				sdk.NewInt64Coin("bar", 1000000000).SubAmount(sdk.NewIntFromUint64(9999)),
+				sdk.NewInt64Coin("foo", 10000000).AddAmount(sdk.NewIntFromUint64(100)),
+			),
+			spreadFactor: sdk.ZeroDec(),
+			expError:     false,
+		},
+		// TODO: Add test cases here, where they're off 1-1 ratio
+		// * (we just need to verify that the further off they are, further slippage is)
+		// * Add test cases with non-zero spread factor.
+		// looks like its really an error due to slippage at limit
+		"trade hits max pool capacity for asset": {
+			poolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("foo", 9_999_999_998),
+				sdk.NewInt64Coin("bar", 9_999_999_998),
+			),
+			scalingFactors:   defaultTwoAssetScalingFactors,
+			tokenIn:          sdk.NewInt64Coin("foo", 1),
+			expectedTokenOut: sdk.Coin{},
+			expectedPoolLiquidity: sdk.NewCoins(
+				sdk.NewInt64Coin("foo", 9_999_999_999),
+				sdk.NewInt64Coin("bar", 9_999_999_997),
+			),
+			spreadFactor: sdk.ZeroDec(),
+			expError:     true,
+		},
+		"trade exceeds max pool capacity for asset": {
+			poolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("foo", 10_000_000_000),
+				sdk.NewInt64Coin("bar", 10_000_000_000),
+			),
+			scalingFactors:   defaultTwoAssetScalingFactors,
+			tokenIn:          sdk.NewInt64Coin("foo", 1),
+			expectedTokenOut: sdk.Coin{},
+			expectedPoolLiquidity: sdk.NewCoins(
+				sdk.NewInt64Coin("foo", 10_000_000_000),
+				sdk.NewInt64Coin("bar", 10_000_000_000),
+			),
+			spreadFactor: sdk.ZeroDec(),
+			expError:     true,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			db := tmdb.NewMemDB()
+			stateStore := store.NewCommitMultiStore(db)
+			ctx := sdk.NewContext(stateStore, tmproto.Header{Time: time.Unix(1704067200, 0)}, false, log.NewNopLogger())
+			p := poolStructFromAssets(tc.poolAssets, tc.scalingFactors)
+
+			tokenOut, err := p.SwapOutAmtGivenIn(ctx, tc.tokenIn, tc.expectedTokenOut.Denom, tc.spreadFactor)
+			if tc.expError {
+				require.Error(t, err)
+				return
+			}
+			fmt.Println("expErr", tc.expError, "err", err)
+			require.NoError(t, err)
+			poolLiquidity := sdk.Coins(p.PoolAssets)
+			if !tc.expError {
+				require.Equal(t, tc.expectedTokenOut.Amount, tokenOut.Amount)
+				require.True(t, poolLiquidity.IsAllGTE(tc.expectedPoolLiquidity),
+					"p.PoolLiquidity.IsAllGTE(tc.expectedPoolLiquidity) failed. Pool liq %v, expected %v",
+					poolLiquidity, tc.expectedPoolLiquidity)
+			}
+		})
+	}
+}
+
+// func TestCalcOutAmtGivenIn(t *testing.T) {}
+
+// func TestApplySwap() {}
