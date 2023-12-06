@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -235,8 +236,12 @@ func (p TranchePool) CalcOutAmtGivenIn(
 ) (sdk.Coin, error) {
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
 	// Pool balance of tokenIn and tokenOut
-	poolTokenInBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenIn.Denom))
-	poolTokenOutBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenOutDenom))
+	poolAssetIn, poolAssetOut, err := p.parsePoolAssetsByDenoms(tokenIn.Denom, tokenOutDenom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Amount)
+	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Amount)
 	// Pool balance of tokenIn + tokenAmountInAfterFee
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
@@ -291,4 +296,28 @@ func solveConstantFunctionInvariant(
 	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
 	// TokenOut to be issued = y1 - y2
 	return y1.Sub(y2).SDKDec()
+}
+
+func (p TranchePool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+	Aasset sdk.Coin, Basset sdk.Coin, err error,
+) {
+	Aasset, found1 := getPoolAssetByDenom(p.PoolAssets, tokenADenom)
+	Basset, found2 := getPoolAssetByDenom(p.PoolAssets, tokenBDenom)
+
+	if !found1 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenADenom)
+	}
+	if !found2 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenBDenom)
+	}
+	return Aasset, Basset, nil
+}
+
+func getPoolAssetByDenom(assets []sdk.Coin, denom string) (sdk.Coin, bool) {
+	for _, asset := range assets {
+		if asset.Denom == denom {
+			return asset, true
+		}
+	}
+	return sdk.Coin{}, false
 }
