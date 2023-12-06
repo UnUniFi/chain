@@ -234,8 +234,10 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	swapFee sdk.Dec,
 ) (sdk.Coin, error) {
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
-	poolTokenInBalance := sdk.NewDecFromInt(tokenIn.Amount)
+	// Pool balance of tokenIn and tokenOut
+	poolTokenInBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenIn.Denom))
 	poolTokenOutBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenOutDenom))
+	// Pool balance of tokenIn + tokenAmountInAfterFee
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
 	// deduct swapfee on the tokensIn
@@ -278,12 +280,15 @@ func solveConstantFunctionInvariant(
 ) sdk.Dec {
 	exp := osmomath.BigDecFromSDKDec(sdk.OneDec().Sub(t))
 	// k = x1^(1-t) + y1^(1-t)
-	x1exp := osmomath.BigDecFromSDKDec(tokenBalanceFixedBefore).Power(exp)
-	y1exp := osmomath.BigDecFromSDKDec(tokenBalanceUnknownBefore).Power(exp)
+	x1 := osmomath.BigDecFromSDKDec(tokenBalanceFixedBefore)
+	x1exp := x1.Power(exp)
+	y1 := osmomath.BigDecFromSDKDec(tokenBalanceUnknownBefore)
+	y1exp := y1.Power(exp)
 	k := x1exp.Add(y1exp)
 	// y2^(1-t) = k - x2^(1-t)
 	y2exp := k.Sub(osmomath.BigDecFromSDKDec(tokenBalanceFixedAfter).Power(exp))
 	// y2 = y2^(1-t)^(1/(1-t))
 	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
-	return y2.SDKDec()
+	// TokenOut to be issued = y1 - y2
+	return y1.Sub(y2).SDKDec()
 }
