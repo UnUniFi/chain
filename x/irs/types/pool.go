@@ -5,6 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/osmomath"
 )
 
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with spreadFactor applied.
@@ -274,12 +276,14 @@ func solveConstantFunctionInvariant(
 	tokenBalanceFixedAfter,
 	tokenBalanceUnknownBefore sdk.Dec,
 ) sdk.Dec {
-	// todo: fix panic: base must be lesser than two
-	// tokenBalanceFixedBefore, tokenBalanceUnknownBefore > 2
-	exp := sdk.OneDec().Sub(t)
-	// x1^(1-t) + y1^(1-t)
-	k := Pow(tokenBalanceFixedBefore, exp).Add(Pow(tokenBalanceUnknownBefore, exp))
-	y2exp := k.Sub(Pow(tokenBalanceUnknownBefore, exp))
-	y2 := Pow(y2exp, sdk.OneDec().Quo(exp))
-	return y2
+	exp := osmomath.BigDecFromSDKDec(sdk.OneDec().Sub(t))
+	// k = x1^(1-t) + y1^(1-t)
+	x1exp := osmomath.BigDecFromSDKDec(tokenBalanceFixedBefore).Power(exp)
+	y1exp := osmomath.BigDecFromSDKDec(tokenBalanceUnknownBefore).Power(exp)
+	k := x1exp.Add(y1exp)
+	// y2^(1-t) = k - x2^(1-t)
+	y2exp := k.Sub(osmomath.BigDecFromSDKDec(tokenBalanceFixedAfter).Power(exp))
+	// y2 = y2^(1-t)^(1/(1-t))
+	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+	return y2.SDKDec()
 }
