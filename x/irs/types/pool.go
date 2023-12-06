@@ -2,9 +2,12 @@ package types
 
 import (
 	"errors"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/osmomath"
 )
 
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with spreadFactor applied.
@@ -232,8 +235,14 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	swapFee sdk.Dec,
 ) (sdk.Coin, error) {
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
-	poolTokenInBalance := sdk.NewDecFromInt(tokenIn.Amount)
-	poolTokenOutBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenOutDenom))
+	// Pool balance of tokenIn and tokenOut
+	poolAssetIn, poolAssetOut, err := p.parsePoolAssetsByDenoms(tokenIn.Denom, tokenOutDenom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Amount)
+	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Amount)
+	// Pool balance of tokenIn + tokenAmountInAfterFee
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
 	// deduct swapfee on the tokensIn
@@ -242,7 +251,7 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	if !t.IsPositive() {
 		return sdk.Coin{}, sdkerrors.Wrapf(ErrTrancheAlreadyMatured, "tranche has been already matured")
 	}
-	tokenAmountOut := solve1tConstantFunctionInvariant(
+	tokenAmountOut := solveConstantFunctionInvariant(
 		t,
 		poolTokenInBalance,
 		poolPostSwapInBalance,
@@ -268,16 +277,47 @@ func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.
 	return nil
 }
 
-func solve1tConstantFunctionInvariant(
+func solveConstantFunctionInvariant(
 	t,
 	tokenBalanceFixedBefore,
 	tokenBalanceFixedAfter,
 	tokenBalanceUnknownBefore sdk.Dec,
 ) sdk.Dec {
-	exp := sdk.OneDec().Sub(t)
-	// x1^(1-t) + y1^(1-t)
-	k := Pow(tokenBalanceFixedBefore, exp).Add(Pow(tokenBalanceUnknownBefore, exp))
-	y2exp := k.Sub(Pow(tokenBalanceUnknownBefore, exp))
-	y2 := Pow(y2exp, sdk.OneDec().Quo(exp))
-	return y2
+	exp := osmomath.BigDecFromSDKDec(sdk.OneDec().Sub(t))
+	// k = x1^(1-t) + y1^(1-t)
+	x1 := osmomath.BigDecFromSDKDec(tokenBalanceFixedBefore)
+	x1exp := x1.Power(exp)
+	y1 := osmomath.BigDecFromSDKDec(tokenBalanceUnknownBefore)
+	y1exp := y1.Power(exp)
+	k := x1exp.Add(y1exp)
+	// y2^(1-t) = k - x2^(1-t)
+	y2exp := k.Sub(osmomath.BigDecFromSDKDec(tokenBalanceFixedAfter).Power(exp))
+	// y2 = y2^(1-t)^(1/(1-t))
+	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+	// TokenOut to be issued = y1 - y2
+	return y1.Sub(y2).SDKDec()
+}
+
+func (p TranchePool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+	Aasset sdk.Coin, Basset sdk.Coin, err error,
+) {
+	Aasset, found1 := getPoolAssetByDenom(p.PoolAssets, tokenADenom)
+	Basset, found2 := getPoolAssetByDenom(p.PoolAssets, tokenBDenom)
+
+	if !found1 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenADenom)
+	}
+	if !found2 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenBDenom)
+	}
+	return Aasset, Basset, nil
+}
+
+func getPoolAssetByDenom(assets []sdk.Coin, denom string) (sdk.Coin, bool) {
+	for _, asset := range assets {
+		if asset.Denom == denom {
+			return asset, true
+		}
+	}
+	return sdk.Coin{}, false
 }
