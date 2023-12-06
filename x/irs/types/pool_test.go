@@ -402,6 +402,7 @@ func mulCoins(coins sdk.Coins, multiplier sdk.Dec) sdk.Coins {
 	return outCoins
 }
 
+// SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func TestSwapOutAmtGivenIn(t *testing.T) {
 	tests := map[string]struct {
 		poolAssets            sdk.Coins
@@ -492,6 +493,69 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 	}
 }
 
-// func TestCalcOutAmtGivenIn(t *testing.T) {}
+func TestApplySwap(t *testing.T) {
+	tests := []struct {
+		name              string
+		currentPoolAssets sdk.Coins
+		tokenIn           sdk.Coin
+		tokenOut          sdk.Coin
+		swapFeeIn         sdk.Dec
+		swapFeeOut        sdk.Dec
+		newPoolAssets     sdk.Coins
+		expectPass        bool
+	}{
+		{
+			name:              "zero swap fee in",
+			currentPoolAssets: twoEvenStablePoolAssets,
+			tokenIn:           sdk.NewInt64Coin("bar", 100),
+			tokenOut:          sdk.NewInt64Coin("foo", 100),
+			swapFeeIn:         sdk.ZeroDec(),
+			swapFeeOut:        sdk.ZeroDec(),
+			newPoolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("bar", 1000000100),
+				sdk.NewInt64Coin("foo", 999999900),
+			),
+			expectPass: true,
+		},
+		{
+			name:              "positive swap fee in",
+			currentPoolAssets: twoEvenStablePoolAssets,
+			tokenIn:           sdk.NewInt64Coin("bar", 1000),
+			tokenOut:          sdk.NewInt64Coin("foo", 1000),
+			swapFeeIn:         sdk.MustNewDecFromStr("0.025"),
+			swapFeeOut:        sdk.ZeroDec(),
+			newPoolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("bar", 1000000975),
+				sdk.NewInt64Coin("foo", 999999000),
+			),
+			expectPass: true,
+		},
+		{
+			name:              "positive swap fee out",
+			currentPoolAssets: twoEvenStablePoolAssets,
+			tokenIn:           sdk.NewInt64Coin("bar", 1000),
+			tokenOut:          sdk.NewInt64Coin("foo", 1000),
+			swapFeeIn:         sdk.MustNewDecFromStr("0.025"),
+			swapFeeOut:        sdk.MustNewDecFromStr("0.05"),
+			newPoolAssets: sdk.NewCoins(
+				sdk.NewInt64Coin("bar", 1000000975),
+				sdk.NewInt64Coin("foo", 999999050),
+			),
+			expectPass: true,
+		},
+	}
 
-// func TestApplySwap() {}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			ctx := sdk.Context{}
+			pool := poolStructFromAssets(test.currentPoolAssets)
+			err := pool.applySwap(ctx, test.tokenIn, test.tokenOut, test.swapFeeIn, test.swapFeeOut)
+			if test.expectPass {
+				require.NoError(t, err)
+				require.Equal(t, test.newPoolAssets, sdk.Coins(pool.PoolAssets))
+			} else {
+				require.Error(t, err)
+			}
+		})
+	}
+}
