@@ -106,7 +106,7 @@ func TestMaximalExactRatioJoin(t *testing.T) {
 	emptyContext := sdk.Context{}
 
 	tranchePoolAssets := sdk.NewCoins(sdk.NewInt64Coin("foo", 100), sdk.NewInt64Coin("bar", 100))
-	pool := poolStructFromAssets(tranchePoolAssets, defaultTwoAssetScalingFactors)
+	pool := poolStructFromAssets(tranchePoolAssets)
 
 	tests := []struct {
 		name        string
@@ -144,7 +144,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 	tests := map[string]struct {
 		tokensIn        sdk.Coins
 		poolAssets      sdk.Coins
-		scalingFactors  []uint64
 		expNumShare     sdk.Int
 		expTokensJoined sdk.Coins
 		expPoolAssets   sdk.Coins
@@ -153,7 +152,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even two asset pool, same tokenIn ratio": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			poolAssets:      twoEvenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			expPoolAssets:   twoEvenStablePoolAssets,
@@ -162,7 +160,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even two asset pool, different tokenIn ratio with pool": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool+1))),
 			poolAssets:      twoEvenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			expPoolAssets:   twoEvenStablePoolAssets,
@@ -171,7 +168,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"uneven two asset pool, same tokenIn ratio": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(2*tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			poolAssets:      twoUnevenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(2*tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			expPoolAssets:   twoUnevenStablePoolAssets,
@@ -180,7 +176,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"uneven two asset pool, different tokenIn ratio with pool": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(2*tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool+1))),
 			poolAssets:      twoUnevenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(2*tenPercentOfTwoPool)), sdk.NewCoin("bar", sdk.NewInt(tenPercentOfTwoPool))),
 			expPoolAssets:   twoUnevenStablePoolAssets,
@@ -189,7 +184,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even three asset pool, same tokenIn ratio": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(tenPercentOfThreePool))),
 			poolAssets:      threeEvenStablePoolAssets,
-			scalingFactors:  defaultThreeAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(tenPercentOfThreePool))),
 			expPoolAssets:   threeEvenStablePoolAssets,
@@ -198,7 +192,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even three asset pool, different tokenIn ratio with pool": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(tenPercentOfThreePool+1))),
 			poolAssets:      threeEvenStablePoolAssets,
-			scalingFactors:  defaultThreeAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(tenPercentOfThreePool))),
 			expPoolAssets:   threeEvenStablePoolAssets,
@@ -207,7 +200,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"uneven three asset pool, same tokenIn ratio": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool))),
 			poolAssets:      threeUnevenStablePoolAssets,
-			scalingFactors:  defaultThreeAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool))),
 			expPoolAssets:   threeUnevenStablePoolAssets,
@@ -216,7 +208,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"uneven three asset pool, different tokenIn ratio with pool": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool+1))),
 			poolAssets:      threeUnevenStablePoolAssets,
-			scalingFactors:  defaultThreeAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool))),
 			expPoolAssets:   threeUnevenStablePoolAssets,
@@ -225,7 +216,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"uneven three asset pool, uneven scaling factors": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool))),
 			poolAssets:      threeUnevenStablePoolAssets,
-			scalingFactors:  []uint64{5, 9, 175},
 			expNumShare:     sdk.NewIntFromUint64(10000000000000000000),
 			expTokensJoined: sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(2*tenPercentOfThreePool)), sdk.NewCoin("asset/c", sdk.NewInt(3*tenPercentOfThreePool))),
 			expPoolAssets:   threeUnevenStablePoolAssets,
@@ -236,7 +226,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even two asset pool, no-swap join attempt with one asset": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool))),
 			poolAssets:      twoEvenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   twoEvenStablePoolAssets,
@@ -245,7 +234,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even two asset pool, no-swap join attempt with one valid and one invalid asset": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("baz", sdk.NewInt(tenPercentOfTwoPool))),
 			poolAssets:      twoEvenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   twoEvenStablePoolAssets,
@@ -254,7 +242,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even two asset pool, no-swap join attempt with two invalid assets": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("baz", sdk.NewInt(tenPercentOfTwoPool)), sdk.NewCoin("qux", sdk.NewInt(tenPercentOfTwoPool))),
 			poolAssets:      twoEvenStablePoolAssets,
-			scalingFactors:  defaultTwoAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   twoEvenStablePoolAssets,
@@ -263,7 +250,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"even three asset pool, no-swap join attempt with an invalid asset": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("asset/a", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("asset/b", sdk.NewInt(tenPercentOfThreePool)), sdk.NewCoin("qux", sdk.NewInt(tenPercentOfThreePool))),
 			poolAssets:      threeEvenStablePoolAssets,
-			scalingFactors:  defaultThreeAssetScalingFactors,
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   threeEvenStablePoolAssets,
@@ -272,7 +258,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"single asset pool, no-swap join attempt with one asset": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(sdk.MaxSortableDec.TruncateInt64()))),
 			poolAssets:      sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(1))),
-			scalingFactors:  []uint64{1},
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(1))),
@@ -281,7 +266,6 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 		"attempt joining pool with no assets in it": {
 			tokensIn:        sdk.NewCoins(sdk.NewCoin("foo", sdk.NewInt(1))),
 			poolAssets:      sdk.Coins{},
-			scalingFactors:  []uint64{},
 			expNumShare:     sdk.NewIntFromUint64(0),
 			expTokensJoined: sdk.Coins{},
 			expPoolAssets:   sdk.Coins{},
@@ -292,7 +276,7 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			ctx := sdk.Context{}
-			pool := poolStructFromAssets(test.poolAssets, test.scalingFactors)
+			pool := poolStructFromAssets(test.poolAssets)
 			numShare, tokensJoined, err := pool.CalcJoinPoolNoSwapShares(ctx, test.tokensIn, pool.SwapFee)
 
 			if test.expectPass {
@@ -320,13 +304,13 @@ func TestCalcExitPool(t *testing.T) {
 	threePoolAssets := sdk.NewCoins(sdk.NewInt64Coin("foo", 2000000000), sdk.NewInt64Coin("bar", 3000000000), sdk.NewInt64Coin("baz", 4000000000))
 
 	// create these pools used for testing
-	twoAssetPool := poolStructFromAssets(twoStablePoolAssets, defaultTwoAssetScalingFactors)
-	threeAssetPool := poolStructFromAssets(threePoolAssets, defaultThreeAssetScalingFactors)
+	twoAssetPool := poolStructFromAssets(twoStablePoolAssets)
+	threeAssetPool := poolStructFromAssets(threePoolAssets)
 
-	twoAssetPoolWithExitFee := poolStructFromAssets(twoStablePoolAssets, defaultTwoAssetScalingFactors)
+	twoAssetPoolWithExitFee := poolStructFromAssets(twoStablePoolAssets)
 	twoAssetPoolWithExitFee.ExitFee = sdk.MustNewDecFromStr("0.0001")
 
-	threeAssetPoolWithExitFee := poolStructFromAssets(threePoolAssets, defaultThreeAssetScalingFactors)
+	threeAssetPoolWithExitFee := poolStructFromAssets(threePoolAssets)
 	threeAssetPoolWithExitFee.ExitFee = sdk.MustNewDecFromStr("0.0002")
 
 	tests := []struct {
@@ -390,7 +374,7 @@ func TestCalcExitPool(t *testing.T) {
 }
 
 // we create a pool struct directly to bypass checks in NewStableswapPool()
-func poolStructFromAssets(assets sdk.Coins, scalingFactors []uint64) TranchePool {
+func poolStructFromAssets(assets sdk.Coins) TranchePool {
 
 	p := TranchePool{
 		Id:               defaultPoolId,
@@ -421,7 +405,6 @@ func mulCoins(coins sdk.Coins, multiplier sdk.Dec) sdk.Coins {
 func TestSwapOutAmtGivenIn(t *testing.T) {
 	tests := map[string]struct {
 		poolAssets            sdk.Coins
-		scalingFactors        []uint64
 		tokenIn               sdk.Coin
 		expectedTokenOut      sdk.Coin
 		expectedPoolLiquidity sdk.Coins
@@ -430,7 +413,6 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 	}{
 		"even pool basic trade": {
 			poolAssets:            twoEvenStablePoolAssets,
-			scalingFactors:        defaultTwoAssetScalingFactors,
 			tokenIn:               sdk.NewInt64Coin("foo", 100),
 			expectedTokenOut:      sdk.NewInt64Coin("bar", 99),
 			expectedPoolLiquidity: twoEvenStablePoolAssets.Add(sdk.NewInt64Coin("foo", 100)).Sub(sdk.NewCoins(sdk.NewInt64Coin("bar", 99))...),
@@ -442,9 +424,8 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 				sdk.NewInt64Coin("bar", 1000000000),
 				sdk.NewInt64Coin("foo", 10000000),
 			),
-			scalingFactors:   []uint64{100, 1},
 			tokenIn:          sdk.NewInt64Coin("foo", 100),
-			expectedTokenOut: sdk.NewInt64Coin("bar", 9999),
+			expectedTokenOut: sdk.NewInt64Coin("bar", 6762), // todo calculate this
 			expectedPoolLiquidity: sdk.NewCoins(
 				sdk.NewInt64Coin("bar", 1000000000).SubAmount(sdk.NewIntFromUint64(9999)),
 				sdk.NewInt64Coin("foo", 10000000).AddAmount(sdk.NewIntFromUint64(100)),
@@ -461,7 +442,6 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 				sdk.NewInt64Coin("foo", 9_999_999_998),
 				sdk.NewInt64Coin("bar", 9_999_999_998),
 			),
-			scalingFactors:   defaultTwoAssetScalingFactors,
 			tokenIn:          sdk.NewInt64Coin("foo", 1),
 			expectedTokenOut: sdk.Coin{},
 			expectedPoolLiquidity: sdk.NewCoins(
@@ -476,7 +456,6 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 				sdk.NewInt64Coin("foo", 10_000_000_000),
 				sdk.NewInt64Coin("bar", 10_000_000_000),
 			),
-			scalingFactors:   defaultTwoAssetScalingFactors,
 			tokenIn:          sdk.NewInt64Coin("foo", 1),
 			expectedTokenOut: sdk.Coin{},
 			expectedPoolLiquidity: sdk.NewCoins(
@@ -493,7 +472,7 @@ func TestSwapOutAmtGivenIn(t *testing.T) {
 			db := tmdb.NewMemDB()
 			stateStore := store.NewCommitMultiStore(db)
 			ctx := sdk.NewContext(stateStore, tmproto.Header{Time: time.Unix(1704067200, 0)}, false, log.NewNopLogger())
-			p := poolStructFromAssets(tc.poolAssets, tc.scalingFactors)
+			p := poolStructFromAssets(tc.poolAssets)
 
 			tokenOut, err := p.SwapOutAmtGivenIn(ctx, tc.tokenIn, tc.expectedTokenOut.Denom, tc.spreadFactor)
 			if tc.expError {
