@@ -23,4 +23,5 @@ var (
 	ErrZeroAmount              = errors.Register(ModuleName, 15, "zero amount")
 	ErrSupplyNotFound          = errors.Register(ModuleName, 16, "supply not found")
 	ErrInvalidTrancheType      = errors.Register(ModuleName, 17, "invalid tranche type")
+	ErrInvalidTrancheStartTime = errors.Register(ModuleName, 18, "invalid tranche start time")
 )
