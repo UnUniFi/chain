@@ -40,6 +40,14 @@ func (k Keeper) SwapExactAmountIn(
 		return sdk.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
 
+	// check sender balance first
+	poolAddr := types.GetVaultModuleAddress(pool)
+	tokensIn := sdk.Coins{tokenIn}
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
+	if err != nil {
+		return sdk.Int{}, err
+	}
+
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
 	tokenOutCoin, err := pool.SwapOutAmtGivenIn(ctx, tokenIn, tokenOutDenom, swapFee)
@@ -59,30 +67,8 @@ func (k Keeper) SwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	err = k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin)
-	if err != nil {
-		return sdk.Int{}, err
-	}
+	k.SetTranchePool(ctx, pool)
 
 	// Subtract swap out fee from the token out amount.
 	return tokenOutAmount, nil
-}
-
-func (k Keeper) UpdatePoolForSwap(
-	ctx sdk.Context,
-	pool types.TranchePool,
-	sender sdk.AccAddress,
-	tokenIn sdk.Coin,
-	tokenOut sdk.Coin,
-) error {
-	tokensIn := sdk.Coins{tokenIn}
-	k.SetTranchePool(ctx, pool)
-
-	poolAddr := types.GetVaultModuleAddress(pool)
-	err := k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
