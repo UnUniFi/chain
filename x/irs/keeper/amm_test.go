@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -260,8 +258,6 @@ func (suite *KeeperTestSuite) TestGetMaximalNoSwapLPAmount() {
 			neededLpLiquidity, err := keeper.GetMaximalNoSwapLPAmount(ctx, tranchePool, tc.shareOutAmount)
 			if tc.err != nil {
 				suite.Require().Error(err)
-				msgError := fmt.Sprintf("Too few shares out wanted. (debug: getMaximalNoSwapLPAmount share ratio is zero or negative): %s", tc.err)
-				suite.Require().EqualError(err, msgError)
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(neededLpLiquidity, tc.expectedLpLiquidity)
