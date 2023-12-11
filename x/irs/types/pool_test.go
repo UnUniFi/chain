@@ -547,9 +547,8 @@ func TestApplySwap(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			ctx := sdk.Context{}
 			pool := poolStructFromAssets(test.currentPoolAssets)
-			err := pool.applySwap(ctx, test.tokenIn, test.tokenOut, test.swapFeeIn, test.swapFeeOut)
+			err := pool.applySwap(test.tokenIn, test.tokenOut, test.swapFeeIn, test.swapFeeOut)
 			if test.expectPass {
 				require.NoError(t, err)
 				require.Equal(t, test.newPoolAssets, sdk.Coins(pool.PoolAssets))
