@@ -107,7 +107,10 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 		// MintPtYtPair
 		// Sell msg.AmountToBuy worth of PT
 		// Return borrowed amount
-		k.SwapUtToYt(ctx, sender, tranche, requiredYt)
+		err := k.SwapUtToYt(ctx, sender, tranche, requiredYt, token)
+		if err != nil {
+			return err
+		}
 	} else {
 		return types.ErrInvalidTrancheType
 	}
