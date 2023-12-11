@@ -8,16 +8,6 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-// SwapUtToPt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
-// SwapPtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
-// UpdatePoolForSwap(
-// 	ctx sdk.Context,
-// 	pool types.TranchePool,
-// 	sender sdk.AccAddress,
-// 	tokenIn sdk.Coin,
-// 	tokenOut sdk.Coin,
-// ) error
-
 func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
