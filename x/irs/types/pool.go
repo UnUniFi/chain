@@ -219,7 +219,7 @@ func (p *TranchePool) SwapOutAmtGivenIn(
 		return sdk.Coin{}, err
 	}
 
-	err = p.applySwap(ctx, tokenIn, balancerOutCoin, sdk.ZeroDec(), swapFee)
+	err = p.applySwap(tokenIn, balancerOutCoin, sdk.ZeroDec(), swapFee)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
@@ -270,7 +270,7 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), nil
 }
 
-func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.Coin, swapFeeIn, swapFeeOut sdk.Dec) error {
+func (p *TranchePool) applySwap(tokenIn sdk.Coin, tokenOut sdk.Coin, swapFeeIn, swapFeeOut sdk.Dec) error {
 	inTokensAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFeeIn)).TruncateInt()
 	outTokensAfterFee := sdk.NewDecFromInt(tokenOut.Amount).Mul(sdk.OneDec().Sub(swapFeeOut)).TruncateInt()
 
