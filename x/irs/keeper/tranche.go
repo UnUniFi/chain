@@ -98,7 +98,7 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 		}
 	} else if trancheType == types.TrancheType_FIXED_YIELD {
 		// Buy PT from AMM with msg.TrancheMaturity for msg.SpendAmount
-		err := k.SwapUtToPt(ctx, sender, tranche, token)
+		err := k.SwapPoolTokens(ctx, sender, tranche, token)
 		if err != nil {
 			return err
 		}
@@ -140,7 +140,7 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			}
 		} else {
 			// Else, sell PT from AMM with msg.TrancheMaturity for msg.PTAmount
-			err := k.SwapPtToUt(ctx, sender, tranche, tokens[0])
+			err := k.SwapPoolTokens(ctx, sender, tranche, tokens[0])
 			if err != nil {
 				return err
 			}
