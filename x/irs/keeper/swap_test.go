@@ -8,16 +8,6 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-// SwapUtToPt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
-// SwapPtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
-// UpdatePoolForSwap(
-// 	ctx sdk.Context,
-// 	pool types.TranchePool,
-// 	sender sdk.AccAddress,
-// 	tokenIn sdk.Coin,
-// 	tokenOut sdk.Coin,
-// ) error
-
 func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -44,44 +34,46 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 		{
 			name: "Proper swap",
 			param: param{
-				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(100000)),
+				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(100_000)),
 				tokenOutDenom:     ut,
 				tokenOutMinAmount: sdk.NewInt(1),
-				expectedTokenOut:  sdk.NewInt(49262),
+				expectedTokenOut:  sdk.NewInt(4992),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: true,
 		},
 		{
 			name: "Proper swap2",
 			param: param{
-				tokenIn:           sdk.NewCoin(ut, sdk.NewInt(2451783)),
+				tokenIn:           sdk.NewCoin(ut, sdk.NewInt(2_000)),
 				tokenOutDenom:     pt,
 				tokenOutMinAmount: sdk.NewInt(1),
-				expectedTokenOut:  sdk.NewInt(1167843),
+				expectedTokenOut:  sdk.NewInt(1499),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: true,
 		},
 		{
-			name: "boundary valid spread factor given (= 0.5 pool spread factor)",
+			name: "too much token in",
 			param: param{
-				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(100000)),
-				tokenOutDenom:     ut,
+				tokenIn:           sdk.NewCoin(ut, sdk.NewInt(999_999)),
+				tokenOutDenom:     pt,
 				tokenOutMinAmount: sdk.NewInt(1),
-				expectedTokenOut:  sdk.NewInt(46833),
+				expectedTokenOut:  sdk.NewInt(1),
 			},
-			swapFee:    sdk.MustNewDecFromStr("0.1"),
-			expectPass: true,
-		},
-		{
-			name: "invalid spread factor given (< 0.5 pool spread factor)",
-			param: param{
-				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(100000)),
-				tokenOutDenom:     ut,
-				tokenOutMinAmount: sdk.NewInt(1),
-				expectedTokenOut:  sdk.NewInt(49262),
-			},
-			swapFee:    sdk.MustNewDecFromStr("0.1"),
+			swapFee:    sdk.ZeroDec(),
 			expectPass: false,
+		},
+		{
+			name: "Proper swap with swap fee",
+			param: param{
+				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(100_000)),
+				tokenOutDenom:     ut,
+				tokenOutMinAmount: sdk.NewInt(1),
+				expectedTokenOut:  sdk.NewInt(4987),
+			},
+			swapFee:    sdk.MustNewDecFromStr("0.1"),
+			expectPass: true,
 		},
 		{
 			name: "out is lesser than min amount",
@@ -90,15 +82,17 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 				tokenOutDenom:     ut,
 				tokenOutMinAmount: sdk.NewInt(9000000),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: false,
 		},
 		{
 			name: "in and out denom are same",
 			param: param{
-				tokenIn:           sdk.NewCoin(pt, sdk.NewInt(2451783)),
+				tokenIn:           sdk.NewCoin(ut, sdk.NewInt(100_000)),
 				tokenOutDenom:     ut,
 				tokenOutMinAmount: sdk.NewInt(1),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: false,
 		},
 		{
@@ -108,6 +102,7 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 				tokenOutDenom:     ut,
 				tokenOutMinAmount: sdk.NewInt(1),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: false,
 		},
 		{
@@ -117,6 +112,7 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 				tokenOutDenom:     "unknown",
 				tokenOutMinAmount: sdk.NewInt(1),
 			},
+			swapFee:    sdk.ZeroDec(),
 			expectPass: false,
 		},
 	}
@@ -138,9 +134,9 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 			tranchePool := types.TranchePool{
 				Id:               1,
 				StrategyContract: strategyContract.String(),
-				StartTime:        uint64(ctx.BlockTime().Unix()),
-				Maturity:         86400 * 180,
-				SwapFee:          sdk.NewDecWithPrec(3, 3), // 0.3%
+				StartTime:        uint64(ctx.BlockTime().Unix() - 86400*30), // 30 days ago
+				Maturity:         86400 * 180,                               // 180 days maturity
+				SwapFee:          sdk.NewDecWithPrec(3, 3),                  // 0.3%
 				ExitFee:          sdk.ZeroDec(),
 				TotalShares:      sdk.NewCoin(lp, existingShares),
 				PoolAssets:       poolTokens,

@@ -26,12 +26,12 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	ytDenom := types.YtDenom(pool)
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 
-	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 
 	// Stake to strategy
 	if underlyingAmount.Denom == depositInfo.Denom {
@@ -50,9 +50,6 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 
 	// mint PT
 	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
-	ptAmount := underlyingAmount.Amount.
-		Sub(underlyingAmount.Amount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
-	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -73,6 +70,26 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+	return ptAmount, nil
+}
+
+// CalculateMintPtAmount calculates the amount of PT to be minted PT & YT pair
+func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, underlyingAmount sdk.Coin) (sdk.Int, error) {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+
+	ytDenom := types.YtDenom(pool)
+	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+
+	// mint PT
+	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	ptAmount := underlyingAmount.Amount.
+		Sub(underlyingAmount.Amount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
+
 	return ptAmount, nil
 }
 

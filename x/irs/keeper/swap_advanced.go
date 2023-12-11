@@ -6,32 +6,50 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int) error {
-	ytDenom := types.YtDenom(pool)
-
-	// Take loan from IRS vault account
-	moduleAddr := types.GetVaultModuleAddress(pool)
-	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{sdk.NewCoin(ytDenom, requiredYtAmount)})
-	if err != nil {
-		return err
-	}
-
-	// Mint Pt and Yt
+func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int, tokenIn sdk.Coin) error {
+	// 0. check if TokenIn is enough to cover to payback loan
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	ptAmount, err := k.MintPtYtPair(ctx, sender, pool, sdk.NewCoin(depositInfo.Denom, requiredYtAmount))
-	if err != nil {
-		return err
+	if tokenIn.Denom != depositInfo.Denom {
+		return types.ErrInvalidDepositDenom
 	}
-
-	// Sell minted PT amount for underlying token
+	loan := sdk.NewCoin(tokenIn.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
-	err = k.SwapPtToUt(ctx, sender, pool, sdk.NewCoin(ptDenom, ptAmount))
+	// estimation 2. PT amount to mint
+	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
+	if err != nil {
+		return err
+	}
+	// estimation 3. UT amount to get by selling PT
+	estimatedUt, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+	if err != nil {
+		return err
+	}
+	// Check if estimated UT + TokenIn is enough to payback loan
+	if estimatedUt.Add(tokenIn).IsLT(loan) {
+		return types.ErrInsufficientFunds
+	}
+
+	// 1. Take loan from IRS vault account (pool => sender)
+	poolAddr := types.GetVaultModuleAddress(pool)
+	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
 	if err != nil {
 		return err
 	}
 
-	// Payback loan
-	err = k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{sdk.NewCoin(depositInfo.Denom, requiredYtAmount)})
+	// 2. Mint Pt and Yt
+	ptAmount, err := k.MintPtYtPair(ctx, sender, pool, loan)
+	if err != nil {
+		return err
+	}
+
+	// 3. Sell minted PT amount for underlying token
+	err = k.SwapPoolTokens(ctx, sender, pool, sdk.NewCoin(ptDenom, ptAmount))
+	if err != nil {
+		return err
+	}
+
+	// 4. Payback loan
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, sdk.NewCoins(loan))
 	if err != nil {
 		return err
 	}
