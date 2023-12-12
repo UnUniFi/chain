@@ -7,11 +7,19 @@ import (
 )
 
 func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int, tokenIn sdk.Coin) error {
-	// 0. check if TokenIn is enough to cover to payback loan
+	// Check if TokenIn is enough to cover to payback loan
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	if tokenIn.Denom != depositInfo.Denom {
 		return types.ErrInvalidDepositDenom
 	}
+	err := k.SwapToYieldToken(ctx, sender, pool, requiredYtAmount, tokenIn)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) SwapToYieldToken(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int, tokenIn sdk.Coin) error {
 	loan := sdk.NewCoin(tokenIn.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
