@@ -167,27 +167,11 @@ func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
 		return types.ErrTrancheNotMatured
 	}
-	ptDenom := types.PtDenom(pool)
-	ytDenom := types.YtDenom(pool)
-	if ytDenom != ytAmount.Denom {
-		return types.ErrInvalidYtDenom
-	}
-	if ytAmount.IsZero() {
-		return types.ErrZeroAmount
-	}
-	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
-	if ytSupply.IsZero() {
-		return types.ErrSupplyNotFound
-	}
-
 	moduleAddr := types.GetVaultModuleAddress(pool)
-	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	redeemAmount, err := k.CalculateRedeemYtAmount(ctx, pool, ytAmount)
 	if err != nil {
 		return err
 	}
-
-	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
 	if redeemAmount.IsZero() {
 		return nil
 	}
@@ -203,6 +187,31 @@ func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 	}
 
 	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemAmount)
+}
+
+func (k Keeper) CalculateRedeemYtAmount(ctx sdk.Context, pool types.TranchePool, ytAmount sdk.Coin) (sdk.Int, error) {
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	if ytDenom != ytAmount.Denom {
+		return sdk.ZeroInt(), types.ErrInvalidYtDenom
+	}
+	if ytAmount.IsZero() {
+		return sdk.ZeroInt(), types.ErrZeroAmount
+	}
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	if ytSupply.IsZero() {
+		return sdk.ZeroInt(), types.ErrSupplyNotFound
+	}
+
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+
+	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	return redeemAmount, nil
 }
 
 func (k Keeper) ExecuteVaultTransfer(ctx sdk.Context, moduleAddr sdk.AccAddress, strategyContract string, stakeCoin sdk.Coin) (*ibctypes.MsgTransfer, error) {
