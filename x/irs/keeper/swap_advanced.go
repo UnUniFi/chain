@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/irs/types"
 )
@@ -66,13 +67,34 @@ func (k Keeper) CheckEnoughUtTokenIn(ctx sdk.Context, pool types.TranchePool, to
 	return nil
 }
 
-// TODO:
-func (k Keeper) SwapYtToUt() {
-	// Internally combine SwapUtToPt and BurnPtYtPair
+func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, tokens sdk.Coins) error {
+	// Internally RedeemYtAtMaturity or RedeemPtYtPair
 
-	// If matured, send required amount from unbonded from the share
-	// Else
-	// Put required amount of msg.PT from user wallet
-	// Close position
-	// Start redemption for strategy share
+	// If matured, unstake from strategy
+	// Else, redeem PT & YT pair
+	if uint64(ctx.BlockTime().Unix()) > pool.StartTime+pool.Maturity {
+		if len(tokens) != 1 {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "matured, expected 1 coin, got %d", len(tokens))
+		}
+		redeemAmount, err := k.CalculateRedeemYtAmount(ctx, pool, tokens[0])
+		if err != nil {
+			return err
+		}
+		if redeemAmount.LT(requiredUtAmount) {
+			return types.ErrInsufficientFunds
+		}
+		err = k.RedeemYtAtMaturity(ctx, sender, pool, tokens[0])
+		if err != nil {
+			return err
+		}
+	} else {
+		if len(tokens) != 2 {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "not matured, expected 2 coins, got %d", len(tokens))
+		}
+		err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
