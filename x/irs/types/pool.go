@@ -2,9 +2,12 @@ package types
 
 import (
 	"errors"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/osmomath"
 )
 
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with spreadFactor applied.
@@ -169,7 +172,7 @@ func (p *TranchePool) CalcExitPoolCoinsFromShares(ctx sdk.Context, exitingShares
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
 func CalcExitPool(ctx sdk.Context, pool *TranchePool, exitingShares sdk.Int, exitFee sdk.Dec) (sdk.Coins, error) {
 	totalShares := pool.TotalShares.Amount
-	if exitingShares.GTE(totalShares) {
+	if exitingShares.GT(totalShares) {
 		return sdk.Coins{}, ErrInvalidTotalShares
 	}
 
@@ -195,7 +198,7 @@ func CalcExitPool(ctx sdk.Context, pool *TranchePool, exitingShares sdk.Int, exi
 		if exitAmt.LTE(sdk.ZeroInt()) {
 			continue
 		}
-		if exitAmt.GTE(asset.Amount) {
+		if exitAmt.GT(asset.Amount) {
 			return sdk.Coins{}, errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
@@ -216,7 +219,7 @@ func (p *TranchePool) SwapOutAmtGivenIn(
 		return sdk.Coin{}, err
 	}
 
-	err = p.applySwap(ctx, tokenIn, balancerOutCoin, sdk.ZeroDec(), swapFee)
+	err = p.applySwap(tokenIn, balancerOutCoin, sdk.ZeroDec(), swapFee)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
@@ -232,21 +235,30 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	swapFee sdk.Dec,
 ) (sdk.Coin, error) {
 	tokenAmountInAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFee))
-	poolTokenInBalance := sdk.NewDecFromInt(tokenIn.Amount)
-	poolTokenOutBalance := sdk.NewDecFromInt(sdk.Coins(p.PoolAssets).AmountOf(tokenOutDenom))
+	// Pool balance of tokenIn and tokenOut
+	poolAssetIn, poolAssetOut, err := p.parsePoolAssetsByDenoms(tokenIn.Denom, tokenOutDenom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	poolTokenInBalance := sdk.NewDecFromInt(poolAssetIn.Amount)
+	poolTokenOutBalance := sdk.NewDecFromInt(poolAssetOut.Amount)
+	// Pool balance of tokenIn + tokenAmountInAfterFee
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
-
-	outWeight := sdk.OneDec()
-	inWeight := sdk.OneDec()
 
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
+	t := sdk.OneDec().Sub(sdk.NewDec(ctx.BlockTime().Unix() - int64(p.StartTime)).Quo(sdk.NewDec(int64(p.Maturity))))
+	if !t.IsPositive() {
+		return sdk.Coin{}, sdkerrors.Wrapf(ErrTrancheAlreadyMatured, "tranche has been already matured")
+	}
+	if t.GTE(sdk.OneDec()) {
+		return sdk.Coin{}, ErrInvalidTrancheStartTime
+	}
 	tokenAmountOut := solveConstantFunctionInvariant(
+		t,
 		poolTokenInBalance,
 		poolPostSwapInBalance,
-		inWeight,
 		poolTokenOutBalance,
-		outWeight,
 	)
 
 	// We ignore the decimal component, as we round down the token amount out.
@@ -258,7 +270,7 @@ func (p TranchePool) CalcOutAmtGivenIn(
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), nil
 }
 
-func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.Coin, swapFeeIn, swapFeeOut sdk.Dec) error {
+func (p *TranchePool) applySwap(tokenIn sdk.Coin, tokenOut sdk.Coin, swapFeeIn, swapFeeOut sdk.Dec) error {
 	inTokensAfterFee := sdk.NewDecFromInt(tokenIn.Amount).Mul(sdk.OneDec().Sub(swapFeeIn)).TruncateInt()
 	outTokensAfterFee := sdk.NewDecFromInt(tokenOut.Amount).Mul(sdk.OneDec().Sub(swapFeeOut)).TruncateInt()
 
@@ -268,32 +280,52 @@ func (p *TranchePool) applySwap(ctx sdk.Context, tokenIn sdk.Coin, tokenOut sdk.
 	return nil
 }
 
-// solveConstantFunctionInvariant solves the constant function of an AMM
-// that determines the relationship between the differences of two sides
-// of assets inside the pool.
-// For fixed balanceXBefore, balanceXAfter, weightX, balanceY, weightY,
-// we could deduce the balanceYDelta, calculated by:
-// balanceYDelta = balanceY * (1 - (balanceXBefore/balanceXAfter)^(weightX/weightY))
-// balanceYDelta is positive when the balance liquidity decreases.
-// balanceYDelta is negative when the balance liquidity increases.
-//
-// panics if tokenWeightUnknown is 0.
 func solveConstantFunctionInvariant(
+	t,
 	tokenBalanceFixedBefore,
 	tokenBalanceFixedAfter,
-	tokenWeightFixed,
-	tokenBalanceUnknownBefore,
-	tokenWeightUnknown sdk.Dec,
+	tokenBalanceUnknownBefore sdk.Dec,
 ) sdk.Dec {
-	// weightRatio = (weightX/weightY)
-	weightRatio := tokenWeightFixed.Quo(tokenWeightUnknown)
+	exp := osmomath.BigDecFromSDKDec(sdk.OneDec().Sub(t))
+	// k = x1^(1-t) + y1^(1-t)
+	x1 := osmomath.BigDecFromSDKDec(tokenBalanceFixedBefore)
+	x1exp := x1.Power(exp)
+	y1 := osmomath.BigDecFromSDKDec(tokenBalanceUnknownBefore)
+	y1exp := y1.Power(exp)
+	k := x1exp.Add(y1exp)
+	// y2^(1-t) = k - x2^(1-t)
+	y2exp := k.Sub(osmomath.BigDecFromSDKDec(tokenBalanceFixedAfter).Power(exp))
+	// y2 = y2^(1-t)^(1/(1-t))
+	if y2exp.IsNegative() {
+		// TODO: return y1 or error
+		// Plz verify that y can be 0 in other codes.
+		return sdk.ZeroDec()
+	}
+	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+	// TokenOut to be issued = y1 - y2
+	return y1.Sub(y2).SDKDec()
+}
 
-	// y = balanceXBefore/balanceXAfter
-	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
+func (p TranchePool) parsePoolAssetsByDenoms(tokenADenom, tokenBDenom string) (
+	Aasset sdk.Coin, Basset sdk.Coin, err error,
+) {
+	Aasset, found1 := getPoolAssetByDenom(p.PoolAssets, tokenADenom)
+	Basset, found2 := getPoolAssetByDenom(p.PoolAssets, tokenBDenom)
 
-	// amountY = balanceY * (1 - (y ^ weightRatio))
-	yToWeightRatio := Pow(y, weightRatio)
-	paranthetical := sdk.OneDec().Sub(yToWeightRatio)
-	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
-	return amountY
+	if !found1 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenADenom)
+	}
+	if !found2 {
+		return sdk.Coin{}, sdk.Coin{}, fmt.Errorf("(%s) does not exist in the pool", tokenBDenom)
+	}
+	return Aasset, Basset, nil
+}
+
+func getPoolAssetByDenom(assets []sdk.Coin, denom string) (sdk.Coin, bool) {
+	for _, asset := range assets {
+		if asset.Denom == denom {
+			return asset, true
+		}
+	}
+	return sdk.Coin{}, false
 }

@@ -26,12 +26,12 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	ytDenom := types.YtDenom(pool)
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 
-	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
+	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 
 	// Stake to strategy
 	if underlyingAmount.Denom == depositInfo.Denom {
@@ -49,10 +49,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	}
 
 	// mint PT
-	// PT mint amount - usedUnderlying * (1-(strategyAmount)/interestSupply)
-	ptAmount := underlyingAmount.Amount.
-		Sub(underlyingAmount.Amount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
-	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
+	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -63,7 +60,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	}
 
 	// mint YT
-	// YT mint amount - usedUnderlying
+	// YT mint amount = usedUnderlying
 	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, underlyingAmount.Amount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ytCoins)
 	if err != nil {
@@ -76,14 +73,41 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	return ptAmount, nil
 }
 
+// CalculateMintPtAmount calculates the amount of PT to be minted PT & YT pair
+func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, underlyingAmount sdk.Coin) (sdk.Int, error) {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+
+	ytDenom := types.YtDenom(pool)
+	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+
+	// mint PT
+	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	ptAmount := underlyingAmount.Amount.
+		Sub(underlyingAmount.Amount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
+
+	return ptAmount, nil
+}
+
 // RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
 // The ratio between Pt Supply : Yt Supply and Pt / Yt amount redeemed should be same
 func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, redeemUt sdk.Int, maxPtYtIns sdk.Coins) error {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 
+	if redeemUt.IsZero() {
+		return types.ErrZeroAmount
+	}
+
 	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
 	if err != nil {
 		return err
+	}
+	if amountFromStrategy.IsZero() {
+		return types.ErrZeroAmount
 	}
 
 	ptDenom := types.PtDenom(pool)
@@ -114,11 +138,18 @@ func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool type
 }
 
 func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
-	moduleAddr := types.GetVaultModuleAddress(pool)
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
+	}
+	ptDenom := types.PtDenom(pool)
+	if ptDenom != ptAmount.Denom {
+		return types.ErrInvalidPtDenom
+	}
+	if ptAmount.IsZero() {
+		return types.ErrZeroAmount
 	}
 
+	moduleAddr := types.GetVaultModuleAddress(pool)
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ptAmount})
 	if err != nil {
 		return err
@@ -129,23 +160,39 @@ func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 		return err
 	}
 
-	ptDenom := types.PtDenom(pool)
-	if ptDenom != ptAmount.Denom {
-		return types.ErrInvalidPtDenom
-	}
-	if ptAmount.IsZero() {
-		return nil
-	}
 	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, ptAmount.Amount)
 }
 
 func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ytAmount sdk.Coin) error {
-	moduleAddr := types.GetVaultModuleAddress(pool)
 	if uint64(ctx.BlockTime().Unix()) < pool.StartTime+pool.Maturity {
-		return types.ErrVaultNotMatured
+		return types.ErrTrancheNotMatured
+	}
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	if ytDenom != ytAmount.Denom {
+		return types.ErrInvalidYtDenom
+	}
+	if ytAmount.IsZero() {
+		return types.ErrZeroAmount
+	}
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	if ytSupply.IsZero() {
+		return types.ErrSupplyNotFound
 	}
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ytAmount})
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return err
+	}
+
+	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	if redeemAmount.IsZero() {
+		return nil
+	}
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{ytAmount})
 	if err != nil {
 		return err
 	}
@@ -153,28 +200,6 @@ func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{ytAmount})
 	if err != nil {
 		return err
-	}
-
-	ptDenom := types.PtDenom(pool)
-	ytDenom := types.YtDenom(pool)
-	if ytDenom != ytAmount.Denom {
-		return types.ErrInvalidYtDenom
-	}
-
-	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
-	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
-	if err != nil {
-		return err
-	}
-
-	if ytAmount.IsZero() || ytSupply.IsZero() {
-		return nil
-	}
-
-	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
-	if redeemAmount.IsZero() {
-		return nil
 	}
 
 	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemAmount)

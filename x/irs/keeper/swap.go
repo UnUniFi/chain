@@ -9,7 +9,8 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) SwapUtToPt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
+// SwapPoolTokens swaps tokens in a pool. UT => PT or PT => UT
+func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
 	tokenOutDenom := pool.PoolAssets[0].Denom
 	if tokenOutDenom == tokenIn.Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
@@ -18,13 +19,20 @@ func (k Keeper) SwapUtToPt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	return err
 }
 
-func (k Keeper) SwapPtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
+// SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT
+func (k Keeper) SimulateSwapPoolTokens(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	tokenOutDenom := pool.PoolAssets[0].Denom
 	if tokenOutDenom == tokenIn.Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
 	}
-	_, err := k.SwapExactAmountIn(ctx, sender, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
-	return err
+	if tokenIn.Denom == tokenOutDenom {
+		return sdk.Coin{}, errors.New("cannot trade the same denomination in and out")
+	}
+	tokenOutAmount, err := k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), nil
 }
 
 func (k Keeper) SwapExactAmountIn(
@@ -40,6 +48,35 @@ func (k Keeper) SwapExactAmountIn(
 		return sdk.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
 
+	// check sender balance first
+	poolAddr := types.GetVaultModuleAddress(pool)
+	tokensIn := sdk.Coins{tokenIn}
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
+	if err != nil {
+		return sdk.Int{}, err
+	}
+
+	tokenOutAmount, err = k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, tokenOutMinAmount, swapFee)
+	if err != nil {
+		return sdk.Int{}, err
+	}
+
+	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
+	// Also emits a swap event and updates related liquidity metrics.
+	k.SetTranchePool(ctx, pool)
+
+	// Subtract swap out fee from the token out amount.
+	return tokenOutAmount, nil
+}
+
+func (k Keeper) CalculateSwapExactAmountIn(
+	ctx sdk.Context,
+	pool types.TranchePool,
+	tokenIn sdk.Coin,
+	tokenOutDenom string,
+	tokenOutMinAmount sdk.Int,
+	swapFee sdk.Dec,
+) (tokenOutAmount sdk.Int, err error) {
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
 	tokenOutCoin, err := pool.SwapOutAmtGivenIn(ctx, tokenIn, tokenOutDenom, swapFee)
@@ -57,32 +94,5 @@ func (k Keeper) SwapExactAmountIn(
 		return sdk.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than the minimum amount", tokenOutDenom)
 	}
 
-	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
-	// Also emits a swap event and updates related liquidity metrics.
-	err = k.UpdatePoolForSwap(ctx, pool, sender, tokenIn, tokenOutCoin)
-	if err != nil {
-		return sdk.Int{}, err
-	}
-
-	// Subtract swap out fee from the token out amount.
 	return tokenOutAmount, nil
-}
-
-func (k Keeper) UpdatePoolForSwap(
-	ctx sdk.Context,
-	pool types.TranchePool,
-	sender sdk.AccAddress,
-	tokenIn sdk.Coin,
-	tokenOut sdk.Coin,
-) error {
-	tokensIn := sdk.Coins{tokenIn}
-	k.SetTranchePool(ctx, pool)
-
-	poolAddr := types.GetVaultModuleAddress(pool)
-	err := k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
