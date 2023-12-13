@@ -20,7 +20,11 @@ func (k Keeper) EstimateSwapInPool(c context.Context, req *types.QueryEstimateSw
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	amount, err := k.SimulateSwapPoolTokens(ctx, tranche, req.Amount)
+	depositAmount, ok := sdk.NewIntFromString(req.Amount)
+	if !ok {
+		return nil, types.ErrInvalidAmount
+	}
+	amount, err := k.SimulateSwapPoolTokens(ctx, tranche, sdk.NewCoin(req.Denom, depositAmount))
 	if err != nil {
 		return nil, err
 	}

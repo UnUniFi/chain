@@ -7833,11 +7833,11 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: amount.denom
+        - name: denom
           in: query
           required: false
           type: string
-        - name: amount.amount
+        - name: amount
           in: query
           required: false
           type: string
@@ -7896,11 +7896,11 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: amount.denom
+        - name: denom
           in: query
           required: false
           type: string
-        - name: amount.amount
+        - name: amount
           in: query
           required: false
           type: string
@@ -7959,11 +7959,11 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: amount.denom
+        - name: denom
           in: query
           required: false
           type: string
-        - name: amount.amount
+        - name: amount
           in: query
           required: false
           type: string

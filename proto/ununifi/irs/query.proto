@@ -123,7 +123,8 @@ message QueryTrancheResponse {
 // QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
 message QueryEstimateSwapInPoolRequest {
   uint64 pool_id = 1;
-  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string denom = 2;
+  string amount = 3;
 }
 
 message QueryEstimateSwapInPoolResponse {
@@ -132,7 +133,8 @@ message QueryEstimateSwapInPoolResponse {
 
 message QueryEstimateMintPtYtPairRequest {
   uint64 pool_id = 1;
-  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string denom = 2;
+  string amount = 3;
 }
 
 message QueryEstimateMintPtYtPairResponse {
@@ -142,7 +144,8 @@ message QueryEstimateMintPtYtPairResponse {
 
 message QueryEstimateRedeemYtRequest {
   uint64 pool_id = 1;
-  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  string denom = 2;
+  string amount = 3;
 }
 
 message QueryEstimateRedeemYtResponse {

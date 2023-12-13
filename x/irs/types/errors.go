@@ -27,4 +27,5 @@ var (
 	ErrInsufficientFunds       = errors.Register(ModuleName, 19, "insufficient funds")
 	ErrInvalidDepositDenom     = errors.Register(ModuleName, 20, "invalid deposit denom")
 	ErrVaultNotFound           = errors.Register(ModuleName, 22, "vault not found")
+	ErrInvalidAmount           = errors.Register(ModuleName, 23, "invalid amount")
 )

@@ -20,7 +20,11 @@ func (k Keeper) EstimateRedeemYt(c context.Context, req *types.QueryEstimateRede
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	amount, err := k.CalculateRedeemYtAmount(ctx, tranche, req.Amount)
+	redeemAmount, ok := sdk.NewIntFromString(req.Amount)
+	if !ok {
+		return nil, types.ErrInvalidAmount
+	}
+	amount, err := k.CalculateRedeemYtAmount(ctx, tranche, sdk.NewCoin(req.Denom, redeemAmount))
 	if err != nil {
 		return nil, err
 	}
