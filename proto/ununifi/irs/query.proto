@@ -43,6 +43,11 @@ service Query {
   rpc EstimateSwapInPool(QueryEstimateSwapInPoolRequest) returns (QueryEstimateSwapInPoolResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-swap-in-pool";
   }
+
+  // Estimate mint amountof PT&YT pair 
+  rpc EstimateMintPtYtPair(QueryEstimateMintPtYtPairRequest) returns (QueryEstimateMintPtYtPairResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-pt-yt-pair";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -113,4 +118,14 @@ message QueryEstimateSwapInPoolRequest {
 
 message QueryEstimateSwapInPoolResponse {
   cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintPtYtPairRequest {
+  uint64 pool_id = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintPtYtPairResponse {
+  cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
 }
