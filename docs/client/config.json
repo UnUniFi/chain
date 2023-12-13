@@ -53,6 +53,14 @@
           "Params": "YieldAggregatorParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/ununifi/irs/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "IrsParams"
+        }
+      }
     }
   ]
 }
