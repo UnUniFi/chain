@@ -39,6 +39,10 @@ service Query {
   rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
     option (google.api.http).get = "/ununifi/irs/tranche/{id}";
   }
+  // Estimate swap amount of UT/PT (in the pool)
+  rpc EstimateSwapInPool(QueryEstimateSwapInPoolRequest) returns (QueryEstimateSwapInPoolResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-in-pool";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -99,4 +103,14 @@ message QueryTrancheRequest {
 // QueryTranchResponse is response type for the Query/Tranch RPC method.
 message QueryTrancheResponse {
   TranchePool tranche = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
+message QueryEstimateSwapInPoolRequest {
+  uint64 pool_id = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateSwapInPoolResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
 }
