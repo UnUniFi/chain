@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) Vault(c context.Context, req *types.QueryVaultRequest) (*types.QueryVaultResponse, error) {
+func (k Keeper) VaultByContract(c context.Context, req *types.QueryVaultByContractRequest) (*types.QueryVaultByContractResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -20,7 +20,7 @@ func (k Keeper) Vault(c context.Context, req *types.QueryVaultRequest) (*types.Q
 		return nil, types.ErrVaultNotFound
 	}
 
-	return &types.QueryVaultResponse{
+	return &types.QueryVaultByContractResponse{
 		Vault: vault,
 	}, nil
 }

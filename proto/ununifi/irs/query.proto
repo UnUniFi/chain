@@ -24,7 +24,7 @@ service Query {
     option (google.api.http).get = "/ununifi/irs/vaults";
   }
   // Vault queries a single InterestRateSwapVault
-  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+  rpc VaultByContract(QueryVaultByContractRequest) returns (QueryVaultByContractResponse) {
     option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}";
   }
   // VaultDetails queries the details of the vault
@@ -75,12 +75,12 @@ message QueryVaultsResponse {
 }
 
 // QueryVaultRequest is request type for the Query/Vault RPC method.
-message QueryVaultRequest {
+message QueryVaultByContractRequest {
   string strategy_contract = 1;
 }
 
 // QueryVaultResponse is response type for the Query/Vault RPC method.
-message QueryVaultResponse {
+message QueryVaultByContractResponse {
   InterestRateSwapVault vault = 1 [(gogoproto.nullable) = false];
 }
 
