@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"github.com/UnUniFi/chain/x/irs/types"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (suite *KeeperTestSuite) TestSetGetVault() {
