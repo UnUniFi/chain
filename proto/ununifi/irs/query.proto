@@ -32,6 +32,10 @@ service Query {
     option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
   }
   // Tranches by Strategy
+  rpc AllTranches(QueryAllTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/all-tranches";
+  }
+  // Tranches by Strategy
   rpc Tranches(QueryTranchesRequest) returns (QueryTranchesResponse) {
     option (google.api.http).get = "/ununifi/irs/tranches/{strategy_contract}";
   }
@@ -89,6 +93,9 @@ message QueryVaultDetailsResponse {
   string fy_rate        = 2;
   string lvy_rate       = 3;
 }
+
+// QueryAllTranchesRequest is request type for the Query/Tranches RPC method.
+message QueryAllTranchesRequest {}
 
 // QueryTranchesRequest is request type for the Query/Tranches RPC method.
 message QueryTranchesRequest {
