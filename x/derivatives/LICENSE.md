@@ -3,26 +3,26 @@ Business Source License 1.1
 License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
 "Business Source License" is a trademark of MariaDB Corporation Ab.
 
------------------------------------------------------------------------------
+---
 
 Parameters
 
-Licensor:             CAUCHYE ASIA PTE. LTD.
+Licensor: CAUCHYE ASIA PTE. LTD.
 
-Licensed Work:        UnUniFi Core NFT Backed loan module
-                      UnUniFi Core Interchain Yield Aggregator module
-                      UnUniFi Core Derivatives module
-                      The Licensed Work is (c) 2023 CAUCHYE ASIA PTE. LTD.
+Licensed Work: UnUniFi Core NFT Backed loan module
+UnUniFi Core Interchain Yield Aggregator module
+UnUniFi Core Derivatives module
+The Licensed Work is (c) 2023 CAUCHYE ASIA PTE. LTD.
 
 Additional Use Grant: Non-commercial testnet building
-                      Development of smart contracts that are integrated with the Licensed Work
-                      Type definition files for developing interoperable modules or smart contracts that are integrated with the Licensed Work
+Development of smart contracts that are integrated with the Licensed Work
+Type definition files for developing interoperable modules or smart contracts that are integrated with the Licensed Work
 
-Change Date:          The earlier of 2027-08-01
+Change Date: The earlier of 2027-08-01
 
-Change License:       GNU General Public License v3.0 or later
+Change License: GNU General Public License v3.0 or later
 
------------------------------------------------------------------------------
+---
 
 Terms
 
@@ -70,7 +70,7 @@ MariaDB hereby grants you permission to use this License’s text to license
 your works, and to refer to it using the trademark "Business Source License",
 as long as you comply with the Covenants of Licensor below.
 
------------------------------------------------------------------------------
+---
 
 Covenants of Licensor
 
@@ -93,7 +93,7 @@ other recipients of the licensed work to be provided by Licensor:
 
 4. Not to modify this License in any other way.
 
------------------------------------------------------------------------------
+---
 
 Notice
 

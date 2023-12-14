@@ -4,8 +4,8 @@
 
 ```protobuf
 enum IntegrateType {
-  GOLANG_MOD = 1; 
-  COSMWASM = 2; 
+  GOLANG_MOD = 1;
+  COSMWASM = 2;
 }
 message IntegrateInfo {
   IntegrateType type = 1;

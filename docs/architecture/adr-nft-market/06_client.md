@@ -59,7 +59,7 @@ classes:
         uriHash: xxxxx
     nftCount: 5
 pagination:
-  total: "2"
+  total: '2'
 ```
 
 ### Transactions

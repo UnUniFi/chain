@@ -89,6 +89,7 @@ If he does so, he will receive the NFT and the iteration will be stopped.
 If he doesn’t do so, his deposit $d_i$ will be forfeited and the iteration continues to the next $i$.
 
 ### interest when liquidation occur
+
 The amount of interest to be distributed upon liquidation is determined by the following formula.
 
 It will be distributed to each bidder in proportion to its percentage of the interest amount.

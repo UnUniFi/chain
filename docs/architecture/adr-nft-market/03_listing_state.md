@@ -15,28 +15,30 @@ flowchart TD
 
 ## listing state
 
-|No |state                |Description.                                                                                                                                         |
-|---|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-|1  |unsold_state         |NFT not listed for listing                                                                                                                           |
-|2  |listing_state        |It's the state of listing.                                                                                                                           |
-|3  |bidding_state        |It's state that there are bids in the listing                                                                                                        |
-|4  |SellingDecision_state|It's state that the lister has decided to sell                                                                                                       |
-|5  |end_listing_state    |The borrowing term of the DEPOSIT has been exceeded.                                                                                                 |
-|6  |successful_bid_state |The lister has ended and the candidate bidder has paid for the item. The successful bidder and lister can exchange NFTs and tokens.                  |
+| No  | state                 | Description.                                                                                                                        |
+| --- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | unsold_state          | NFT not listed for listing                                                                                                          |
+| 2   | listing_state         | It's the state of listing.                                                                                                          |
+| 3   | bidding_state         | It's state that there are bids in the listing                                                                                       |
+| 4   | SellingDecision_state | It's state that the lister has decided to sell                                                                                      |
+| 5   | end_listing_state     | The borrowing term of the DEPOSIT has been exceeded.                                                                                |
+| 6   | successful_bid_state  | The lister has ended and the candidate bidder has paid for the item. The successful bidder and lister can exchange NFTs and tokens. |
 
 ### state change msg list
 
-| ID  | Name                 |
-| --- | -------------------- |
-| 1   | listing Msg          |
-| 2   | cancel list Msg      |
-| 3   | bid Msg              |
-| 4   | cancel bid Msg       |
-| 5   | SellingDecision Msg  |
-| 6   | pay listing fee Msg  |
+| ID  | Name                |
+| --- | ------------------- |
+| 1   | listing Msg         |
+| 2   | cancel list Msg     |
+| 3   | bid Msg             |
+| 4   | cancel bid Msg      |
+| 5   | SellingDecision Msg |
+| 6   | pay listing fee Msg |
 
 ### state flow
+
 Yellow lines are automatically checked by protocol
+
 ```mermaid
 flowchart TD
 
@@ -67,7 +69,9 @@ flowchart TD
     linkStyle 6 stroke:#ff3,stroke-width:4px,color:red;
     linkStyle 7 stroke:#ff3,stroke-width:4px,color:red;
 ```
+
 ### liquidation check flow
+
 ```mermaid
 flowchart TD
     end_listing_state>change end_listing_stateunsold_state]
@@ -85,15 +89,16 @@ flowchart TD
 　  liquidation_occurs   -->|yes| end_listing_state
 
 ```
+
 what is auto_refinancing_process
 auto_refinancing_process is the automatic borrowing of tokens to pay off debt when the amount available for borrowing exceeds the debt.
 
-
 ### paycheck flow
+
 #### SellingDecisions pay check flow
 
 ```mermaid
-flowchart TD 
+flowchart TD
     bidding_state>change bidding_state]
     successful_bid_state>change successful_bid_state]
 
@@ -104,8 +109,9 @@ flowchart TD
 ```
 
 #### liquidation pay check flow
+
 ```mermaid
-flowchart TD 
+flowchart TD
     back_unsold_state>change unsold_state]
     successful_bid_state>change successful_bid_state]
 
@@ -117,7 +123,6 @@ flowchart TD
 　  pay_collected_deposit_process   -->　back_unsold_state
 　  pay_check   --yes-->　successful_bid_state
 ```
-
 
 ### listing Token and NFT flow
 

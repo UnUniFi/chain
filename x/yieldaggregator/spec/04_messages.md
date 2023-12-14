@@ -25,7 +25,7 @@ submit proposal for add new yield farm target update.
 
 submit proposal for add delete yield farm target.
 
-submit proposal for stop yield farm target.  //for security incident  
+submit proposal for stop yield farm target. //for security incident
 
 ```protobuf
 message AssetManagementTarget {
@@ -85,3 +85,4 @@ Investments based on FOs.
 This Msg is optional.
 
 It is not used under normal circumstances.
+```

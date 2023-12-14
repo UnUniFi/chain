@@ -47,7 +47,7 @@ stablecoins can be minted with NFT as collateral
 1. you can bid on the NFTs on the marketplace
 1. tokens to be bid on must meet BD criteria
 1. you cannot bid unless you meet the bidding criteria.
-    see 10_collateralized_liquidation_deposit_auction.md
+   see 10_collateralized_liquidation_deposit_auction.md
 1. bid deposit can be set freely as long as it meets the criteria
 1. bid deposit lending rates can be freely set
 1. bidding period can be freely set
@@ -80,7 +80,7 @@ stablecoins can be minted with NFT as collateral
 1. the deposit amount of the bidders who has not paid at the time of confirmation will be collected
 1. upon confirmation of payment by the bidder, it shall be the successful bidder
 1. the deposit amount of the bidders below the successful bidder will be returned
-1. the winning bid price paid to the lister will be the amount of the `（deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate)`  Note: fee_rate variable name could be changed
+1. the winning bid price paid to the lister will be the amount of the `（deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate)` Note: fee_rate variable name could be changed
 1. if all wining bidder candidates do not pay, the amount of the collected deposit plus NFT to be listed will be given to the lister
 1. When an listing is successful, tokens are handed over to the lister and NFTs are handed over to the successful bidder.
 1. delivery of the NFT will be made X days after the successful bid (global_option)

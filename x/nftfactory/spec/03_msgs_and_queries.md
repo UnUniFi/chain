@@ -20,7 +20,7 @@ message MsgCreateClass {
 
 ### MintNFT
 
-The MintNFT message is used to mint NFT on UnUniFi using sdk's x/nft module function. 
+The MintNFT message is used to mint NFT on UnUniFi using sdk's x/nft module function.
 The specifing `NFT.Id` becomes a part of the `NFT.Uri`.
 
 ```protobuf
@@ -36,7 +36,7 @@ message MsgMintNFT {
 
 ### BurnNFT
 
-The BurnNFT message is used to burn the NFT defined by `Class.Id` and `NFT.Id`.   
+The BurnNFT message is used to burn the NFT defined by `Class.Id` and `NFT.Id`.  
 Only the owner of the `NFT` can send this message.
 
 ```protobuf

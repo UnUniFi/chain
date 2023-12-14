@@ -1,6 +1,6 @@
 # Concepts
 
-## introduction  
+## introduction
 
 UnUniFi's NFTFi feature does not have an automatic earning function.
 

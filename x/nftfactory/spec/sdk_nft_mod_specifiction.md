@@ -2,21 +2,23 @@
 
 ## Abstract
 
-The current cosmos sdk's x/nft module can be simply said that it's the data storage for the NFTs of cosmos SDK.   
-That module does the minimum data type definition to meets the requirement for the IBC (Inter-Blockchian Communication) and implementation of the methods to store them in the module.   
+The current cosmos sdk's x/nft module can be simply said that it's the data storage for the NFTs of cosmos SDK.  
+That module does the minimum data type definition to meets the requirement for the IBC (Inter-Blockchian Communication) and implementation of the methods to store them in the module.
 
-Basically saying, the standard type definition and methods follows ERC721.   
-There are major two types defined in sdk's nft module.   
-Those are `Class` and `NFT`. The NFT is identified by using `Class.Id` and `NFT.Id` combined.   
-The important NFT module keeper's methods are  `Mint`, `Burn`, `Update`, `Transfer`, `GetNFT`, `GetNFTsOfClass`, `GetOwner`, `GetBalance`, `GetTotalSupply` etc.   
+Basically saying, the standard type definition and methods follows ERC721.  
+There are major two types defined in sdk's nft module.  
+Those are `Class` and `NFT`. The NFT is identified by using `Class.Id` and `NFT.Id` combined.  
+The important NFT module keeper's methods are `Mint`, `Burn`, `Update`, `Transfer`, `GetNFT`, `GetNFTsOfClass`, `GetOwner`, `GetBalance`, `GetTotalSupply` etc.  
 The details are below.
 
 ## Major Defined Types
 
 ### Class
-Class struct is similar to ethereum ERC721 contract itself.   
-It has unique `Class.Id` to be distinguished by the collection.   
+
+Class struct is similar to ethereum ERC721 contract itself.  
+It has unique `Class.Id` to be distinguished by the collection.  
 The fields are (in x/nft/nft.pb.go):
+
 ```go
 type Class struct {
 	// id defines the unique identifier of the NFT classification, similar to the contract address of ERC721
@@ -39,8 +41,9 @@ type Class struct {
 
 ### NFT
 
-The NFT struct represents NFT object itself.   
+The NFT struct represents NFT object itself.  
 The NFT type's fields are (in x/nft/nft.pb.go):
+
 ```go
 type NFT struct {
 	// class_id associated with the NFT, similar to the contract address of ERC721
@@ -61,11 +64,11 @@ type NFT struct {
 
 ### Mint
 
-Mint(nft NFT，receiver sdk.AccAddress)   // updates totalSupply
+Mint(nft NFT，receiver sdk.AccAddress) // updates totalSupply
 
 ### Burn
 
-Burn(classId string, nftId string)    // updates totalSupply
+Burn(classId string, nftId string) // updates totalSupply
 
 ### Update
 
@@ -97,11 +100,11 @@ GetTotalSupply(classId string) uint64
 
 ## Message
 
-There's one message in sdk's nft module.   
+There's one message in sdk's nft module.
 
 ### MsgSend
 
-This message does the transfer of the NFT that identified in argument from sender.   
+This message does the transfer of the NFT that identified in argument from sender.
 
 ```go
 // MsgSend represents a message to send a nft from one account to another account.

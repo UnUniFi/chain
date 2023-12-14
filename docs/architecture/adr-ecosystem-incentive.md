@@ -8,34 +8,34 @@ PROPOSED
 
 **NOTE: You can maybe remove this file once state page is finalized.**
 
-The definition of the specific terms which are related to this module.  
+The definition of the specific terms which are related to this module.
 
-`incentive_id`   
-incentive_id is the unique identifier in the `incentive_store`. Hence, it can't be duplicated.    
+`incentive_id`  
+incentive_id is the unique identifier in the `incentive_store`. Hence, it can't be duplicated.
 
-`weight`   
-The ratio of the reward distribution in a `incentive_store` unit.   
-`incentive_store` can contain several `subject`s and ratio for each.   
+`weight`  
+The ratio of the reward distribution in a `incentive_store` unit.  
+`incentive_store` can contain several `subject`s and ratio for each.
 
-`reward_setting`   
-The setting about `reward_type` and `reward_rate`.   
+`reward_setting`  
+The setting about `reward_type` and `reward_rate`.
 
-`incentive_type`    
-The type of incentive for the subject.    
-We first have `frontend`.   
+`incentive_type`  
+The type of incentive for the subject.  
+We first have `frontend`.
 
-`reward_rate`   
-The rate to determine the percentage for the `ecosystem-incentive` reward out of the total trading fee.    
-This value is connected to the `incentive_type`.    
+`reward_rate`  
+The rate to determine the percentage for the `ecosystem-incentive` reward out of the total trading fee.  
+This value is connected to the `incentive_type`.  
 e.g.  
-`frontend` - `0.8`   
+`frontend` - `0.8`
 
-`denom`   
-The token ticker like GUU, BTC etc.   
+`denom`  
+The token ticker like GUU, BTC etc.  
 In UnUniFi NFT market, some tokens other than GUU (native UnUniFi token) can be used to purchase NFTs. So the rewards are accumuleted in some denoms.
 
-`reward_payer`   
-The account to pay the reward for `ecosystem-incentive` protocol.   
+`reward_payer`  
+The account to pay the reward for `ecosystem-incentive` protocol.  
 It's the module account that collect the protocol earned fees from x/nftmarket module.
 
 # Basic specs
@@ -99,18 +99,19 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 ## Params
 
-`reward_setting`   
-This contains `reward_type` and `reward_rate` in array for the incentive configuration.   
+`reward_setting`  
+This contains `reward_type` and `reward_rate` in array for the incentive configuration.  
 e.g.
+
 ```protobuf
 message RewardParams {
   repeated RewardRate reward_rate = 1;
 }
 ```
 
-`reward_rate`   
-The factor to multipy the trading fee for the reward of this module.   
-e.g. If `reward_rate` is 80% and the trading fee that is made in a target message is 100GUU, the actual reward for target `incentive_id` subjects is `100GUU * 0.80 = 80GUU`.  
+`reward_rate`  
+The factor to multipy the trading fee for the reward of this module.  
+e.g. If `reward_rate` is 80% and the trading fee that is made in a target message is 100GUU, the actual reward for target `incentive_id` subjects is `100GUU * 0.80 = 80GUU`.
 
 ```protobuf
 message RewardRate {

@@ -10,13 +10,9 @@
       "request": "launch",
       "mode": "auto",
       "program": "./cmd/ununifid/main.go",
-      "args": [
-        "start",
-        "--home",
-        "./data/test"
-      ],
+      "args": ["start", "--home", "./data/test"],
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "prepare tx",
+      "preLaunchTask": "prepare tx"
     },
     {
       "name": "just Launch",
@@ -24,12 +20,8 @@
       "request": "launch",
       "mode": "auto",
       "program": "./cmd/ununifid/main.go",
-      "args": [
-        "start",
-        "--home",
-        "./data/test"
-      ],
-      "cwd": "${workspaceFolder}",
+      "args": ["start", "--home", "./data/test"],
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "build then Launch",
@@ -37,13 +29,9 @@
       "request": "launch",
       "mode": "auto",
       "program": "./cmd/ununifid/main.go",
-      "args": [
-        "start",
-        "--home",
-        "./data/test"
-      ],
+      "args": ["start", "--home", "./data/test"],
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "init config",
+      "preLaunchTask": "init config"
     },
     {
       "name": "debug alpha node",
@@ -51,13 +39,9 @@
       "request": "launch",
       "mode": "auto",
       "program": "./cmd/ununifid/main.go",
-      "args": [
-        "start",
-        "--home",
-        "./data/test"
-      ],
+      "args": ["start", "--home", "./data/test"],
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "copy_alpha_node_data",
+      "preLaunchTask": "copy_alpha_node_data"
     },
     {
       "name": "debug debudata",
@@ -65,12 +49,8 @@
       "request": "launch",
       "mode": "auto",
       "program": "./cmd/ununifid/main.go",
-      "args": [
-        "start",
-        "--home",
-        "./debug_data"
-      ],
-      "cwd": "${workspaceFolder}",
-    },
+      "args": ["start", "--home", "./debug_data"],
+      "cwd": "${workspaceFolder}"
+    }
   ]
 }

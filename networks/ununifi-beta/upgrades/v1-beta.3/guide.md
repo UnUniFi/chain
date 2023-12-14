@@ -8,9 +8,9 @@ In short, we do state-modification in the middle of this upgrade to send some to
 
 ## Brief guide
 
-All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until **block 1597000. At 01:00 UTC on September 7th, 2022**, we will have a coordinated re-start of the network. 
-All validator(full) nodes have to do is set the binary of `v1.0.0-beta.3` in the appropriate location before 1597000 block height.   
-At 1597000, if you use cosmovisor, the system automatically upgrades the binary and block 1597000 will be mined with over 67% voting power.   
+All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until **block 1597000. At 01:00 UTC on September 7th, 2022**, we will have a coordinated re-start of the network.
+All validator(full) nodes have to do is set the binary of `v1.0.0-beta.3` in the appropriate location before 1597000 block height.  
+At 1597000, if you use cosmovisor, the system automatically upgrades the binary and block 1597000 will be mined with over 67% voting power.
 
 ## Go Requirement
 
@@ -36,7 +36,7 @@ make build -B
 cp ./build/ununifid $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin
 ```
 
-Even though the cosmovisor's `DAEMON_ALLOW_DOWNLOAD_BINARIES` variable is set `true`, the cosmovisor uses binary which locates in $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin if exists.   
+Even though the cosmovisor's `DAEMON_ALLOW_DOWNLOAD_BINARIES` variable is set `true`, the cosmovisor uses binary which locates in $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin if exists.  
 And you don't have to reboot cosmovisor when to do upgrade. So, after locating the binary into the appropriate place, you don't need to anything.
 
 ## Futher Help

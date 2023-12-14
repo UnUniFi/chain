@@ -17,7 +17,7 @@ jobs:
       - name: Setup variables
         id: variables
         run: echo "::set-output name=version::${GITHUB_REF##*/}"
-      - name: Docker image build.Not push 
+      - name: Docker image build.Not push
         uses: docker/build-push-action@v2
         with:
           context: .
