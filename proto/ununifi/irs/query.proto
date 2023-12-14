@@ -55,6 +55,10 @@ service Query {
   rpc EstimateRedeemYt(QueryEstimateRedeemYtRequest) returns (QueryEstimateRedeemYtResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-redeem-yt";
   }
+  // Estimate tokens to mint liquidity pool token
+  rpc EstimateMintLiquidityPoolToken(QueryEstimateMintLiquidityPoolTokenRequest) returns (QueryEstimateMintLiquidityPoolTokenResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-liquidity-pool-token";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -150,4 +154,13 @@ message QueryEstimateRedeemYtRequest {
 
 message QueryEstimateRedeemYtResponse {
   cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintLiquidityPoolTokenRequest {
+  uint64 pool_id = 1;
+  string desired_amount = 3;
+}
+
+message QueryEstimateMintLiquidityPoolTokenResponse {
+  repeated cosmos.base.v1beta1.Coin required_amount = 1 [(gogoproto.nullable) = false];
 }
