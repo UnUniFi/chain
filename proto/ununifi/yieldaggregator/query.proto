@@ -173,6 +173,7 @@ message StrategyContainer {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
+  string symbol =5;
 }
 
 message QueryGetStrategyResponse {
@@ -210,6 +211,7 @@ message QueryEstimateRedeemAmountResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+  string symbol = 5;
 }
 
 message QueryDenomInfosRequest {}
