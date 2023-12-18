@@ -7771,9 +7771,70 @@ paths:
                       format: byte
       tags:
         - Query
+  /ununifi/irs/estimate-mint-liquidity-pool-token:
+    get:
+      summary: Estimate tokens to mint liquidity pool token
+      operationId: EstimateMintLiquidityPoolToken
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              required_amount:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: desired_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /ununifi/irs/estimate-mint-pt-yt-pair:
     get:
-      summary: Estimate mint amountof PT&YT pair
+      summary: Estimate mint amount of PT&YT pair
       operationId: EstimateMintPtYtPair
       responses:
         '200':
@@ -7843,6 +7904,67 @@ paths:
           in: query
           required: false
           type: string
+        - name: amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/irs/estimate-redeem-liquidity-pool-token:
+    get:
+      summary: Estimate redeem amount of liquidity pool token
+      operationId: EstimateRedeemLiquidityPoolToken
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              redeem_amount:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pool_id
+          in: query
+          required: false
+          type: string
+          format: uint64
         - name: amount
           in: query
           required: false
@@ -12746,6 +12868,23 @@ definitions:
         type: string
       trade_fee_rate:
         type: string
+  ununifi.irs.QueryEstimateMintLiquidityPoolTokenResponse:
+    type: object
+    properties:
+      required_amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   ununifi.irs.QueryEstimateMintPtYtPairResponse:
     type: object
     properties:
@@ -12773,6 +12912,23 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+  ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenResponse:
+    type: object
+    properties:
+      redeem_amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   ununifi.irs.QueryEstimateRedeemYtResponse:
     type: object
     properties:
