@@ -23,7 +23,7 @@ func (k Keeper) EstimateDepositLiquidityPool(c context.Context, req *types.Query
 	// initial deposit
 	if tranche.TotalShares.IsZero() {
 		return &types.QueryEstimateMintLiquidityPoolTokenResponse{
-			Amount: sdk.Coins{},
+			RequiredAmount: sdk.Coins{},
 		}, nil
 	}
 	desiredAmount, ok := sdk.NewIntFromString(req.DesiredAmount)
@@ -37,6 +37,6 @@ func (k Keeper) EstimateDepositLiquidityPool(c context.Context, req *types.Query
 		return nil, err
 	}
 	return &types.QueryEstimateMintLiquidityPoolTokenResponse{
-		Amount: neededLpLiquidity,
+		RequiredAmount: neededLpLiquidity,
 	}, nil
 }
