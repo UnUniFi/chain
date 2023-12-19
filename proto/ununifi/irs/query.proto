@@ -24,12 +24,16 @@ service Query {
     option (google.api.http).get = "/ununifi/irs/vaults";
   }
   // Vault queries a single InterestRateSwapVault
-  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+  rpc VaultByContract(QueryVaultByContractRequest) returns (QueryVaultByContractResponse) {
     option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}";
   }
   // VaultDetails queries the details of the vault
   rpc VaultDetails(QueryVaultDetailsRequest) returns (QueryVaultDetailsResponse) {
     option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
+  }
+  // Tranches by Strategy
+  rpc AllTranches(QueryAllTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/all-tranches";
   }
   // Tranches by Strategy
   rpc Tranches(QueryTranchesRequest) returns (QueryTranchesResponse) {
@@ -38,6 +42,26 @@ service Query {
   // Tranche by id
   rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
     option (google.api.http).get = "/ununifi/irs/tranche/{id}";
+  }
+  // Estimate swap amount of UT/PT (in the pool)
+  rpc EstimateSwapInPool(QueryEstimateSwapInPoolRequest) returns (QueryEstimateSwapInPoolResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-in-pool";
+  }
+  // Estimate mint amount of PT&YT pair 
+  rpc EstimateMintPtYtPair(QueryEstimateMintPtYtPairRequest) returns (QueryEstimateMintPtYtPairResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-pt-yt-pair";
+  }
+  // Estimate redeem amount of YT after maturity
+  rpc EstimateRedeemYt(QueryEstimateRedeemYtRequest) returns (QueryEstimateRedeemYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-yt";
+  }
+  // Estimate tokens to mint liquidity pool token
+  rpc EstimateMintLiquidityPoolToken(QueryEstimateMintLiquidityPoolTokenRequest) returns (QueryEstimateMintLiquidityPoolTokenResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-liquidity-pool-token";
+  }
+  // Estimate redeem amount of liquidity pool token
+  rpc EstimateRedeemLiquidityPoolToken(QueryEstimateRedeemLiquidityPoolTokenRequest) returns (QueryEstimateRedeemLiquidityPoolTokenResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-liquidity-pool-token";
   }
 }
 
@@ -59,12 +83,12 @@ message QueryVaultsResponse {
 }
 
 // QueryVaultRequest is request type for the Query/Vault RPC method.
-message QueryVaultRequest {
+message QueryVaultByContractRequest {
   string strategy_contract = 1;
 }
 
 // QueryVaultResponse is response type for the Query/Vault RPC method.
-message QueryVaultResponse {
+message QueryVaultByContractResponse {
   InterestRateSwapVault vault = 1 [(gogoproto.nullable) = false];
 }
 
@@ -80,6 +104,9 @@ message QueryVaultDetailsResponse {
   string fy_rate        = 2;
   string lvy_rate       = 3;
 }
+
+// QueryAllTranchesRequest is request type for the Query/Tranches RPC method.
+message QueryAllTranchesRequest {}
 
 // QueryTranchesRequest is request type for the Query/Tranches RPC method.
 message QueryTranchesRequest {
@@ -99,4 +126,54 @@ message QueryTrancheRequest {
 // QueryTranchResponse is response type for the Query/Tranch RPC method.
 message QueryTrancheResponse {
   TranchePool tranche = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
+message QueryEstimateSwapInPoolRequest {
+  uint64 pool_id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateSwapInPoolResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintPtYtPairRequest {
+  uint64 pool_id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateMintPtYtPairResponse {
+  cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemYtRequest {
+  uint64 pool_id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateRedeemYtResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintLiquidityPoolTokenRequest {
+  uint64 pool_id = 1;
+  string desired_amount = 3;
+}
+
+message QueryEstimateMintLiquidityPoolTokenResponse {
+  repeated cosmos.base.v1beta1.Coin required_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemLiquidityPoolTokenRequest {
+  uint64 pool_id = 1;
+  string amount = 3;
+}
+
+message QueryEstimateRedeemLiquidityPoolTokenResponse {
+  repeated cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
 }

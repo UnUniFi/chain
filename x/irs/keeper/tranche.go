@@ -157,11 +157,13 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			}
 		} else {
 			// Else
-			panic("not allowed to withdraw yt before being matured")
 			// Put required amount of msg.PT from user wallet
 			// Close position
 			// Start redemption for strategy share
-			// k.SwapYtToUt()
+			err := k.SwapYtToUt(ctx, sender, tranche, requiredUt, tokens)
+			if err != nil {
+				return err
+			}
 		}
 	} else {
 		return types.ErrInvalidTrancheType

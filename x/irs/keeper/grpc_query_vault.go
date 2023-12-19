@@ -10,12 +10,17 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) Vault(c context.Context, req *types.QueryVaultRequest) (*types.QueryVaultResponse, error) {
+func (k Keeper) VaultByContract(c context.Context, req *types.QueryVaultByContractRequest) (*types.QueryVaultByContractResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	vault, found := k.GetVault(ctx, req.StrategyContract)
+	if !found {
+		return nil, types.ErrVaultNotFound
+	}
 
-	return &types.QueryVaultResponse{}, nil
+	return &types.QueryVaultByContractResponse{
+		Vault: vault,
+	}, nil
 }

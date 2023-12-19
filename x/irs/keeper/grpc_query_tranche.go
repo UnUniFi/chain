@@ -10,6 +10,17 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
+func (k Keeper) AllTranches(c context.Context, req *types.QueryAllTranchesRequest) (*types.QueryTranchesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.QueryTranchesResponse{
+		Tranches: k.GetAllTranchePool(ctx),
+	}, nil
+}
+
 func (k Keeper) Tranches(c context.Context, req *types.QueryTranchesRequest) (*types.QueryTranchesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
