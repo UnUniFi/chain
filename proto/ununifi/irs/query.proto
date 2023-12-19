@@ -51,6 +51,10 @@ service Query {
   rpc EstimateMintPtYtPair(QueryEstimateMintPtYtPairRequest) returns (QueryEstimateMintPtYtPairResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-mint-pt-yt-pair";
   }
+  // Estimate redeem amount of PT&YT pair 
+  rpc EstimateRedeemPtYtPair(QueryEstimateRedeemPtYtPairRequest) returns (QueryEstimateRedeemPtYtPairResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-pt-yt-pair";
+  }
   // Estimate redeem amount of YT after maturity
   rpc EstimateRedeemYt(QueryEstimateRedeemYtRequest) returns (QueryEstimateRedeemYtResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-redeem-yt";
@@ -148,6 +152,15 @@ message QueryEstimateMintPtYtPairRequest {
 message QueryEstimateMintPtYtPairResponse {
   cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemPtYtPairRequest {
+  uint64 pool_id = 1;
+  string yt_amount = 2;
+}
+
+message QueryEstimateRedeemPtYtPairResponse {
+  cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateRedeemYtRequest {
