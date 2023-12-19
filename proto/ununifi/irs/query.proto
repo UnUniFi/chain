@@ -55,10 +55,6 @@ service Query {
   rpc EstimateRedeemPtYtPair(QueryEstimateRedeemPtYtPairRequest) returns (QueryEstimateRedeemPtYtPairResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-redeem-pt-yt-pair";
   }
-  // Estimate redeem amount of YT after maturity
-  rpc EstimateRedeemYt(QueryEstimateRedeemYtRequest) returns (QueryEstimateRedeemYtResponse) {
-    option (google.api.http).get = "/ununifi/irs/estimate-redeem-yt";
-  }
   // Estimate tokens to mint liquidity pool token
   rpc EstimateMintLiquidityPoolToken(QueryEstimateMintLiquidityPoolTokenRequest) returns (QueryEstimateMintLiquidityPoolTokenResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-mint-liquidity-pool-token";
@@ -169,16 +165,6 @@ message QueryEstimateRedeemPtYtPairRequest {
 
 message QueryEstimateRedeemPtYtPairResponse {
   cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryEstimateRedeemYtRequest {
-  uint64 pool_id = 1;
-  string denom = 2;
-  string amount = 3;
-}
-
-message QueryEstimateRedeemYtResponse {
-  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateMintLiquidityPoolTokenRequest {
