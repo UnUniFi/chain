@@ -67,6 +67,14 @@ service Query {
   rpc EstimateRedeemLiquidityPoolToken(QueryEstimateRedeemLiquidityPoolTokenRequest) returns (QueryEstimateRedeemLiquidityPoolTokenResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-redeem-liquidity-pool-token";
   }
+  // Estimate required UT amount to swao to YT
+  rpc EstimateRequiredUtSwapToYt(QueryEstimateRequiredUtSwapToYtRequest) returns (QueryEstimateRequiredUtSwapToYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-required-ut-swap-to-yt";
+  }
+  // Estimate swap matured YT to UT
+  rpc EstimateSwapMaturedYtToUt(QueryEstimateSwapMaturedYtToUtRequest) returns (QueryEstimateSwapMaturedYtToUtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-matured-yt-to-ut";
+  }  
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -189,4 +197,22 @@ message QueryEstimateRedeemLiquidityPoolTokenRequest {
 
 message QueryEstimateRedeemLiquidityPoolTokenResponse {
   repeated cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRequiredUtSwapToYtRequest {
+  uint64 pool_id = 1;
+  string desired_yt_amount = 3;
+}
+
+message QueryEstimateRequiredUtSwapToYtResponse {
+  cosmos.base.v1beta1.Coin required_ut_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateSwapMaturedYtToUtRequest {
+  uint64 pool_id = 1;
+  string yt_amount = 2;
+}
+
+message QueryEstimateSwapMaturedYtToUtResponse {
+  cosmos.base.v1beta1.Coin ut_amount = 1 [(gogoproto.nullable) = false];
 }
