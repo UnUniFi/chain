@@ -7,7 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
-	_ "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
@@ -198,22 +198,22 @@ func (m *QueryVaultsResponse) GetVaults() []InterestRateSwapVault {
 }
 
 // QueryVaultRequest is request type for the Query/Vault RPC method.
-type QueryVaultRequest struct {
+type QueryVaultByContractRequest struct {
 	StrategyContract string `protobuf:"bytes,1,opt,name=strategy_contract,json=strategyContract,proto3" json:"strategy_contract,omitempty"`
 }
 
-func (m *QueryVaultRequest) Reset()         { *m = QueryVaultRequest{} }
-func (m *QueryVaultRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultRequest) ProtoMessage()    {}
-func (*QueryVaultRequest) Descriptor() ([]byte, []int) {
+func (m *QueryVaultByContractRequest) Reset()         { *m = QueryVaultByContractRequest{} }
+func (m *QueryVaultByContractRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryVaultByContractRequest) ProtoMessage()    {}
+func (*QueryVaultByContractRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{4}
 }
-func (m *QueryVaultRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryVaultByContractRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryVaultByContractRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryVaultByContractRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -223,19 +223,19 @@ func (m *QueryVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultRequest.Merge(m, src)
+func (m *QueryVaultByContractRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryVaultByContractRequest.Merge(m, src)
 }
-func (m *QueryVaultRequest) XXX_Size() int {
+func (m *QueryVaultByContractRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultRequest.DiscardUnknown(m)
+func (m *QueryVaultByContractRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryVaultByContractRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryVaultByContractRequest proto.InternalMessageInfo
 
-func (m *QueryVaultRequest) GetStrategyContract() string {
+func (m *QueryVaultByContractRequest) GetStrategyContract() string {
 	if m != nil {
 		return m.StrategyContract
 	}
@@ -243,22 +243,22 @@ func (m *QueryVaultRequest) GetStrategyContract() string {
 }
 
 // QueryVaultResponse is response type for the Query/Vault RPC method.
-type QueryVaultResponse struct {
+type QueryVaultByContractResponse struct {
 	Vault InterestRateSwapVault `protobuf:"bytes,1,opt,name=vault,proto3" json:"vault"`
 }
 
-func (m *QueryVaultResponse) Reset()         { *m = QueryVaultResponse{} }
-func (m *QueryVaultResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultResponse) ProtoMessage()    {}
-func (*QueryVaultResponse) Descriptor() ([]byte, []int) {
+func (m *QueryVaultByContractResponse) Reset()         { *m = QueryVaultByContractResponse{} }
+func (m *QueryVaultByContractResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryVaultByContractResponse) ProtoMessage()    {}
+func (*QueryVaultByContractResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{5}
 }
-func (m *QueryVaultResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryVaultByContractResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryVaultByContractResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryVaultByContractResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -268,19 +268,19 @@ func (m *QueryVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultResponse.Merge(m, src)
+func (m *QueryVaultByContractResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryVaultByContractResponse.Merge(m, src)
 }
-func (m *QueryVaultResponse) XXX_Size() int {
+func (m *QueryVaultByContractResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultResponse.DiscardUnknown(m)
+func (m *QueryVaultByContractResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryVaultByContractResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryVaultByContractResponse proto.InternalMessageInfo
 
-func (m *QueryVaultResponse) GetVault() InterestRateSwapVault {
+func (m *QueryVaultByContractResponse) GetVault() InterestRateSwapVault {
 	if m != nil {
 		return m.Vault
 	}
@@ -401,6 +401,43 @@ func (m *QueryVaultDetailsResponse) GetLvyRate() string {
 	return ""
 }
 
+// QueryAllTranchesRequest is request type for the Query/Tranches RPC method.
+type QueryAllTranchesRequest struct {
+}
+
+func (m *QueryAllTranchesRequest) Reset()         { *m = QueryAllTranchesRequest{} }
+func (m *QueryAllTranchesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllTranchesRequest) ProtoMessage()    {}
+func (*QueryAllTranchesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{8}
+}
+func (m *QueryAllTranchesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllTranchesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllTranchesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllTranchesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllTranchesRequest.Merge(m, src)
+}
+func (m *QueryAllTranchesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllTranchesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllTranchesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllTranchesRequest proto.InternalMessageInfo
+
 // QueryTranchesRequest is request type for the Query/Tranches RPC method.
 type QueryTranchesRequest struct {
 	StrategyContract string `protobuf:"bytes,1,opt,name=strategy_contract,json=strategyContract,proto3" json:"strategy_contract,omitempty"`
@@ -410,7 +447,7 @@ func (m *QueryTranchesRequest) Reset()         { *m = QueryTranchesRequest{} }
 func (m *QueryTranchesRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryTranchesRequest) ProtoMessage()    {}
 func (*QueryTranchesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4e7a0ad685398d1e, []int{8}
+	return fileDescriptor_4e7a0ad685398d1e, []int{9}
 }
 func (m *QueryTranchesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -455,7 +492,7 @@ func (m *QueryTranchesResponse) Reset()         { *m = QueryTranchesResponse{} }
 func (m *QueryTranchesResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryTranchesResponse) ProtoMessage()    {}
 func (*QueryTranchesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4e7a0ad685398d1e, []int{9}
+	return fileDescriptor_4e7a0ad685398d1e, []int{10}
 }
 func (m *QueryTranchesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -500,7 +537,7 @@ func (m *QueryTrancheRequest) Reset()         { *m = QueryTrancheRequest{} }
 func (m *QueryTrancheRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryTrancheRequest) ProtoMessage()    {}
 func (*QueryTrancheRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4e7a0ad685398d1e, []int{10}
+	return fileDescriptor_4e7a0ad685398d1e, []int{11}
 }
 func (m *QueryTrancheRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -545,7 +582,7 @@ func (m *QueryTrancheResponse) Reset()         { *m = QueryTrancheResponse{} }
 func (m *QueryTrancheResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryTrancheResponse) ProtoMessage()    {}
 func (*QueryTrancheResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4e7a0ad685398d1e, []int{11}
+	return fileDescriptor_4e7a0ad685398d1e, []int{12}
 }
 func (m *QueryTrancheResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -581,71 +618,641 @@ func (m *QueryTrancheResponse) GetTranche() TranchePool {
 	return TranchePool{}
 }
 
+// QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
+type QueryEstimateSwapInPoolRequest struct {
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *QueryEstimateSwapInPoolRequest) Reset()         { *m = QueryEstimateSwapInPoolRequest{} }
+func (m *QueryEstimateSwapInPoolRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateSwapInPoolRequest) ProtoMessage()    {}
+func (*QueryEstimateSwapInPoolRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{13}
+}
+func (m *QueryEstimateSwapInPoolRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateSwapInPoolRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateSwapInPoolRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateSwapInPoolRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateSwapInPoolRequest.Merge(m, src)
+}
+func (m *QueryEstimateSwapInPoolRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateSwapInPoolRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateSwapInPoolRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateSwapInPoolRequest proto.InternalMessageInfo
+
+func (m *QueryEstimateSwapInPoolRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryEstimateSwapInPoolRequest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryEstimateSwapInPoolRequest) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+type QueryEstimateSwapInPoolResponse struct {
+	Amount types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
+}
+
+func (m *QueryEstimateSwapInPoolResponse) Reset()         { *m = QueryEstimateSwapInPoolResponse{} }
+func (m *QueryEstimateSwapInPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateSwapInPoolResponse) ProtoMessage()    {}
+func (*QueryEstimateSwapInPoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{14}
+}
+func (m *QueryEstimateSwapInPoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateSwapInPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateSwapInPoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateSwapInPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateSwapInPoolResponse.Merge(m, src)
+}
+func (m *QueryEstimateSwapInPoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateSwapInPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateSwapInPoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateSwapInPoolResponse proto.InternalMessageInfo
+
+func (m *QueryEstimateSwapInPoolResponse) GetAmount() types.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types.Coin{}
+}
+
+type QueryEstimateMintPtYtPairRequest struct {
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) Reset()         { *m = QueryEstimateMintPtYtPairRequest{} }
+func (m *QueryEstimateMintPtYtPairRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateMintPtYtPairRequest) ProtoMessage()    {}
+func (*QueryEstimateMintPtYtPairRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{15}
+}
+func (m *QueryEstimateMintPtYtPairRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateMintPtYtPairRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateMintPtYtPairRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateMintPtYtPairRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateMintPtYtPairRequest.Merge(m, src)
+}
+func (m *QueryEstimateMintPtYtPairRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateMintPtYtPairRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateMintPtYtPairRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateMintPtYtPairRequest proto.InternalMessageInfo
+
+func (m *QueryEstimateMintPtYtPairRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+type QueryEstimateMintPtYtPairResponse struct {
+	PtAmount types.Coin `protobuf:"bytes,1,opt,name=pt_amount,json=ptAmount,proto3" json:"pt_amount"`
+	YtAmount types.Coin `protobuf:"bytes,2,opt,name=yt_amount,json=ytAmount,proto3" json:"yt_amount"`
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) Reset()         { *m = QueryEstimateMintPtYtPairResponse{} }
+func (m *QueryEstimateMintPtYtPairResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateMintPtYtPairResponse) ProtoMessage()    {}
+func (*QueryEstimateMintPtYtPairResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{16}
+}
+func (m *QueryEstimateMintPtYtPairResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateMintPtYtPairResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateMintPtYtPairResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateMintPtYtPairResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateMintPtYtPairResponse.Merge(m, src)
+}
+func (m *QueryEstimateMintPtYtPairResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateMintPtYtPairResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateMintPtYtPairResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateMintPtYtPairResponse proto.InternalMessageInfo
+
+func (m *QueryEstimateMintPtYtPairResponse) GetPtAmount() types.Coin {
+	if m != nil {
+		return m.PtAmount
+	}
+	return types.Coin{}
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) GetYtAmount() types.Coin {
+	if m != nil {
+		return m.YtAmount
+	}
+	return types.Coin{}
+}
+
+type QueryEstimateRedeemYtRequest struct {
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *QueryEstimateRedeemYtRequest) Reset()         { *m = QueryEstimateRedeemYtRequest{} }
+func (m *QueryEstimateRedeemYtRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateRedeemYtRequest) ProtoMessage()    {}
+func (*QueryEstimateRedeemYtRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{17}
+}
+func (m *QueryEstimateRedeemYtRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateRedeemYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateRedeemYtRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateRedeemYtRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemYtRequest.Merge(m, src)
+}
+func (m *QueryEstimateRedeemYtRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateRedeemYtRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemYtRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateRedeemYtRequest proto.InternalMessageInfo
+
+func (m *QueryEstimateRedeemYtRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryEstimateRedeemYtRequest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryEstimateRedeemYtRequest) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+type QueryEstimateRedeemYtResponse struct {
+	Amount types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
+}
+
+func (m *QueryEstimateRedeemYtResponse) Reset()         { *m = QueryEstimateRedeemYtResponse{} }
+func (m *QueryEstimateRedeemYtResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateRedeemYtResponse) ProtoMessage()    {}
+func (*QueryEstimateRedeemYtResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{18}
+}
+func (m *QueryEstimateRedeemYtResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateRedeemYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateRedeemYtResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateRedeemYtResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemYtResponse.Merge(m, src)
+}
+func (m *QueryEstimateRedeemYtResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateRedeemYtResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemYtResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateRedeemYtResponse proto.InternalMessageInfo
+
+func (m *QueryEstimateRedeemYtResponse) GetAmount() types.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types.Coin{}
+}
+
+type QueryEstimateMintLiquidityPoolTokenRequest struct {
+	PoolId        uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	DesiredAmount string `protobuf:"bytes,3,opt,name=desired_amount,json=desiredAmount,proto3" json:"desired_amount,omitempty"`
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) Reset() {
+	*m = QueryEstimateMintLiquidityPoolTokenRequest{}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateMintLiquidityPoolTokenRequest) ProtoMessage() {}
+func (*QueryEstimateMintLiquidityPoolTokenRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{19}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenRequest.Merge(m, src)
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenRequest proto.InternalMessageInfo
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) GetDesiredAmount() string {
+	if m != nil {
+		return m.DesiredAmount
+	}
+	return ""
+}
+
+type QueryEstimateMintLiquidityPoolTokenResponse struct {
+	RequiredAmount []types.Coin `protobuf:"bytes,1,rep,name=required_amount,json=requiredAmount,proto3" json:"required_amount"`
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) Reset() {
+	*m = QueryEstimateMintLiquidityPoolTokenResponse{}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateMintLiquidityPoolTokenResponse) ProtoMessage() {}
+func (*QueryEstimateMintLiquidityPoolTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{20}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenResponse.Merge(m, src)
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateMintLiquidityPoolTokenResponse proto.InternalMessageInfo
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) GetRequiredAmount() []types.Coin {
+	if m != nil {
+		return m.RequiredAmount
+	}
+	return nil
+}
+
+type QueryEstimateRedeemLiquidityPoolTokenRequest struct {
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Amount string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) Reset() {
+	*m = QueryEstimateRedeemLiquidityPoolTokenRequest{}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateRedeemLiquidityPoolTokenRequest) ProtoMessage() {}
+func (*QueryEstimateRedeemLiquidityPoolTokenRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{21}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenRequest.Merge(m, src)
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenRequest proto.InternalMessageInfo
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+type QueryEstimateRedeemLiquidityPoolTokenResponse struct {
+	RedeemAmount []types.Coin `protobuf:"bytes,1,rep,name=redeem_amount,json=redeemAmount,proto3" json:"redeem_amount"`
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Reset() {
+	*m = QueryEstimateRedeemLiquidityPoolTokenResponse{}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateRedeemLiquidityPoolTokenResponse) ProtoMessage() {}
+func (*QueryEstimateRedeemLiquidityPoolTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4e7a0ad685398d1e, []int{22}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenResponse.Merge(m, src)
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEstimateRedeemLiquidityPoolTokenResponse proto.InternalMessageInfo
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) GetRedeemAmount() []types.Coin {
+	if m != nil {
+		return m.RedeemAmount
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.irs.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.irs.QueryParamsResponse")
 	proto.RegisterType((*QueryVaultsRequest)(nil), "ununifi.irs.QueryVaultsRequest")
 	proto.RegisterType((*QueryVaultsResponse)(nil), "ununifi.irs.QueryVaultsResponse")
-	proto.RegisterType((*QueryVaultRequest)(nil), "ununifi.irs.QueryVaultRequest")
-	proto.RegisterType((*QueryVaultResponse)(nil), "ununifi.irs.QueryVaultResponse")
+	proto.RegisterType((*QueryVaultByContractRequest)(nil), "ununifi.irs.QueryVaultByContractRequest")
+	proto.RegisterType((*QueryVaultByContractResponse)(nil), "ununifi.irs.QueryVaultByContractResponse")
 	proto.RegisterType((*QueryVaultDetailsRequest)(nil), "ununifi.irs.QueryVaultDetailsRequest")
 	proto.RegisterType((*QueryVaultDetailsResponse)(nil), "ununifi.irs.QueryVaultDetailsResponse")
+	proto.RegisterType((*QueryAllTranchesRequest)(nil), "ununifi.irs.QueryAllTranchesRequest")
 	proto.RegisterType((*QueryTranchesRequest)(nil), "ununifi.irs.QueryTranchesRequest")
 	proto.RegisterType((*QueryTranchesResponse)(nil), "ununifi.irs.QueryTranchesResponse")
 	proto.RegisterType((*QueryTrancheRequest)(nil), "ununifi.irs.QueryTrancheRequest")
 	proto.RegisterType((*QueryTrancheResponse)(nil), "ununifi.irs.QueryTrancheResponse")
+	proto.RegisterType((*QueryEstimateSwapInPoolRequest)(nil), "ununifi.irs.QueryEstimateSwapInPoolRequest")
+	proto.RegisterType((*QueryEstimateSwapInPoolResponse)(nil), "ununifi.irs.QueryEstimateSwapInPoolResponse")
+	proto.RegisterType((*QueryEstimateMintPtYtPairRequest)(nil), "ununifi.irs.QueryEstimateMintPtYtPairRequest")
+	proto.RegisterType((*QueryEstimateMintPtYtPairResponse)(nil), "ununifi.irs.QueryEstimateMintPtYtPairResponse")
+	proto.RegisterType((*QueryEstimateRedeemYtRequest)(nil), "ununifi.irs.QueryEstimateRedeemYtRequest")
+	proto.RegisterType((*QueryEstimateRedeemYtResponse)(nil), "ununifi.irs.QueryEstimateRedeemYtResponse")
+	proto.RegisterType((*QueryEstimateMintLiquidityPoolTokenRequest)(nil), "ununifi.irs.QueryEstimateMintLiquidityPoolTokenRequest")
+	proto.RegisterType((*QueryEstimateMintLiquidityPoolTokenResponse)(nil), "ununifi.irs.QueryEstimateMintLiquidityPoolTokenResponse")
+	proto.RegisterType((*QueryEstimateRedeemLiquidityPoolTokenRequest)(nil), "ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenRequest")
+	proto.RegisterType((*QueryEstimateRedeemLiquidityPoolTokenResponse)(nil), "ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenResponse")
 }
 
 func init() { proto.RegisterFile("ununifi/irs/query.proto", fileDescriptor_4e7a0ad685398d1e) }
 
 var fileDescriptor_4e7a0ad685398d1e = []byte{
-	// 736 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x95, 0x4f, 0x4f, 0x13, 0x41,
-	0x18, 0xc6, 0xbb, 0x85, 0xfe, 0x71, 0x50, 0x22, 0x03, 0x84, 0xb6, 0x98, 0xa5, 0x6c, 0x84, 0xa0,
-	0x24, 0x9d, 0x14, 0x2f, 0xc6, 0x18, 0x42, 0x80, 0x18, 0xbd, 0x61, 0x01, 0x4d, 0xbc, 0x34, 0xd3,
-	0xed, 0xd0, 0x4e, 0xb2, 0xdd, 0xd9, 0xee, 0xce, 0x56, 0x1a, 0xc2, 0xc5, 0xf8, 0x01, 0x4c, 0xfc,
-	0x08, 0x7e, 0x19, 0x8e, 0x24, 0x5e, 0x3c, 0x19, 0x03, 0x7e, 0x05, 0xef, 0xa6, 0x33, 0xef, 0x96,
-	0x2e, 0x6d, 0x81, 0x70, 0x63, 0xdf, 0xf7, 0x99, 0xe7, 0xf7, 0xbc, 0xc3, 0xbc, 0x29, 0x5a, 0x08,
-	0xdd, 0xd0, 0xe5, 0x47, 0x9c, 0x70, 0x3f, 0x20, 0xed, 0x90, 0xf9, 0xdd, 0x92, 0xe7, 0x0b, 0x29,
-	0xf0, 0x14, 0x34, 0x4a, 0xdc, 0x0f, 0x0a, 0x73, 0x0d, 0xd1, 0x10, 0xaa, 0x4e, 0x7a, 0x7f, 0x69,
-	0x49, 0x21, 0x6f, 0x8b, 0xa0, 0x25, 0x82, 0xaa, 0x6e, 0xe8, 0x0f, 0x68, 0x3d, 0x69, 0x08, 0xd1,
-	0x70, 0x18, 0xa1, 0x1e, 0x27, 0xd4, 0x75, 0x85, 0xa4, 0x92, 0x0b, 0x37, 0xea, 0x3e, 0xd7, 0x5a,
-	0x52, 0xa3, 0x01, 0xd3, 0x50, 0xd2, 0x29, 0xd7, 0x98, 0xa4, 0x65, 0xe2, 0xd1, 0x06, 0x77, 0x95,
-	0x18, 0xb4, 0xe6, 0xa0, 0x36, 0x52, 0xd9, 0x82, 0x47, 0xfd, 0xdc, 0xe0, 0x00, 0x1e, 0xf5, 0x69,
-	0x2b, 0xa2, 0xcc, 0x0f, 0x76, 0xb8, 0x3f, 0xb2, 0x4c, 0x5b, 0x2d, 0x5d, 0xb6, 0xe6, 0x10, 0x7e,
-	0xdf, 0x4b, 0xb2, 0xa7, 0x2c, 0x2a, 0xac, 0x1d, 0xb2, 0x40, 0x5a, 0x6f, 0xd1, 0x6c, 0xac, 0x1a,
-	0x78, 0xc2, 0x0d, 0x18, 0x2e, 0xa3, 0xb4, 0x46, 0xe5, 0x8c, 0xa2, 0xb1, 0x36, 0xb5, 0x31, 0x5b,
-	0x1a, 0xb8, 0xad, 0x92, 0x16, 0x6f, 0x4f, 0x9e, 0xfd, 0x5e, 0x4a, 0x54, 0x40, 0xd8, 0xf7, 0xff,
-	0x40, 0x43, 0x47, 0xf6, 0xfd, 0x3f, 0x82, 0x7f, 0x54, 0x05, 0xff, 0x2d, 0x94, 0xee, 0xa8, 0x4a,
-	0xce, 0x28, 0x4e, 0xac, 0x4d, 0x6d, 0x58, 0x31, 0xff, 0x77, 0xae, 0x64, 0x3e, 0x0b, 0x64, 0x85,
-	0x4a, 0xb6, 0xff, 0x99, 0x7a, 0xea, 0x70, 0x84, 0xd3, 0xe7, 0xac, 0x2d, 0x34, 0x73, 0x65, 0x0c,
-	0x34, 0xbc, 0x8e, 0x66, 0x02, 0xe9, 0x53, 0xc9, 0x1a, 0xdd, 0xaa, 0x2d, 0x5c, 0xe9, 0x53, 0x5b,
-	0xaa, 0x09, 0x1e, 0x54, 0x1e, 0x47, 0x8d, 0x1d, 0xa8, 0x5b, 0x07, 0x83, 0x81, 0xfb, 0xc9, 0x36,
-	0x51, 0x4a, 0x11, 0x60, 0xf0, 0xbb, 0x07, 0xd3, 0xc7, 0x2c, 0x1b, 0xe5, 0xae, 0x5c, 0x77, 0x99,
-	0xa4, 0xdc, 0x09, 0xee, 0x13, 0x0f, 0x17, 0x50, 0xb6, 0x45, 0x65, 0xe8, 0x73, 0xd9, 0xcd, 0x25,
-	0x95, 0xa6, 0xff, 0x6d, 0x75, 0x50, 0x7e, 0x04, 0x04, 0x26, 0x58, 0x41, 0xd3, 0x0e, 0x6f, 0x87,
-	0xbc, 0xce, 0x65, 0xb7, 0xea, 0x09, 0xe1, 0x00, 0xe2, 0x51, 0xbf, 0xba, 0x27, 0x84, 0x83, 0x17,
-	0x50, 0xe6, 0xa8, 0x5b, 0xed, 0x41, 0xc1, 0x3e, 0x7d, 0xd4, 0xed, 0xcd, 0x85, 0xf3, 0x28, 0xeb,
-	0x74, 0xa0, 0x33, 0xa1, 0x3a, 0x19, 0xa7, 0xa3, 0x5a, 0xd6, 0x0e, 0x9a, 0x53, 0xdc, 0x03, 0x9f,
-	0xba, 0x76, 0x93, 0xdd, 0x6b, 0x30, 0x6b, 0x1f, 0xcd, 0x5f, 0x33, 0x81, 0xe0, 0xaf, 0x50, 0x56,
-	0x42, 0x0d, 0x9e, 0x45, 0x2e, 0x76, 0xfb, 0x70, 0xa0, 0x97, 0x1e, 0xee, 0xbc, 0xaf, 0xb7, 0x56,
-	0xe0, 0x9d, 0x81, 0x26, 0x0a, 0x36, 0x8d, 0x92, 0xbc, 0xae, 0x92, 0x4c, 0x56, 0x92, 0xbc, 0x6e,
-	0xed, 0xc5, 0x07, 0xe8, 0xa3, 0x5f, 0xa2, 0x0c, 0x58, 0xc1, 0xff, 0xfd, 0x36, 0x72, 0x24, 0xdf,
-	0xf8, 0x97, 0x42, 0x29, 0x65, 0x89, 0x9b, 0x28, 0xad, 0x17, 0x03, 0x2f, 0xc5, 0x0e, 0x0f, 0x6f,
-	0x5d, 0xa1, 0x38, 0x5e, 0xa0, 0x03, 0x59, 0x8b, 0x5f, 0x7e, 0xfe, 0xfd, 0x9e, 0x9c, 0xc7, 0xb3,
-	0x64, 0x78, 0xfd, 0x7b, 0x24, 0xbd, 0x4f, 0xa3, 0x48, 0xb1, 0xfd, 0x1b, 0x45, 0x8a, 0xaf, 0xe2,
-	0x18, 0x92, 0xde, 0x32, 0x7c, 0x8c, 0x52, 0x4a, 0x8e, 0xcd, 0x31, 0x3e, 0x11, 0x67, 0x69, 0x6c,
-	0x1f, 0x30, 0x25, 0x85, 0x59, 0xc3, 0xab, 0xc3, 0x18, 0x72, 0x32, 0xf4, 0x78, 0x4e, 0xf1, 0x0f,
-	0x03, 0x3d, 0x1c, 0x7c, 0xde, 0x78, 0x65, 0x0c, 0x21, 0xbe, 0x63, 0x85, 0xd5, 0xdb, 0x64, 0x90,
-	0x67, 0x57, 0xe5, 0xd9, 0xc4, 0xaf, 0xef, 0x96, 0x87, 0xc0, 0xee, 0x71, 0x16, 0x90, 0x93, 0x68,
-	0x0f, 0x4f, 0xf1, 0x57, 0x03, 0x65, 0xa3, 0x77, 0x8c, 0x97, 0x87, 0xd1, 0xd7, 0x16, 0xa5, 0x60,
-	0xdd, 0x24, 0x81, 0x64, 0x65, 0x95, 0x6c, 0x1d, 0x3f, 0x8b, 0x25, 0x8b, 0x5e, 0xfa, 0xc8, 0xcb,
-	0x6a, 0xa3, 0x0c, 0xd8, 0xe0, 0xe2, 0x58, 0x42, 0x94, 0x61, 0xf9, 0x06, 0x05, 0x44, 0x58, 0x56,
-	0x11, 0x16, 0x71, 0x7e, 0x54, 0x04, 0x72, 0xc2, 0xeb, 0xa7, 0xdb, 0x9b, 0x67, 0x17, 0xa6, 0x71,
-	0x7e, 0x61, 0x1a, 0x7f, 0x2e, 0x4c, 0xe3, 0xdb, 0xa5, 0x99, 0x38, 0xbf, 0x34, 0x13, 0xbf, 0x2e,
-	0xcd, 0xc4, 0xa7, 0xa7, 0x0d, 0x2e, 0x9b, 0x61, 0xad, 0x64, 0x8b, 0x16, 0x39, 0x74, 0x0f, 0x5d,
-	0xfe, 0x86, 0x13, 0xbb, 0x49, 0xb9, 0x4b, 0x8e, 0xb5, 0x4d, 0xd7, 0x63, 0x41, 0x2d, 0xad, 0x7e,
-	0x95, 0x5e, 0xfc, 0x0f, 0x00, 0x00, 0xff, 0xff, 0x2b, 0xef, 0x2d, 0x9b, 0xa0, 0x07, 0x00, 0x00,
+	// 1205 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x57, 0xcf, 0x4f, 0x1b, 0xc7,
+	0x17, 0x67, 0x49, 0x62, 0xc8, 0x23, 0x21, 0xf9, 0x0e, 0xf0, 0xc5, 0x36, 0xa9, 0x31, 0x2b, 0x48,
+	0xf8, 0x91, 0xf5, 0xca, 0xe4, 0x40, 0x12, 0x45, 0xa8, 0x01, 0x5a, 0x85, 0xaa, 0x95, 0xa8, 0x93,
+	0xb4, 0x4d, 0x0e, 0xb5, 0x16, 0x7b, 0x30, 0xa3, 0xae, 0x77, 0x96, 0xdd, 0x31, 0x74, 0x8b, 0xb8,
+	0x54, 0xfd, 0x03, 0xa2, 0x56, 0xea, 0xa5, 0x87, 0x1e, 0xda, 0x3f, 0x26, 0x87, 0x1e, 0x22, 0xb5,
+	0x87, 0x9e, 0xaa, 0x0a, 0xfa, 0x87, 0x54, 0x3b, 0xfb, 0x76, 0xe3, 0xb5, 0x77, 0x6d, 0x43, 0x73,
+	0x63, 0xe7, 0x7d, 0xde, 0xfb, 0x7c, 0x3e, 0xf3, 0xc6, 0xf3, 0x06, 0x98, 0x6e, 0x59, 0x2d, 0x8b,
+	0xed, 0x31, 0x9d, 0x39, 0xae, 0x7e, 0xd0, 0xa2, 0x8e, 0x57, 0xb2, 0x1d, 0x2e, 0x38, 0x19, 0xc3,
+	0x40, 0x89, 0x39, 0x6e, 0x7e, 0xb2, 0xc1, 0x1b, 0x5c, 0xae, 0xeb, 0xfe, 0x5f, 0x01, 0x24, 0x9f,
+	0xab, 0x71, 0xb7, 0xc9, 0xdd, 0x6a, 0x10, 0x08, 0x3e, 0x30, 0x74, 0xab, 0xc1, 0x79, 0xc3, 0xa4,
+	0xba, 0x61, 0x33, 0xdd, 0xb0, 0x2c, 0x2e, 0x0c, 0xc1, 0xb8, 0x15, 0x46, 0x97, 0x03, 0xac, 0xbe,
+	0x6b, 0xb8, 0x34, 0x20, 0xd5, 0x0f, 0xcb, 0xbb, 0x54, 0x18, 0x65, 0xdd, 0x36, 0x1a, 0xcc, 0x92,
+	0x60, 0xc4, 0x16, 0xda, 0xb1, 0x21, 0xaa, 0xc6, 0x59, 0x18, 0xcf, 0xb6, 0x1b, 0xb0, 0x0d, 0xc7,
+	0x68, 0x86, 0x2c, 0x53, 0xed, 0x11, 0xe6, 0x24, 0x2e, 0x1b, 0xcd, 0x66, 0xb0, 0xac, 0x4e, 0x02,
+	0xf9, 0xd4, 0x57, 0xb2, 0x23, 0x4b, 0x54, 0xe8, 0x41, 0x8b, 0xba, 0x42, 0x7d, 0x02, 0x13, 0xb1,
+	0x55, 0xd7, 0xe6, 0x96, 0x4b, 0x49, 0x19, 0x32, 0x01, 0x55, 0x56, 0x29, 0x2a, 0x8b, 0x63, 0xab,
+	0x13, 0xa5, 0xb6, 0xdd, 0x2a, 0x05, 0xe0, 0x8d, 0xcb, 0xaf, 0xff, 0x9a, 0x1d, 0xaa, 0x20, 0x30,
+	0xaa, 0xff, 0x99, 0xd1, 0x32, 0x45, 0x54, 0xff, 0x73, 0xac, 0x1f, 0xae, 0x62, 0xfd, 0xf7, 0x21,
+	0x73, 0x28, 0x57, 0xb2, 0x4a, 0xf1, 0xd2, 0xe2, 0xd8, 0xaa, 0x1a, 0xab, 0xbf, 0x6d, 0x09, 0xea,
+	0x50, 0x57, 0x54, 0x0c, 0x41, 0x9f, 0x1e, 0x19, 0xb6, 0x4c, 0x0e, 0xe9, 0x82, 0x3c, 0xf5, 0x23,
+	0x98, 0x79, 0x5b, 0x78, 0xc3, 0xdb, 0xe4, 0x96, 0x70, 0x8c, 0x9a, 0x40, 0x5e, 0xb2, 0x02, 0xff,
+	0x73, 0x85, 0x63, 0x08, 0xda, 0xf0, 0xaa, 0x35, 0x8c, 0x49, 0x2f, 0x57, 0x2b, 0x37, 0xc3, 0x40,
+	0x98, 0xa3, 0x7e, 0x09, 0xb7, 0x92, 0x6b, 0xa1, 0xda, 0x75, 0xb8, 0x22, 0x59, 0x71, 0x33, 0x06,
+	0x17, 0x1b, 0xa4, 0xa9, 0x35, 0xc8, 0xbe, 0xad, 0xbf, 0x45, 0x85, 0xc1, 0x4c, 0xf7, 0x22, 0x42,
+	0x49, 0x1e, 0x46, 0x9b, 0x86, 0x68, 0x39, 0x4c, 0x78, 0xd9, 0x61, 0x89, 0x89, 0xbe, 0xd5, 0x43,
+	0xc8, 0x25, 0x90, 0xa0, 0x83, 0x05, 0x18, 0x37, 0xd9, 0x41, 0x8b, 0xd5, 0x99, 0xf0, 0xaa, 0x36,
+	0xe7, 0x26, 0x52, 0x5c, 0x8f, 0x56, 0x77, 0x38, 0x37, 0xc9, 0x34, 0x8c, 0xec, 0x79, 0x55, 0x9f,
+	0x14, 0xcb, 0x67, 0xf6, 0x3c, 0xdf, 0x17, 0xc9, 0xc1, 0xa8, 0x79, 0x88, 0x91, 0x4b, 0x32, 0x32,
+	0x62, 0x1e, 0xca, 0x90, 0x9a, 0x83, 0x69, 0xc9, 0xfb, 0xd8, 0x34, 0x9f, 0x39, 0x86, 0x55, 0xdb,
+	0xa7, 0x51, 0xf3, 0x37, 0x61, 0x52, 0x86, 0x3a, 0xd6, 0xcf, 0xd7, 0x9c, 0xa7, 0x30, 0xd5, 0x51,
+	0x04, 0x3d, 0x3d, 0x84, 0x51, 0x81, 0x6b, 0x78, 0x8a, 0xb2, 0xb1, 0xc6, 0x60, 0x82, 0x6f, 0x0c,
+	0xdb, 0x11, 0xe1, 0xd5, 0x05, 0x3c, 0x96, 0x88, 0x09, 0x85, 0x8d, 0xc3, 0x30, 0xab, 0x4b, 0x25,
+	0x97, 0x2b, 0xc3, 0xac, 0xae, 0xee, 0xc4, 0x0d, 0x44, 0xd4, 0xf7, 0x61, 0x04, 0x4b, 0xe1, 0x91,
+	0xe8, 0xc7, 0x1c, 0xc2, 0xd5, 0x06, 0x14, 0x64, 0xc5, 0x0f, 0x5c, 0xc1, 0x9a, 0x78, 0x62, 0xb6,
+	0x2d, 0x1f, 0x19, 0x6a, 0x98, 0x86, 0x11, 0xbf, 0x41, 0xd5, 0x48, 0x48, 0xc6, 0xff, 0xdc, 0xae,
+	0x93, 0x49, 0xb8, 0x52, 0xa7, 0x16, 0x6f, 0x62, 0x6b, 0x82, 0x0f, 0xf2, 0x7f, 0xc8, 0x18, 0x4d,
+	0xde, 0xb2, 0x04, 0xf6, 0x05, 0xbf, 0xd4, 0x97, 0x30, 0x9b, 0x4a, 0x84, 0x2e, 0xd6, 0xa2, 0xd4,
+	0xc0, 0x44, 0xae, 0x84, 0x57, 0x9c, 0x7f, 0x15, 0x95, 0xf0, 0x2a, 0x2a, 0x6d, 0x72, 0x66, 0x85,
+	0xbf, 0x3d, 0xac, 0xcd, 0xa0, 0x18, 0xab, 0xfd, 0x09, 0xb3, 0xc4, 0x8e, 0x78, 0x21, 0x76, 0x0c,
+	0xe6, 0xbc, 0x63, 0x1b, 0x3f, 0x2b, 0x30, 0xd7, 0x83, 0x0b, 0x9d, 0x3c, 0x82, 0xab, 0xb6, 0xa8,
+	0x9e, 0xcf, 0xcc, 0xa8, 0x2d, 0x1e, 0xcb, 0x04, 0x3f, 0xdb, 0x8b, 0xb2, 0x87, 0x07, 0xcc, 0xf6,
+	0x30, 0x5b, 0xa5, 0x78, 0x79, 0x84, 0x02, 0x2b, 0xb4, 0x4e, 0x69, 0xf3, 0x85, 0x78, 0xc7, 0x1b,
+	0xf1, 0x05, 0xbc, 0x97, 0x42, 0xf3, 0x5f, 0xbb, 0x69, 0xc2, 0x72, 0xd7, 0x0e, 0x7f, 0xdc, 0x7e,
+	0x2d, 0x3c, 0xe3, 0x5f, 0x51, 0xab, 0xaf, 0x9d, 0x05, 0x18, 0xaf, 0x53, 0x97, 0x39, 0xb4, 0x5e,
+	0x8d, 0x19, 0xb8, 0x8e, 0xab, 0xb8, 0x5d, 0x47, 0xb0, 0x32, 0x10, 0x1b, 0xba, 0x7a, 0x02, 0x37,
+	0x1c, 0x7a, 0xd0, 0x6a, 0x2f, 0x1b, 0xfc, 0xd6, 0xfb, 0xda, 0x1b, 0x0f, 0xf3, 0x90, 0xb8, 0x0a,
+	0x77, 0x13, 0x36, 0xf0, 0x02, 0x46, 0xd3, 0x3a, 0xd4, 0x02, 0x6d, 0x40, 0x02, 0xf4, 0xb6, 0x05,
+	0xd7, 0x1d, 0x89, 0x39, 0xa7, 0xb3, 0x6b, 0x41, 0x56, 0xe0, 0x6b, 0xf5, 0xd5, 0x38, 0x5c, 0x91,
+	0xbc, 0x64, 0x1f, 0x32, 0xc1, 0x64, 0x26, 0xb3, 0xb1, 0xeb, 0xa8, 0x7b, 0xec, 0xe7, 0x8b, 0xe9,
+	0x80, 0x40, 0x9c, 0x3a, 0xf3, 0xed, 0xef, 0xff, 0xfc, 0x30, 0x3c, 0x45, 0x26, 0xf4, 0xee, 0xf7,
+	0x87, 0xcf, 0x14, 0x0c, 0xf4, 0x24, 0xa6, 0xd8, 0x03, 0x20, 0x89, 0x29, 0xfe, 0x16, 0x48, 0x61,
+	0x0a, 0xc6, 0x3c, 0xf9, 0x51, 0x81, 0x1b, 0x1d, 0x63, 0x99, 0x2c, 0xa6, 0x94, 0xec, 0x7a, 0x05,
+	0xe4, 0x97, 0x06, 0x40, 0xa2, 0x8a, 0x92, 0x54, 0xb1, 0x48, 0x6e, 0x77, 0xab, 0xd0, 0x8f, 0xbb,
+	0xa6, 0xd5, 0x09, 0xf9, 0x45, 0x81, 0x6b, 0xed, 0xa3, 0x96, 0x2c, 0xa4, 0x70, 0xc5, 0xe7, 0x7d,
+	0xfe, 0x76, 0x3f, 0x18, 0xea, 0xd9, 0x92, 0x7a, 0xd6, 0xc9, 0xa3, 0xc1, 0xf4, 0xe8, 0xf8, 0x0e,
+	0x60, 0xd4, 0xd5, 0x8f, 0xc3, 0x37, 0xc1, 0x09, 0xf9, 0x06, 0xc6, 0xda, 0xe6, 0x32, 0x99, 0xef,
+	0x26, 0xef, 0x1e, 0xdb, 0x79, 0xb5, 0x1b, 0xd5, 0x39, 0x7c, 0xd5, 0x39, 0x29, 0x6f, 0x86, 0xe4,
+	0x62, 0xf2, 0x0c, 0xd3, 0xd4, 0xc2, 0x19, 0x4b, 0xbe, 0x53, 0x60, 0x34, 0x62, 0x9e, 0xeb, 0x55,
+	0x73, 0x70, 0xda, 0xb2, 0xa4, 0x5d, 0x21, 0x4b, 0x31, 0xda, 0x90, 0x32, 0xb1, 0x51, 0x07, 0x30,
+	0x82, 0x65, 0x48, 0x31, 0x95, 0x21, 0xd4, 0x30, 0xd7, 0x03, 0xd1, 0xd3, 0x39, 0x4a, 0xd0, 0x8f,
+	0x59, 0xfd, 0x84, 0xfc, 0xa4, 0x00, 0xe9, 0x9e, 0xbb, 0x64, 0xa5, 0xbb, 0x78, 0xea, 0x33, 0x20,
+	0x7f, 0x77, 0x30, 0x30, 0x8a, 0x5a, 0x96, 0xa2, 0xe6, 0x89, 0x1a, 0x13, 0x45, 0x31, 0x41, 0x73,
+	0x8f, 0x0c, 0x5b, 0x63, 0x96, 0xe6, 0xdf, 0x60, 0xe4, 0x57, 0x05, 0x26, 0x93, 0xa6, 0x29, 0xd1,
+	0xd2, 0x29, 0x13, 0x26, 0x7c, 0xbe, 0x34, 0x28, 0x1c, 0x35, 0x6a, 0x52, 0xe3, 0x1d, 0xb2, 0x90,
+	0xac, 0xb1, 0xc9, 0x2c, 0xa1, 0xd9, 0x42, 0xf3, 0x84, 0x66, 0xfb, 0x6a, 0xbe, 0x57, 0xe0, 0x66,
+	0xe7, 0xb0, 0x23, 0x4b, 0xe9, 0x9c, 0x1d, 0x73, 0x37, 0xbf, 0x3c, 0x08, 0x14, 0xa5, 0xdd, 0x91,
+	0xd2, 0xe6, 0xc8, 0x6c, 0xb2, 0xb4, 0xe0, 0xbe, 0xd5, 0x3c, 0x41, 0x7e, 0x53, 0xa0, 0xd0, 0x7b,
+	0x72, 0x91, 0xb5, 0xde, 0xdb, 0x92, 0x3a, 0x70, 0xf2, 0xf7, 0xcf, 0x9f, 0x88, 0xf2, 0xd7, 0xa4,
+	0xfc, 0x32, 0xd1, 0x7b, 0xec, 0x6c, 0xf4, 0xd0, 0x97, 0x87, 0x40, 0x13, 0x52, 0xeb, 0x1f, 0x0a,
+	0x14, 0xfb, 0x8d, 0x2b, 0xf2, 0xa0, 0xdf, 0x46, 0xa6, 0x5b, 0x7a, 0x78, 0x91, 0x54, 0x34, 0xf5,
+	0x40, 0x9a, 0xba, 0x47, 0xca, 0x3d, 0x7b, 0x92, 0x64, 0x6b, 0x63, 0xfd, 0xf5, 0x69, 0x41, 0x79,
+	0x73, 0x5a, 0x50, 0xfe, 0x3e, 0x2d, 0x28, 0xaf, 0xce, 0x0a, 0x43, 0x6f, 0xce, 0x0a, 0x43, 0x7f,
+	0x9e, 0x15, 0x86, 0x5e, 0xce, 0x37, 0x98, 0xd8, 0x6f, 0xed, 0x96, 0x6a, 0xbc, 0xa9, 0x3f, 0xb7,
+	0x9e, 0x5b, 0xec, 0x43, 0xa6, 0xd7, 0xf6, 0x0d, 0x66, 0xe9, 0x5f, 0x07, 0x3f, 0x63, 0xcf, 0xa6,
+	0xee, 0x6e, 0x46, 0xfe, 0xc7, 0x7c, 0xef, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x32, 0x45, 0x0d,
+	0x8e, 0x3c, 0x10, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -665,13 +1272,25 @@ type QueryClient interface {
 	// Vaults queries the InterestRateSwapVaults
 	Vaults(ctx context.Context, in *QueryVaultsRequest, opts ...grpc.CallOption) (*QueryVaultsResponse, error)
 	// Vault queries a single InterestRateSwapVault
-	Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error)
+	VaultByContract(ctx context.Context, in *QueryVaultByContractRequest, opts ...grpc.CallOption) (*QueryVaultByContractResponse, error)
 	// VaultDetails queries the details of the vault
 	VaultDetails(ctx context.Context, in *QueryVaultDetailsRequest, opts ...grpc.CallOption) (*QueryVaultDetailsResponse, error)
+	// Tranches by Strategy
+	AllTranches(ctx context.Context, in *QueryAllTranchesRequest, opts ...grpc.CallOption) (*QueryTranchesResponse, error)
 	// Tranches by Strategy
 	Tranches(ctx context.Context, in *QueryTranchesRequest, opts ...grpc.CallOption) (*QueryTranchesResponse, error)
 	// Tranche by id
 	Tranche(ctx context.Context, in *QueryTrancheRequest, opts ...grpc.CallOption) (*QueryTrancheResponse, error)
+	// Estimate swap amount of UT/PT (in the pool)
+	EstimateSwapInPool(ctx context.Context, in *QueryEstimateSwapInPoolRequest, opts ...grpc.CallOption) (*QueryEstimateSwapInPoolResponse, error)
+	// Estimate mint amount of PT&YT pair
+	EstimateMintPtYtPair(ctx context.Context, in *QueryEstimateMintPtYtPairRequest, opts ...grpc.CallOption) (*QueryEstimateMintPtYtPairResponse, error)
+	// Estimate redeem amount of YT after maturity
+	EstimateRedeemYt(ctx context.Context, in *QueryEstimateRedeemYtRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemYtResponse, error)
+	// Estimate tokens to mint liquidity pool token
+	EstimateMintLiquidityPoolToken(ctx context.Context, in *QueryEstimateMintLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateMintLiquidityPoolTokenResponse, error)
+	// Estimate redeem amount of liquidity pool token
+	EstimateRedeemLiquidityPoolToken(ctx context.Context, in *QueryEstimateRedeemLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error)
 }
 
 type queryClient struct {
@@ -700,9 +1319,9 @@ func (c *queryClient) Vaults(ctx context.Context, in *QueryVaultsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error) {
-	out := new(QueryVaultResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/Vault", in, out, opts...)
+func (c *queryClient) VaultByContract(ctx context.Context, in *QueryVaultByContractRequest, opts ...grpc.CallOption) (*QueryVaultByContractResponse, error) {
+	out := new(QueryVaultByContractResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/VaultByContract", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -712,6 +1331,15 @@ func (c *queryClient) Vault(ctx context.Context, in *QueryVaultRequest, opts ...
 func (c *queryClient) VaultDetails(ctx context.Context, in *QueryVaultDetailsRequest, opts ...grpc.CallOption) (*QueryVaultDetailsResponse, error) {
 	out := new(QueryVaultDetailsResponse)
 	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/VaultDetails", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllTranches(ctx context.Context, in *QueryAllTranchesRequest, opts ...grpc.CallOption) (*QueryTranchesResponse, error) {
+	out := new(QueryTranchesResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/AllTranches", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -736,6 +1364,51 @@ func (c *queryClient) Tranche(ctx context.Context, in *QueryTrancheRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) EstimateSwapInPool(ctx context.Context, in *QueryEstimateSwapInPoolRequest, opts ...grpc.CallOption) (*QueryEstimateSwapInPoolResponse, error) {
+	out := new(QueryEstimateSwapInPoolResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateSwapInPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EstimateMintPtYtPair(ctx context.Context, in *QueryEstimateMintPtYtPairRequest, opts ...grpc.CallOption) (*QueryEstimateMintPtYtPairResponse, error) {
+	out := new(QueryEstimateMintPtYtPairResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateMintPtYtPair", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EstimateRedeemYt(ctx context.Context, in *QueryEstimateRedeemYtRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemYtResponse, error) {
+	out := new(QueryEstimateRedeemYtResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateRedeemYt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EstimateMintLiquidityPoolToken(ctx context.Context, in *QueryEstimateMintLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateMintLiquidityPoolTokenResponse, error) {
+	out := new(QueryEstimateMintLiquidityPoolTokenResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateMintLiquidityPoolToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EstimateRedeemLiquidityPoolToken(ctx context.Context, in *QueryEstimateRedeemLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error) {
+	out := new(QueryEstimateRedeemLiquidityPoolTokenResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateRedeemLiquidityPoolToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
@@ -743,13 +1416,25 @@ type QueryServer interface {
 	// Vaults queries the InterestRateSwapVaults
 	Vaults(context.Context, *QueryVaultsRequest) (*QueryVaultsResponse, error)
 	// Vault queries a single InterestRateSwapVault
-	Vault(context.Context, *QueryVaultRequest) (*QueryVaultResponse, error)
+	VaultByContract(context.Context, *QueryVaultByContractRequest) (*QueryVaultByContractResponse, error)
 	// VaultDetails queries the details of the vault
 	VaultDetails(context.Context, *QueryVaultDetailsRequest) (*QueryVaultDetailsResponse, error)
+	// Tranches by Strategy
+	AllTranches(context.Context, *QueryAllTranchesRequest) (*QueryTranchesResponse, error)
 	// Tranches by Strategy
 	Tranches(context.Context, *QueryTranchesRequest) (*QueryTranchesResponse, error)
 	// Tranche by id
 	Tranche(context.Context, *QueryTrancheRequest) (*QueryTrancheResponse, error)
+	// Estimate swap amount of UT/PT (in the pool)
+	EstimateSwapInPool(context.Context, *QueryEstimateSwapInPoolRequest) (*QueryEstimateSwapInPoolResponse, error)
+	// Estimate mint amount of PT&YT pair
+	EstimateMintPtYtPair(context.Context, *QueryEstimateMintPtYtPairRequest) (*QueryEstimateMintPtYtPairResponse, error)
+	// Estimate redeem amount of YT after maturity
+	EstimateRedeemYt(context.Context, *QueryEstimateRedeemYtRequest) (*QueryEstimateRedeemYtResponse, error)
+	// Estimate tokens to mint liquidity pool token
+	EstimateMintLiquidityPoolToken(context.Context, *QueryEstimateMintLiquidityPoolTokenRequest) (*QueryEstimateMintLiquidityPoolTokenResponse, error)
+	// Estimate redeem amount of liquidity pool token
+	EstimateRedeemLiquidityPoolToken(context.Context, *QueryEstimateRedeemLiquidityPoolTokenRequest) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -762,17 +1447,35 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 func (*UnimplementedQueryServer) Vaults(ctx context.Context, req *QueryVaultsRequest) (*QueryVaultsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vaults not implemented")
 }
-func (*UnimplementedQueryServer) Vault(ctx context.Context, req *QueryVaultRequest) (*QueryVaultResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Vault not implemented")
+func (*UnimplementedQueryServer) VaultByContract(ctx context.Context, req *QueryVaultByContractRequest) (*QueryVaultByContractResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VaultByContract not implemented")
 }
 func (*UnimplementedQueryServer) VaultDetails(ctx context.Context, req *QueryVaultDetailsRequest) (*QueryVaultDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VaultDetails not implemented")
+}
+func (*UnimplementedQueryServer) AllTranches(ctx context.Context, req *QueryAllTranchesRequest) (*QueryTranchesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllTranches not implemented")
 }
 func (*UnimplementedQueryServer) Tranches(ctx context.Context, req *QueryTranchesRequest) (*QueryTranchesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tranches not implemented")
 }
 func (*UnimplementedQueryServer) Tranche(ctx context.Context, req *QueryTrancheRequest) (*QueryTrancheResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tranche not implemented")
+}
+func (*UnimplementedQueryServer) EstimateSwapInPool(ctx context.Context, req *QueryEstimateSwapInPoolRequest) (*QueryEstimateSwapInPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateSwapInPool not implemented")
+}
+func (*UnimplementedQueryServer) EstimateMintPtYtPair(ctx context.Context, req *QueryEstimateMintPtYtPairRequest) (*QueryEstimateMintPtYtPairResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateMintPtYtPair not implemented")
+}
+func (*UnimplementedQueryServer) EstimateRedeemYt(ctx context.Context, req *QueryEstimateRedeemYtRequest) (*QueryEstimateRedeemYtResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateRedeemYt not implemented")
+}
+func (*UnimplementedQueryServer) EstimateMintLiquidityPoolToken(ctx context.Context, req *QueryEstimateMintLiquidityPoolTokenRequest) (*QueryEstimateMintLiquidityPoolTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateMintLiquidityPoolToken not implemented")
+}
+func (*UnimplementedQueryServer) EstimateRedeemLiquidityPoolToken(ctx context.Context, req *QueryEstimateRedeemLiquidityPoolTokenRequest) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateRedeemLiquidityPoolToken not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -815,20 +1518,20 @@ func _Query_Vaults_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Vault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryVaultRequest)
+func _Query_VaultByContract_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVaultByContractRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Vault(ctx, in)
+		return srv.(QueryServer).VaultByContract(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.irs.Query/Vault",
+		FullMethod: "/ununifi.irs.Query/VaultByContract",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Vault(ctx, req.(*QueryVaultRequest))
+		return srv.(QueryServer).VaultByContract(ctx, req.(*QueryVaultByContractRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -847,6 +1550,24 @@ func _Query_VaultDetails_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).VaultDetails(ctx, req.(*QueryVaultDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllTranches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllTranchesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllTranches(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/AllTranches",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllTranches(ctx, req.(*QueryAllTranchesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -887,6 +1608,96 @@ func _Query_Tranche_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_EstimateSwapInPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateSwapInPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EstimateSwapInPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/EstimateSwapInPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EstimateSwapInPool(ctx, req.(*QueryEstimateSwapInPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EstimateMintPtYtPair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateMintPtYtPairRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EstimateMintPtYtPair(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/EstimateMintPtYtPair",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EstimateMintPtYtPair(ctx, req.(*QueryEstimateMintPtYtPairRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EstimateRedeemYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateRedeemYtRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EstimateRedeemYt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/EstimateRedeemYt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EstimateRedeemYt(ctx, req.(*QueryEstimateRedeemYtRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EstimateMintLiquidityPoolToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateMintLiquidityPoolTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EstimateMintLiquidityPoolToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/EstimateMintLiquidityPoolToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EstimateMintLiquidityPoolToken(ctx, req.(*QueryEstimateMintLiquidityPoolTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EstimateRedeemLiquidityPoolToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateRedeemLiquidityPoolTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EstimateRedeemLiquidityPoolToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.irs.Query/EstimateRedeemLiquidityPoolToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EstimateRedeemLiquidityPoolToken(ctx, req.(*QueryEstimateRedeemLiquidityPoolTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "ununifi.irs.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -900,12 +1711,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Vaults_Handler,
 		},
 		{
-			MethodName: "Vault",
-			Handler:    _Query_Vault_Handler,
+			MethodName: "VaultByContract",
+			Handler:    _Query_VaultByContract_Handler,
 		},
 		{
 			MethodName: "VaultDetails",
 			Handler:    _Query_VaultDetails_Handler,
+		},
+		{
+			MethodName: "AllTranches",
+			Handler:    _Query_AllTranches_Handler,
 		},
 		{
 			MethodName: "Tranches",
@@ -914,6 +1729,26 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Tranche",
 			Handler:    _Query_Tranche_Handler,
+		},
+		{
+			MethodName: "EstimateSwapInPool",
+			Handler:    _Query_EstimateSwapInPool_Handler,
+		},
+		{
+			MethodName: "EstimateMintPtYtPair",
+			Handler:    _Query_EstimateMintPtYtPair_Handler,
+		},
+		{
+			MethodName: "EstimateRedeemYt",
+			Handler:    _Query_EstimateRedeemYt_Handler,
+		},
+		{
+			MethodName: "EstimateMintLiquidityPoolToken",
+			Handler:    _Query_EstimateMintLiquidityPoolToken_Handler,
+		},
+		{
+			MethodName: "EstimateRedeemLiquidityPoolToken",
+			Handler:    _Query_EstimateRedeemLiquidityPoolToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1036,7 +1871,7 @@ func (m *QueryVaultsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryVaultByContractRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1046,12 +1881,12 @@ func (m *QueryVaultRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryVaultByContractRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryVaultByContractRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1066,7 +1901,7 @@ func (m *QueryVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryVaultByContractResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1076,12 +1911,12 @@ func (m *QueryVaultResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryVaultByContractResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryVaultByContractResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1177,6 +2012,29 @@ func (m *QueryVaultDetailsResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 		i--
 		dAtA[i] = 0xa
 	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllTranchesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllTranchesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllTranchesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -1308,6 +2166,385 @@ func (m *QueryTrancheResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryEstimateSwapInPoolRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateSwapInPoolRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateSwapInPoolRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateSwapInPoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateSwapInPoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateSwapInPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.YtAmount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.PtAmount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateRedeemYtRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateRedeemYtRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateRedeemYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateRedeemYtResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateRedeemYtResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateRedeemYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DesiredAmount) > 0 {
+		i -= len(m.DesiredAmount)
+		copy(dAtA[i:], m.DesiredAmount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DesiredAmount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RequiredAmount) > 0 {
+		for iNdEx := len(m.RequiredAmount) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.RequiredAmount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RedeemAmount) > 0 {
+		for iNdEx := len(m.RedeemAmount) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.RedeemAmount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1363,7 +2600,7 @@ func (m *QueryVaultsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryVaultRequest) Size() (n int) {
+func (m *QueryVaultByContractRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1376,7 +2613,7 @@ func (m *QueryVaultRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryVaultResponse) Size() (n int) {
+func (m *QueryVaultByContractResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1422,6 +2659,15 @@ func (m *QueryVaultDetailsResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *QueryAllTranchesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1473,6 +2719,163 @@ func (m *QueryTrancheResponse) Size() (n int) {
 	_ = l
 	l = m.Tranche.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryEstimateSwapInPoolRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovQuery(uint64(m.PoolId))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEstimateSwapInPoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryEstimateMintPtYtPairRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovQuery(uint64(m.PoolId))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEstimateMintPtYtPairResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.PtAmount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	l = m.YtAmount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryEstimateRedeemYtRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovQuery(uint64(m.PoolId))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEstimateRedeemYtResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovQuery(uint64(m.PoolId))
+	}
+	l = len(m.DesiredAmount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.RequiredAmount) > 0 {
+		for _, e := range m.RequiredAmount {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovQuery(uint64(m.PoolId))
+	}
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.RedeemAmount) > 0 {
+		for _, e := range m.RedeemAmount {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -1749,7 +3152,7 @@ func (m *QueryVaultsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryVaultByContractRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1772,10 +3175,10 @@ func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryVaultByContractRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryVaultByContractRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1831,7 +3234,7 @@ func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryVaultByContractResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1854,10 +3257,10 @@ func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryVaultByContractResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryVaultByContractResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2174,6 +3577,56 @@ func (m *QueryVaultDetailsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *QueryAllTranchesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllTranchesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllTranchesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *QueryTranchesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2468,6 +3921,1057 @@ func (m *QueryTrancheResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Tranche.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateSwapInPoolRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateSwapInPoolRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateSwapInPoolRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateSwapInPoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateSwapInPoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateSwapInPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateMintPtYtPairRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateMintPtYtPairRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateMintPtYtPairRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateMintPtYtPairResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateMintPtYtPairResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateMintPtYtPairResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PtAmount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.PtAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field YtAmount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.YtAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateRedeemYtRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateRedeemYtRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateRedeemYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateRedeemYtResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateRedeemYtResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateRedeemYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateMintLiquidityPoolTokenRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateMintLiquidityPoolTokenRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateMintLiquidityPoolTokenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DesiredAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DesiredAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateMintLiquidityPoolTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateMintLiquidityPoolTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateMintLiquidityPoolTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RequiredAmount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RequiredAmount = append(m.RequiredAmount, types.Coin{})
+			if err := m.RequiredAmount[len(m.RequiredAmount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateRedeemLiquidityPoolTokenRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateRedeemLiquidityPoolTokenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEstimateRedeemLiquidityPoolTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEstimateRedeemLiquidityPoolTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RedeemAmount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RedeemAmount = append(m.RedeemAmount, types.Coin{})
+			if err := m.RedeemAmount[len(m.RedeemAmount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

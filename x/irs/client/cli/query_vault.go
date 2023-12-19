@@ -45,11 +45,11 @@ func CmdShowVault() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryVaultRequest{
+			params := &types.QueryVaultByContractRequest{
 				StrategyContract: args[0],
 			}
 
-			res, err := queryClient.Vault(context.Background(), params)
+			res, err := queryClient.VaultByContract(context.Background(), params)
 			if err != nil {
 				return err
 			}
