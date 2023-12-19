@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) EstimateRedeemLiquidityPool(c context.Context, req *types.QueryEstimateRedeemLiquidityPoolTokenRequest) (*types.QueryEstimateRedeemLiquidityPoolTokenResponse, error) {
+func (k Keeper) EstimateRedeemLiquidityPoolToken(c context.Context, req *types.QueryEstimateRedeemLiquidityPoolTokenRequest) (*types.QueryEstimateRedeemLiquidityPoolTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
