@@ -70,6 +70,14 @@ service Query {
   // Estimate swap matured YT to UT
   rpc EstimateSwapMaturedYtToUt(QueryEstimateSwapMaturedYtToUtRequest) returns (QueryEstimateSwapMaturedYtToUtResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-swap-matured-yt-to-ut";
+  }
+  // tranche PT APYs by id
+  rpc TranchePtAPYs(QueryTranchePtAPYsRequest) returns (QueryTranchePtAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/pt-apy";
+  }    
+  // tranche YT APYs by id
+  rpc TrancheYtAPYs(QueryTrancheYtAPYsRequest) returns (QueryTrancheYtAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/yt-apy";
   }  
 }
 
@@ -202,4 +210,38 @@ message QueryEstimateSwapMaturedYtToUtRequest {
 
 message QueryEstimateSwapMaturedYtToUtResponse {
   cosmos.base.v1beta1.Coin ut_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryTranchePtAPYsRequest {
+  uint64 id = 1;
+}
+
+message QueryTranchePtAPYsResponse {
+  string pt_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string pt_rate_per_ut   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message QueryTrancheYtAPYsRequest {
+  uint64 id = 1;
+}
+
+message QueryTrancheYtAPYsResponse {
+  string yt_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string yt_rate_per_ut   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
 }
