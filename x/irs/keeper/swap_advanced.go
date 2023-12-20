@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/irs/types"
 )
@@ -37,7 +36,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	}
 
 	// 3. Sell minted PT amount for underlying token
-	err = k.SwapPoolTokens(ctx, sender, pool, sdk.NewCoin(ptDenom, ptAmount))
+	_, err = k.SwapPoolTokens(ctx, sender, pool, sdk.NewCoin(ptDenom, ptAmount))
 	if err != nil {
 		return err
 	}
@@ -69,31 +68,67 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 	return requiredUt, nil
 }
 
-func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, tokens sdk.Coins) error {
+func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, token sdk.Coin) error {
 	// Internally RedeemYtAtMaturity or RedeemPtYtPair
 
 	// If matured, unstake from strategy
 	// Else, redeem PT & YT pair
 	if uint64(ctx.BlockTime().Unix()) > pool.StartTime+pool.Maturity {
-		if len(tokens) != 1 {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "matured, expected 1 coin, got %d", len(tokens))
-		}
-		redeemAmount, err := k.CalculateRedeemYtAmount(ctx, pool, tokens[0])
+		redeemAmount, err := k.CalculateRedeemYtAmount(ctx, pool, token)
 		if err != nil {
 			return err
 		}
 		if redeemAmount.LT(requiredUtAmount) {
 			return types.ErrInsufficientFunds
 		}
-		err = k.RedeemYtAtMaturity(ctx, sender, pool, tokens[0])
+		err = k.RedeemYtAtMaturity(ctx, sender, pool, token)
 		if err != nil {
 			return err
 		}
 	} else {
-		if len(tokens) != 2 {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "not matured, expected 2 coins, got %d", len(tokens))
+		depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+		estimateSwapPt, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(depositInfo.Denom, token.Amount))
+		if err != nil {
+			return err
 		}
-		err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
+
+		// 1. Take PT loan from IRS vault account (pool => sender)
+		poolAddr := types.GetVaultModuleAddress(pool)
+		loanPtAmount, err := k.CalculateRedeemRequiredPtAmount(ctx, pool, token.Amount)
+		if err != nil {
+			return err
+		}
+		if estimateSwapPt.Amount.LT(loanPtAmount) {
+			return types.ErrInsufficientFunds
+		}
+
+		ptDenom := types.PtDenom(pool)
+		loan := sdk.NewCoin(ptDenom, loanPtAmount)
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
+		if err != nil {
+			return err
+		}
+
+		// 2. Redeem PT & YT pair
+		err = k.RedeemPtYtPair(ctx, sender, pool, token.Amount, sdk.NewCoins(token, loan))
+		if err != nil {
+			return err
+		}
+
+		// 3. Swap UT to PT
+		afterSwapPt, err := k.SwapPoolTokens(ctx, sender, pool, sdk.NewCoin(depositInfo.Denom, token.Amount))
+		if err != nil {
+			return err
+		}
+
+		// 4. Payback loan
+		err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, sdk.NewCoins(loan))
+		if err != nil {
+			return err
+		}
+
+		// 5. Swap rest PT to UT
+		_, err = k.SwapPoolTokens(ctx, sender, pool, afterSwapPt.Sub(loan))
 		if err != nil {
 			return err
 		}
