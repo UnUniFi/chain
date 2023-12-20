@@ -24,7 +24,7 @@ func (k Keeper) EstimateRedeemPtYtPair(c context.Context, req *types.QueryEstima
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	pt, yt, err := k.CalculateRedeemRequiredAmount(ctx, tranche, redeemAmount)
+	pt, yt, err := k.CalculateRedeemRequiredPtAndYtAmount(ctx, tranche, redeemAmount)
 	if err != nil {
 		return nil, err
 	}
