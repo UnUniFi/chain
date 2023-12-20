@@ -15,9 +15,12 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	}
 	loan := sdk.NewCoin(tokenIn.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
-	err := k.CheckEnoughUtTokenIn(ctx, pool, tokenIn, loan)
+	requiredUt, err := k.CalculateRequiredUtSwapToYt(ctx, pool, requiredYtAmount)
 	if err != nil {
 		return err
+	}
+	if tokenIn.Amount.LT(requiredUt.Amount) {
+		return types.ErrInsufficientFunds
 	}
 
 	// 1. Take loan from IRS vault account (pool => sender)
@@ -48,23 +51,22 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	return nil
 }
 
-func (k Keeper) CheckEnoughUtTokenIn(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin, loan sdk.Coin) error {
+func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount sdk.Int) (sdk.Coin, error) {
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	loan := sdk.NewCoin(depositInfo.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
 	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 	// estimation 3. UT amount to get by selling PT
 	estimatedUt, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
-	// Check if estimated UT + TokenIn is enough to payback loan
-	if estimatedUt.Add(tokenIn).IsLT(loan) {
-		return types.ErrInsufficientFunds
-	}
-	return nil
+	requiredUt := loan.Sub(estimatedUt)
+	return requiredUt, nil
 }
 
 func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, tokens sdk.Coins) error {
