@@ -160,11 +160,12 @@ message QueryEstimateMintPtYtPairResponse {
 
 message QueryEstimateRedeemPtYtPairRequest {
   uint64 pool_id = 1;
-  string yt_amount = 2;
+  string desired_ut_amount = 2;
 }
 
 message QueryEstimateRedeemPtYtPairResponse {
   cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateMintLiquidityPoolTokenRequest {
