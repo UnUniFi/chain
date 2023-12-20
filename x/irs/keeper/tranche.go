@@ -146,11 +146,11 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			}
 		}
 	} else if trancheType == types.TrancheType_LEVERAGED_VARIABLE_YIELD {
-		if len(tokens) != 1 {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "LEVERAGED_VARIABLE_YIELD, expected 1 coin, got %d", len(tokens))
-		}
 		// If matured, send required amount from unbonded from the share
 		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
+			if len(tokens) != 1 {
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "LEVERAGED_VARIABLE_YIELD, expected 1 coin, got %d", len(tokens))
+			}
 			err := k.RedeemYtAtMaturity(ctx, sender, tranche, tokens[0])
 			if err != nil {
 				return err
@@ -160,7 +160,10 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			// Put required amount of msg.PT from user wallet
 			// Close position
 			// Start redemption for strategy share
-			err := k.SwapYtToUt(ctx, sender, tranche, requiredUt, tokens[0])
+			if len(tokens) != 2 {
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "not matured, expected 2 coins, got %d", len(tokens))
+			}
+			err := k.SwapYtToUt(ctx, sender, tranche, requiredUt, tokens)
 			if err != nil {
 				return err
 			}

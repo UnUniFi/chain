@@ -68,70 +68,68 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 	return requiredUt, nil
 }
 
-func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, token sdk.Coin) error {
-	// Internally RedeemYtAtMaturity or RedeemPtYtPair
-
-	// If matured, unstake from strategy
-	// Else, redeem PT & YT pair
-	if uint64(ctx.BlockTime().Unix()) > pool.StartTime+pool.Maturity {
-		redeemAmount, err := k.CalculateRedeemYtAmount(ctx, pool, token)
-		if err != nil {
-			return err
-		}
-		if redeemAmount.LT(requiredUtAmount) {
-			return types.ErrInsufficientFunds
-		}
-		err = k.RedeemYtAtMaturity(ctx, sender, pool, token)
-		if err != nil {
-			return err
-		}
-	} else {
-		depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-		estimateSwapPt, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(depositInfo.Denom, token.Amount))
-		if err != nil {
-			return err
-		}
-
-		// 1. Take PT loan from IRS vault account (pool => sender)
-		poolAddr := types.GetVaultModuleAddress(pool)
-		loanPtAmount, err := k.CalculateRedeemRequiredPtAmount(ctx, pool, token.Amount)
-		if err != nil {
-			return err
-		}
-		if estimateSwapPt.Amount.LT(loanPtAmount) {
-			return types.ErrInsufficientFunds
-		}
-
-		ptDenom := types.PtDenom(pool)
-		loan := sdk.NewCoin(ptDenom, loanPtAmount)
-		err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
-		if err != nil {
-			return err
-		}
-
-		// 2. Redeem PT & YT pair
-		err = k.RedeemPtYtPair(ctx, sender, pool, token.Amount, sdk.NewCoins(token, loan))
-		if err != nil {
-			return err
-		}
-
-		// 3. Swap UT to PT
-		afterSwapPt, err := k.SwapPoolTokens(ctx, sender, pool, sdk.NewCoin(depositInfo.Denom, token.Amount))
-		if err != nil {
-			return err
-		}
-
-		// 4. Payback loan
-		err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, sdk.NewCoins(loan))
-		if err != nil {
-			return err
-		}
-
-		// 5. Swap rest PT to UT
-		_, err = k.SwapPoolTokens(ctx, sender, pool, afterSwapPt.Sub(loan))
-		if err != nil {
-			return err
-		}
+func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, tokens sdk.Coins) error {
+	err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
+	if err != nil {
+		return err
 	}
 	return nil
 }
+
+// // TODO: This implementation is better if there is no Redeem time lag
+// func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, token sdk.Coin) error {
+// 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+// 	redeemUtAmount, err := k.CalculateRedeemAmount(ctx, pool, token)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	redeemUt := sdk.NewCoin(depositInfo.Denom, redeemUtAmount)
+// 	estimateSwapPt, err := k.SimulateSwapPoolTokens(ctx, pool, redeemUt)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 1. Take PT loan from IRS vault account (pool => sender)
+// 	poolAddr := types.GetVaultModuleAddress(pool)
+// 	ptDenom := types.PtDenom(pool)
+// 	loanPtAmount, err := k.CalculateRedeemRequiredAmount(ctx, pool, redeemUtAmount, ptDenom)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if estimateSwapPt.Amount.LT(loanPtAmount) {
+// 		return types.ErrInsufficientFunds
+// 	}
+
+// 	loan := sdk.NewCoin(ptDenom, loanPtAmount)
+// 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 2. Redeem PT & YT pair
+// 	// TODO: it contains time lag between 2 and 3
+// 	err = k.RedeemPtYtPair(ctx, sender, pool, redeemUtAmount, sdk.NewCoins(token, loan))
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 3. Swap UT to PT
+// 	afterSwapPt, err := k.SwapPoolTokens(ctx, sender, pool, redeemUt)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 4. Payback loan
+// 	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, sdk.NewCoins(loan))
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// 5. Swap rest PT to UT
+// 	_, err = k.SwapPoolTokens(ctx, sender, pool, afterSwapPt.Sub(loan))
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
