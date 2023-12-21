@@ -30,7 +30,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdShowVault(),
 		CmdShowVaultDetails(),
 		CmdShowTranche(),
-		CmdListTranche(),
+		CmdListStrategyTranches(),
+		CmdListAllTranches(),
 	)
 
 	return cmd
