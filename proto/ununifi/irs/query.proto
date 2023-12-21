@@ -150,7 +150,7 @@ message QueryTrancheResponse {
 
 // QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
 message QueryEstimateSwapInPoolRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string denom = 2;
   string amount = 3;
 }
@@ -160,7 +160,7 @@ message QueryEstimateSwapInPoolResponse {
 }
 
 message QueryEstimateMintPtYtPairRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string denom = 2;
   string amount = 3;
 }
@@ -171,7 +171,7 @@ message QueryEstimateMintPtYtPairResponse {
 }
 
 message QueryEstimateRedeemPtYtPairRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string desired_ut_amount = 2;
 }
 
@@ -181,7 +181,7 @@ message QueryEstimateRedeemPtYtPairResponse {
 }
 
 message QueryEstimateMintLiquidityPoolTokenRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string desired_amount = 3;
 }
 
@@ -190,7 +190,7 @@ message QueryEstimateMintLiquidityPoolTokenResponse {
 }
 
 message QueryEstimateRedeemLiquidityPoolTokenRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string amount = 3;
 }
 
@@ -199,7 +199,7 @@ message QueryEstimateRedeemLiquidityPoolTokenResponse {
 }
 
 message QueryEstimateRequiredUtSwapToYtRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string desired_yt_amount = 3;
 }
 
@@ -208,7 +208,7 @@ message QueryEstimateRequiredUtSwapToYtResponse {
 }
 
 message QueryEstimateSwapMaturedYtToUtRequest {
-  uint64 pool_id = 1;
+  uint64 id = 1;
   string yt_amount = 2;
 }
 

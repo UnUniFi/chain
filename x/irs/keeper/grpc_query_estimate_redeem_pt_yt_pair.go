@@ -16,7 +16,7 @@ func (k Keeper) EstimateRedeemPtYtPair(c context.Context, req *types.QueryEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	tranche, found := k.GetTranchePool(ctx, req.PoolId)
+	tranche, found := k.GetTranchePool(ctx, req.Id)
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
