@@ -16,7 +16,7 @@ func (k Keeper) EstimateMintLiquidityPoolToken(c context.Context, req *types.Que
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	tranche, found := k.GetTranchePool(ctx, req.PoolId)
+	tranche, found := k.GetTranchePool(ctx, req.Id)
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}

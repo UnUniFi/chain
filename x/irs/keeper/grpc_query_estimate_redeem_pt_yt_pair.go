@@ -16,21 +16,21 @@ func (k Keeper) EstimateRedeemPtYtPair(c context.Context, req *types.QueryEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	tranche, found := k.GetTranchePool(ctx, req.PoolId)
+	tranche, found := k.GetTranchePool(ctx, req.Id)
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	redeemAmount, ok := sdk.NewIntFromString(req.YtAmount)
+	redeemAmount, ok := sdk.NewIntFromString(req.DesiredUtAmount)
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	ptAmount, err := k.CalculateRedeemRequiredPtAmount(ctx, tranche, redeemAmount)
+	pt, yt, err := k.CalculateRedeemRequiredPtAndYtAmount(ctx, tranche, redeemAmount)
 	if err != nil {
 		return nil, err
 	}
 
-	ptDenom := types.PtDenom(tranche)
 	return &types.QueryEstimateRedeemPtYtPairResponse{
-		PtAmount: sdk.NewCoin(ptDenom, ptAmount),
+		PtAmount: pt,
+		YtAmount: yt,
 	}, nil
 }

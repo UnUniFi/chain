@@ -16,7 +16,7 @@ func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEs
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	tranche, found := k.GetTranchePool(ctx, req.PoolId)
+	tranche, found := k.GetTranchePool(ctx, req.Id)
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}

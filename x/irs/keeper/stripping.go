@@ -110,17 +110,13 @@ func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool type
 		return types.ErrZeroAmount
 	}
 
-	ptDenom := types.PtDenom(pool)
-	ytDenom := types.YtDenom(pool)
-
-	requiredPtAmount, err := k.CalculateRedeemRequiredPtAmount(ctx, pool, redeemUt)
+	requiredPt, requiredYt, err := k.CalculateRedeemRequiredPtAndYtAmount(ctx, pool, redeemUt)
 	if err != nil {
 		return err
 	}
-	requiredYtAmount := redeemUt
 
 	coins := sdk.Coins{}
-	requiredPtYt := coins.Add(sdk.NewCoin(ptDenom, requiredPtAmount)).Add(sdk.NewCoin(ytDenom, requiredYtAmount))
+	requiredPtYt := coins.Add(requiredPt).Add(requiredYt)
 	if !maxPtYtIns.IsAllGTE(requiredPtYt) {
 		return types.ErrInSufficientTokenInMaxs
 	}
@@ -138,7 +134,28 @@ func (k Keeper) RedeemPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool type
 	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemUt)
 }
 
-func (k Keeper) CalculateRedeemRequiredPtAmount(ctx sdk.Context, pool types.TranchePool, redeemUt sdk.Int) (sdk.Int, error) {
+func (k Keeper) CalculateRedeemRequiredPtAndYtAmount(ctx sdk.Context, pool types.TranchePool, redeemUt sdk.Int) (sdk.Coin, sdk.Coin, error) {
+	moduleAddr := types.GetVaultModuleAddress(pool)
+
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+	if amountFromStrategy.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroAmount
+	}
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	requiredPtAmount := ptSupply.Amount.Mul(redeemUt).Quo(amountFromStrategy)
+	requiredYtAmount := ytSupply.Amount.Mul(redeemUt).Quo(amountFromStrategy)
+	requiredPt := sdk.NewCoin(ptDenom, requiredPtAmount)
+	requiredYt := sdk.NewCoin(ytDenom, requiredYtAmount)
+	return requiredPt, requiredYt, nil
+}
+
+func (k Keeper) CalculateRedeemUtAmount(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Int, error) {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 
 	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
@@ -148,10 +165,9 @@ func (k Keeper) CalculateRedeemRequiredPtAmount(ctx sdk.Context, pool types.Tran
 	if amountFromStrategy.IsZero() {
 		return sdk.ZeroInt(), types.ErrZeroAmount
 	}
-	ptDenom := types.PtDenom(pool)
-	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-	requiredPtAmount := ptSupply.Amount.Mul(redeemUt).Quo(amountFromStrategy)
-	return requiredPtAmount, nil
+	supply := k.bankKeeper.GetSupply(ctx, tokenIn.Denom)
+	redeemUtAmount := tokenIn.Amount.Mul(amountFromStrategy).Quo(supply.Amount)
+	return redeemUtAmount, nil
 }
 
 func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ptAmount sdk.Coin) error {
