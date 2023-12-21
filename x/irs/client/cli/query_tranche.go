@@ -95,3 +95,96 @@ func CmdShowTranche() *cobra.Command {
 
 	return cmd
 }
+
+func CmdShowTranchePtAPYs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-tranche-pt-apys [id]",
+		Short: "shows a tranche's PT APYs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTranchePtAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TranchePtAPYs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowTrancheYtAPYs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-tranche-yt-apys [id]",
+		Short: "shows a tranche's YT APYs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTrancheYtAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TrancheYtAPYs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowTranchePoolAPYs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-tranche-pool-apys [id]",
+		Short: "shows a tranche's Pool APYs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTranchePoolAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TranchePoolAPYs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
