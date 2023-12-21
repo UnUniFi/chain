@@ -66,3 +66,8 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 		YtRatePerUt: ytRate,
 	}, nil
 }
+
+func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAPYsRequest) (*types.QueryTranchePoolAPYsResponse, error) {
+	// TODO: implement
+	return &types.QueryTranchePoolAPYsResponse{}, nil
+}

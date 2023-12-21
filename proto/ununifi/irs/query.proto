@@ -79,6 +79,10 @@ service Query {
   rpc TrancheYtAPYs(QueryTrancheYtAPYsRequest) returns (QueryTrancheYtAPYsResponse) {
     option (google.api.http).get = "/ununifi/irs/tranche/{id}/yt-apy";
   }  
+  // tranche Ls APYs by id
+  rpc TranchePoolAPYs(QueryTranchePoolAPYsRequest) returns (QueryTranchePoolAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/pool-apy";
+  }  
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -240,6 +244,23 @@ message QueryTrancheYtAPYsResponse {
     (gogoproto.nullable)   = false
   ];
   string yt_rate_per_ut   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message QueryTranchePoolAPYsRequest {
+  uint64 id = 1;
+}
+
+message QueryTranchePoolAPYsResponse {
+  string pool_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string liquidity_rate_per_ut   = 2 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
