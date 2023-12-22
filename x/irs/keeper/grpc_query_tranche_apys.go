@@ -68,7 +68,6 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 }
 
 func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAPYsRequest) (*types.QueryTranchePoolAPYsResponse, error) {
-	// TODO: implement
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -102,10 +101,23 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	}
 	discountPtAPY := ptAPY.Mul(ptPercentage)
 
+	lpAmount := sdk.NewInt(1_000_000)
+	requiredCoins, err := GetMaximalNoSwapLPAmount(ctx, tranche, lpAmount)
+	if err != nil {
+		return nil, err
+	}
+	var utAmount sdk.Dec
+	if ptDenom == requiredCoins[0].Denom {
+		utAmount = sdk.NewDecFromInt(requiredCoins[0].Amount).Quo(ptRate).Add(sdk.NewDecFromInt(requiredCoins[1].Amount))
+	} else {
+		utAmount = sdk.NewDecFromInt(requiredCoins[1].Amount).Quo(ptRate).Add(sdk.NewDecFromInt(requiredCoins[0].Amount))
+	}
+	lpRate := sdk.NewDecFromInt(lpAmount).Quo(utAmount)
+
 	return &types.QueryTranchePoolAPYsResponse{
 		LiquidityApy:       sdk.ZeroDec(),
+		LiquidityRatePerUt: lpRate,
 		DiscountPtApy:      discountPtAPY,
-		LiquidityRatePerUt: sdk.ZeroDec(),
 		UtPercentageInPool: utPercentage,
 		PtPercentageInPool: ptPercentage,
 	}, nil
