@@ -11,9 +11,13 @@ import (
 
 // SwapPoolTokens swaps tokens in a pool. UT => PT or PT => UT
 func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
-	tokenOutDenom := pool.PoolAssets[0].Denom
-	if tokenOutDenom == tokenIn.Denom {
+	var tokenOutDenom string
+	if tokenIn.Denom == pool.PoolAssets[0].Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
+	} else if tokenIn.Denom == pool.PoolAssets[1].Denom {
+		tokenOutDenom = pool.PoolAssets[0].Denom
+	} else {
+		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	tokenOutAmount, err := k.SwapExactAmountIn(ctx, sender, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
 	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), err
@@ -21,12 +25,13 @@ func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool type
 
 // SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT
 func (k Keeper) SimulateSwapPoolTokens(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
-	tokenOutDenom := pool.PoolAssets[0].Denom
-	if tokenOutDenom == tokenIn.Denom {
+	var tokenOutDenom string
+	if tokenIn.Denom == pool.PoolAssets[0].Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
-	}
-	if tokenIn.Denom == tokenOutDenom {
-		return sdk.Coin{}, errors.New("cannot trade the same denomination in and out")
+	} else if tokenIn.Denom == pool.PoolAssets[1].Denom {
+		tokenOutDenom = pool.PoolAssets[0].Denom
+	} else {
+		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	tokenOutAmount, err := k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
 	if err != nil {
