@@ -20,6 +20,10 @@ func (k Keeper) EstimateMintPtYtPair(c context.Context, req *types.QueryEstimate
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
+	depositInfo := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
+	if req.Denom != depositInfo.Denom {
+		return nil, types.ErrInvalidDepositDenom
+	}
 	depositAmount, ok := sdk.NewIntFromString(req.Amount)
 	if !ok {
 		return nil, types.ErrInvalidAmount
