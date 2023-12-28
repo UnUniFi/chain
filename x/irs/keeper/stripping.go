@@ -80,6 +80,11 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, u
 	ytDenom := types.YtDenom(pool)
 	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 
+	// Initial deposit
+	if interestSupply.IsZero() {
+		return underlyingAmount.Amount, nil
+	}
+
 	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
 	if err != nil {
 		return sdk.ZeroInt(), err
