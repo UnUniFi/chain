@@ -16,7 +16,9 @@ func (k Keeper) Vaults(c context.Context, req *types.QueryVaultsRequest) (*types
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	vaults := k.GetAllVault(ctx)
 
-	return &types.QueryVaultsResponse{}, nil
+	return &types.QueryVaultsResponse{
+		Vaults: vaults,
+	}, nil
 }

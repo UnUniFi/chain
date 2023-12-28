@@ -30,7 +30,18 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdShowVault(),
 		CmdShowVaultDetails(),
 		CmdShowTranche(),
-		CmdListTranche(),
+		CmdListStrategyTranches(),
+		CmdListAllTranches(),
+		CmdShowTranchePtAPYs(),
+		CmdShowTrancheYtAPYs(),
+		CmdShowTranchePoolAPYs(),
+		CmdEstimateSwapInPool(),
+		CmdEstimateMintPtYtPair(),
+		CmdEstimateRedeemPtYtPair(),
+		CmdEstimateRequiredUtSwapToYt(),
+		CmdEstimateSwapMaturedYtToUt(),
+		CmdEstimateMintLiquidityPoolToken(),
+		CmdEstimateRedeemLiquidityPoolToken(),
 	)
 
 	return cmd

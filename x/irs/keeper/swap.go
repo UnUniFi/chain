@@ -10,13 +10,13 @@ import (
 )
 
 // SwapPoolTokens swaps tokens in a pool. UT => PT or PT => UT
-func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) error {
+func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	tokenOutDenom := pool.PoolAssets[0].Denom
 	if tokenOutDenom == tokenIn.Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
 	}
-	_, err := k.SwapExactAmountIn(ctx, sender, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
-	return err
+	tokenOutAmount, err := k.SwapExactAmountIn(ctx, sender, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
+	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), err
 }
 
 // SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT
