@@ -68,6 +68,57 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 }
 
 func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAPYsRequest) (*types.QueryTranchePoolAPYsResponse, error) {
-	// TODO: implement
-	return &types.QueryTranchePoolAPYsResponse{}, nil
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+	tranche, found := k.GetTranchePool(ctx, req.Id)
+	if !found {
+		return nil, types.ErrTrancheNotFound
+	}
+	depositInfo := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
+	swapCoin := sdk.NewCoin(depositInfo.Denom, sdk.NewInt(1_000_000))
+	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
+	if err != nil {
+		return nil, err
+	}
+	restMaturity := tranche.StartTime + tranche.Maturity - uint64(ctx.BlockTime().Unix())
+	maturityPerYear := sdk.NewDecFromInt(sdk.NewIntFromUint64(restMaturity)).QuoInt(sdk.NewInt(365 * 24 * 60 * 60))
+	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Mul(maturityPerYear)
+	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
+
+	ptDenom := types.PtDenom(tranche)
+	var utPercentage sdk.Dec
+	var ptPercentage sdk.Dec
+	if ptDenom == tranche.PoolAssets[0].Denom {
+		total := sdk.NewDecFromInt(tranche.PoolAssets[1].Amount).Mul(ptRate).Add(sdk.NewDecFromInt(tranche.PoolAssets[0].Amount))
+		utPercentage = sdk.NewDecFromInt(tranche.PoolAssets[1].Amount).Quo(total)
+		ptPercentage = sdk.NewDecFromInt(tranche.PoolAssets[0].Amount).Quo(total)
+	} else {
+		total := sdk.NewDecFromInt(tranche.PoolAssets[0].Amount).Mul(ptRate).Add(sdk.NewDecFromInt(tranche.PoolAssets[1].Amount))
+		utPercentage = sdk.NewDecFromInt(tranche.PoolAssets[0].Amount).Quo(total)
+		ptPercentage = sdk.NewDecFromInt(tranche.PoolAssets[1].Amount).Quo(total)
+	}
+	discountPtAPY := ptAPY.Mul(ptPercentage)
+
+	lpAmount := sdk.NewInt(1_000_000)
+	requiredCoins, err := GetMaximalNoSwapLPAmount(ctx, tranche, lpAmount)
+	if err != nil {
+		return nil, err
+	}
+	var utAmount sdk.Dec
+	if ptDenom == requiredCoins[0].Denom {
+		utAmount = sdk.NewDecFromInt(requiredCoins[0].Amount).Quo(ptRate).Add(sdk.NewDecFromInt(requiredCoins[1].Amount))
+	} else {
+		utAmount = sdk.NewDecFromInt(requiredCoins[1].Amount).Quo(ptRate).Add(sdk.NewDecFromInt(requiredCoins[0].Amount))
+	}
+	lpRate := sdk.NewDecFromInt(lpAmount).Quo(utAmount)
+
+	return &types.QueryTranchePoolAPYsResponse{
+		LiquidityApy:       sdk.ZeroDec(),
+		LiquidityRatePerUt: lpRate,
+		DiscountPtApy:      discountPtAPY,
+		UtPercentageInPool: utPercentage,
+		PtPercentageInPool: ptPercentage,
+	}, nil
 }
