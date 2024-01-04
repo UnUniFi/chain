@@ -7765,9 +7765,70 @@ paths:
                       format: byte
       tags:
         - Query
+  /ununifi/irs/estimate-mint-liquidity-pool-token:
+    get:
+      summary: Estimate tokens to mint liquidity pool token
+      operationId: EstimateMintLiquidityPoolToken
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              required_amount:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: desired_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /ununifi/irs/estimate-mint-pt-yt-pair:
     get:
-      summary: Estimate mint amountof PT&YT pair
+      summary: Estimate mint amount of PT&YT pair
       operationId: EstimateMintPtYtPair
       responses:
         '200':
@@ -7828,7 +7889,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: pool_id
+        - name: id
           in: query
           required: false
           type: string
@@ -7843,17 +7904,93 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/irs/estimate-redeem-yt:
+  /ununifi/irs/estimate-redeem-liquidity-pool-token:
     get:
-      summary: Estimate redeem amount of YT after maturity
-      operationId: EstimateRedeemYt
+      summary: Estimate redeem amount of liquidity pool token
+      operationId: EstimateRedeemLiquidityPoolToken
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              amount:
+              redeem_amount:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/irs/estimate-redeem-pt-yt-pair:
+    get:
+      summary: Estimate redeem amount of PT&YT pair
+      operationId: EstimateRedeemPtYtPair
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pt_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              yt_amount:
                 type: object
                 properties:
                   denom:
@@ -7891,16 +8028,71 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: pool_id
+        - name: id
           in: query
           required: false
           type: string
           format: uint64
-        - name: denom
+        - name: desired_ut_amount
           in: query
           required: false
           type: string
-        - name: amount
+      tags:
+        - Query
+  /ununifi/irs/estimate-required-ut-swap-to-yt:
+    get:
+      summary: Estimate required UT amount to swao to YT
+      operationId: EstimateRequiredUtSwapToYt
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              required_ut_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: desired_yt_amount
           in: query
           required: false
           type: string
@@ -7954,7 +8146,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: pool_id
+        - name: id
           in: query
           required: false
           type: string
@@ -7964,6 +8156,65 @@ paths:
           required: false
           type: string
         - name: amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/irs/estimate-swap-matured-yt-to-ut:
+    get:
+      summary: Estimate swap matured YT to UT
+      operationId: EstimateSwapMaturedYtToUt
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ut_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: yt_amount
           in: query
           required: false
           type: string
@@ -8079,6 +8330,144 @@ paths:
             description: >-
               QueryTranchResponse is response type for the Query/Tranch RPC
               method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /ununifi/irs/tranche/{id}/pool-apy:
+    get:
+      summary: tranche Ls APYs by id
+      operationId: TranchePoolAPYs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              liquidity_apy:
+                type: string
+              discount_pt_apy:
+                type: string
+              liquidity_rate_per_ut:
+                type: string
+              ut_percentage_in_pool:
+                type: string
+              pt_percentage_in_pool:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /ununifi/irs/tranche/{id}/pt-apy:
+    get:
+      summary: tranche PT APYs by id
+      operationId: TranchePtAPYs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pt_apy:
+                type: string
+              pt_rate_per_ut:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /ununifi/irs/tranche/{id}/yt-apy:
+    get:
+      summary: tranche YT APYs by id
+      operationId: TrancheYtAPYs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              yt_apy:
+                type: string
+              yt_rate_per_ut:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -12732,6 +13121,23 @@ definitions:
         type: string
       trade_fee_rate:
         type: string
+  ununifi.irs.QueryEstimateMintLiquidityPoolTokenResponse:
+    type: object
+    properties:
+      required_amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   ununifi.irs.QueryEstimateMintPtYtPairResponse:
     type: object
     properties:
@@ -12759,10 +13165,54 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  ununifi.irs.QueryEstimateRedeemYtResponse:
+  ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenResponse:
     type: object
     properties:
-      amount:
+      redeem_amount:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  ununifi.irs.QueryEstimateRedeemPtYtPairResponse:
+    type: object
+    properties:
+      pt_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      yt_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.irs.QueryEstimateRequiredUtSwapToYtResponse:
+    type: object
+    properties:
+      required_ut_amount:
         type: object
         properties:
           denom:
@@ -12789,6 +13239,21 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+  ununifi.irs.QueryEstimateSwapMaturedYtToUtResponse:
+    type: object
+    properties:
+      ut_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   ununifi.irs.QueryParamsResponse:
     type: object
     properties:
@@ -12801,6 +13266,26 @@ definitions:
           trade_fee_rate:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  ununifi.irs.QueryTranchePoolAPYsResponse:
+    type: object
+    properties:
+      liquidity_apy:
+        type: string
+      discount_pt_apy:
+        type: string
+      liquidity_rate_per_ut:
+        type: string
+      ut_percentage_in_pool:
+        type: string
+      pt_percentage_in_pool:
+        type: string
+  ununifi.irs.QueryTranchePtAPYsResponse:
+    type: object
+    properties:
+      pt_apy:
+        type: string
+      pt_rate_per_ut:
+        type: string
   ununifi.irs.QueryTrancheResponse:
     type: object
     properties:
@@ -12857,6 +13342,13 @@ definitions:
                 signatures required by gogoproto.
             title: Pool assets are sorted by denomination
     description: QueryTranchResponse is response type for the Query/Tranch RPC method.
+  ununifi.irs.QueryTrancheYtAPYsResponse:
+    type: object
+    properties:
+      yt_apy:
+        type: string
+      yt_rate_per_ut:
+        type: string
   ununifi.irs.QueryTranchesResponse:
     type: object
     properties:
