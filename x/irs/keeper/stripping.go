@@ -27,12 +27,6 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 
-	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
-
 	// Stake to strategy
 	if underlyingAmount.Denom == depositInfo.Denom {
 		wasmMsg := `{"stake":{}}`
@@ -41,12 +35,20 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 			return sdk.ZeroInt(), err
 		}
 	} else {
+		return sdk.ZeroInt(), types.ErrInvalidDepositDenom
+		// TODO: bug here, PT is calculated and minted regardless of denom
 		msg, err := k.ExecuteVaultTransfer(ctx, moduleAddr, pool.StrategyContract, underlyingAmount)
 		k.Logger(ctx).Info("transfer_memo " + msg.Memo)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	}
+
+	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 
 	// mint PT
 	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
