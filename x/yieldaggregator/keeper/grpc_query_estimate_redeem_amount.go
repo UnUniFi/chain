@@ -61,5 +61,6 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 		Fee:          fee,
 		RedeemAmount: withdrawAmountWithoutCommission,
 		TotalAmount:  principal,
+		Symbol:       vault.Symbol,
 	}, nil
 }

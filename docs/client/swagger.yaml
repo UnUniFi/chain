@@ -6948,6 +6948,8 @@ paths:
                       type: string
                     performance_fee_rate:
                       type: string
+                    symbol:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -7083,6 +7085,8 @@ paths:
                   withdraw_fee_rate:
                     type: string
                   performance_fee_rate:
+                    type: string
+                  symbol:
                     type: string
         default:
           description: An unexpected error response.
@@ -7638,6 +7642,8 @@ paths:
               redeem_amount:
                 type: string
               total_amount:
+                type: string
+              symbol:
                 type: string
         default:
           description: An unexpected error response.
@@ -12493,6 +12499,8 @@ definitions:
               type: string
             performance_fee_rate:
               type: string
+            symbol:
+              type: string
       pagination:
         type: object
         properties:
@@ -12728,6 +12736,8 @@ definitions:
         type: string
       total_amount:
         type: string
+      symbol:
+        type: string
   ununifi.yieldaggregator.QueryGetStrategyResponse:
     type: object
     properties:
@@ -12755,6 +12765,8 @@ definitions:
           withdraw_fee_rate:
             type: string
           performance_fee_rate:
+            type: string
+          symbol:
             type: string
   ununifi.yieldaggregator.QueryGetVaultResponse:
     type: object
@@ -12956,6 +12968,8 @@ definitions:
       withdraw_fee_rate:
         type: string
       performance_fee_rate:
+        type: string
+      symbol:
         type: string
   ununifi.yieldaggregator.StrategyWeight:
     type: object
