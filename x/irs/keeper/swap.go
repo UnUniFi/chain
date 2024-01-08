@@ -20,7 +20,10 @@ func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool type
 		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	tokenOutAmount, err := k.SwapExactAmountIn(ctx, sender, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
-	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), err
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), nil
 }
 
 // SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT

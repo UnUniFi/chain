@@ -137,6 +137,7 @@ func (p *TranchePool) CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coi
 
 func (p *TranchePool) IncreaseLiquidity(sharesOut sdk.Int, coinsIn sdk.Coins) {
 	p.PoolAssets = sdk.Coins(p.PoolAssets).Add(coinsIn...)
+	p.TotalShares.Denom = LsDenom(*p)
 	p.TotalShares.Amount = p.TotalShares.Amount.Add(sharesOut)
 }
 
@@ -160,7 +161,7 @@ func (p *TranchePool) exitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingS
 	p.PoolAssets = balances
 
 	totalShares := p.TotalShares.Amount
-	p.TotalShares = sdk.NewCoin(p.TotalShares.Denom, totalShares.Sub(exitingShares))
+	p.TotalShares.Amount = totalShares.Sub(exitingShares)
 
 	return nil
 }

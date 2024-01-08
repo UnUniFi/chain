@@ -24,6 +24,13 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 
 	ptDenom := types.PtDenom(pool)
 	ytDenom := types.YtDenom(pool)
+
+	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
+
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 
@@ -43,12 +50,6 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 			return sdk.ZeroInt(), err
 		}
 	}
-
-	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 
 	// mint PT
 	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
@@ -80,7 +81,9 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, u
 	moduleAddr := types.GetVaultModuleAddress(pool)
 
 	ytDenom := types.YtDenom(pool)
+	ptDenom := types.PtDenom(pool)
 	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
 
 	// Initial deposit
 	if interestSupply.IsZero() {
@@ -93,11 +96,18 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, u
 	}
 
 	// mint PT
-	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
-	ptAmount := underlyingAmount.Amount.
-		Sub(underlyingAmount.Amount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
+	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
+		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
+		ptAmount := underlyingAmount.Amount.
+			Sub(
+				underlyingAmount.Amount.
+					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
+					Quo(interestSupply.Amount),
+			)
+		return ptAmount, nil
+	}
 
-	return ptAmount, nil
+	return underlyingAmount.Amount, nil
 }
 
 // RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
