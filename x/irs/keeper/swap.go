@@ -57,7 +57,7 @@ func (k Keeper) SwapExactAmountIn(
 	}
 
 	// check sender balance first
-	poolAddr := types.GetVaultModuleAddress(pool)
+	poolAddr := types.GetLiquidityPoolModuleAddress(pool)
 	tokensIn := sdk.Coins{tokenIn}
 	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
@@ -65,6 +65,13 @@ func (k Keeper) SwapExactAmountIn(
 	}
 
 	tokenOutAmount, err = k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, tokenOutMinAmount, swapFee)
+	if err != nil {
+		return sdk.Int{}, err
+	}
+
+	// Send out amount of tokens to the sender
+	tokensOut := sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}
+	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, tokensOut)
 	if err != nil {
 		return sdk.Int{}, err
 	}

@@ -23,7 +23,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	}
 
 	// 1. Take loan from IRS vault account (pool => sender)
-	poolAddr := types.GetVaultModuleAddress(pool)
+	poolAddr := types.GetLiquidityPoolModuleAddress(pool)
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
 	if err != nil {
 		return err
