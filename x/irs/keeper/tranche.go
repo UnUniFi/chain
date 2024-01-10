@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -85,7 +86,7 @@ func (k Keeper) GetLastTrancheId(ctx sdk.Context) uint64 {
 	return 0
 }
 
-func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, token sdk.Coin, requiredYt sdk.Int) error {
+func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, token sdk.Coin, requiredYt math.Int) error {
 	tranche, found := k.GetTranchePool(ctx, trancheId)
 	if !found {
 		return types.ErrTrancheNotFound
@@ -117,7 +118,7 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 	return nil
 }
 
-func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, tokens sdk.Coins, requiredUt sdk.Int) error {
+func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, tokens sdk.Coins, requiredUt math.Int) error {
 	tranche, found := k.GetTranchePool(ctx, trancheId)
 	if !found {
 		return types.ErrTrancheNotFound

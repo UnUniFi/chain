@@ -3,6 +3,7 @@ package keeper
 import (
 	"errors"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -49,11 +50,11 @@ func (k Keeper) SwapExactAmountIn(
 	pool types.TranchePool,
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
-	tokenOutMinAmount sdk.Int,
+	tokenOutMinAmount math.Int,
 	swapFee sdk.Dec,
-) (tokenOutAmount sdk.Int, err error) {
+) (tokenOutAmount math.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
-		return sdk.Int{}, errors.New("cannot trade the same denomination in and out")
+		return math.Int{}, errors.New("cannot trade the same denomination in and out")
 	}
 
 	// check sender balance first
@@ -61,19 +62,19 @@ func (k Keeper) SwapExactAmountIn(
 	tokensIn := sdk.Coins{tokenIn}
 	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	tokenOutAmount, err = k.CalculateSwapExactAmountIn(ctx, &pool, tokenIn, tokenOutDenom, tokenOutMinAmount, swapFee)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	// Send out amount of tokens to the sender
 	tokensOut := sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, tokensOut)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
@@ -89,24 +90,24 @@ func (k Keeper) CalculateSwapExactAmountIn(
 	pool *types.TranchePool,
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
-	tokenOutMinAmount sdk.Int,
+	tokenOutMinAmount math.Int,
 	swapFee sdk.Dec,
-) (tokenOutAmount sdk.Int, err error) {
+) (tokenOutAmount math.Int, err error) {
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
 	tokenOutCoin, err := pool.SwapOutAmtGivenIn(ctx, tokenIn, tokenOutDenom, swapFee)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	tokenOutAmount = tokenOutCoin.Amount
 
 	if !tokenOutAmount.IsPositive() {
-		return sdk.Int{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
+		return math.Int{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "token amount must be positive")
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
-		return sdk.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than the minimum amount", tokenOutDenom)
+		return math.Int{}, sdkerrors.Wrapf(types.ErrLimitMinAmount, "%s token is lesser than the minimum amount", tokenOutDenom)
 	}
 
 	return tokenOutAmount, nil

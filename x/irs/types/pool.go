@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -12,10 +13,10 @@ import (
 
 // JoinPoolNoSwap calculates the number of shares needed for an all-asset join given tokensIn with spreadFactor applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
-func (p *TranchePool) JoinPoolNoSwap(ctx sdk.Context, tokensIn sdk.Coins, spreadFactor sdk.Dec) (numShares sdk.Int, err error) {
+func (p *TranchePool) JoinPoolNoSwap(ctx sdk.Context, tokensIn sdk.Coins, spreadFactor sdk.Dec) (numShares math.Int, err error) {
 	numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(ctx, tokensIn, spreadFactor)
 	if err != nil {
-		return sdk.Int{}, err
+		return math.Int{}, err
 	}
 
 	// update pool with the calculated share and liquidity needed to join pool
@@ -46,7 +47,7 @@ func ensureDenomInPool(poolAssetsByDenom sdk.Coins, tokensIn sdk.Coins) error {
 //  1. iterate through all the tokens provided as an argument, calculate how much ratio it accounts for the asset in the pool
 //  2. get the minimal share ratio that would work as the benchmark for all tokens.
 //  3. calculate the number of shares that could be joined (total share * min share ratio), return the remaining coins
-func MaximalExactRatioJoin(p *TranchePool, ctx sdk.Context, tokensIn sdk.Coins) (numShares sdk.Int, remCoins sdk.Coins, err error) {
+func MaximalExactRatioJoin(p *TranchePool, ctx sdk.Context, tokensIn sdk.Coins) (numShares math.Int, remCoins sdk.Coins, err error) {
 	coinShareRatios := make([]sdk.Dec, len(tokensIn))
 	minShareRatio := sdk.MaxSortableDec
 	maxShareRatio := sdk.ZeroDec()
@@ -107,7 +108,7 @@ func MaximalExactRatioJoin(p *TranchePool, ctx sdk.Context, tokensIn sdk.Coins) 
 // Since CalcJoinPoolNoSwapShares is non-mutative, the steps for updating pool shares / liquidity are
 // more complex / don't just alter the state.
 // We should simplify this logic further in the future using multi-join equations.
-func (p *TranchePool) CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coins, spreadFactor sdk.Dec) (numShares sdk.Int, tokensJoined sdk.Coins, err error) {
+func (p *TranchePool) CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coins, spreadFactor sdk.Dec) (numShares math.Int, tokensJoined sdk.Coins, err error) {
 	err = ensureDenomInPool(p.PoolAssets, tokensIn)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.NewCoins(), err
@@ -135,13 +136,13 @@ func (p *TranchePool) CalcJoinPoolNoSwapShares(ctx sdk.Context, tokensIn sdk.Coi
 	return numShares, tokensJoined, nil
 }
 
-func (p *TranchePool) IncreaseLiquidity(sharesOut sdk.Int, coinsIn sdk.Coins) {
+func (p *TranchePool) IncreaseLiquidity(sharesOut math.Int, coinsIn sdk.Coins) {
 	p.PoolAssets = sdk.Coins(p.PoolAssets).Add(coinsIn...)
 	p.TotalShares.Denom = LsDenom(*p)
 	p.TotalShares.Amount = p.TotalShares.Amount.Add(sharesOut)
 }
 
-func (p *TranchePool) ExitPool(ctx sdk.Context, exitingShares sdk.Int, exitFee sdk.Dec) (exitingCoins sdk.Coins, err error) {
+func (p *TranchePool) ExitPool(ctx sdk.Context, exitingShares math.Int, exitFee sdk.Dec) (exitingCoins sdk.Coins, err error) {
 	exitingCoins, err = p.CalcExitPoolCoinsFromShares(ctx, exitingShares, exitFee)
 	if err != nil {
 		return sdk.Coins{}, err
@@ -156,7 +157,7 @@ func (p *TranchePool) ExitPool(ctx sdk.Context, exitingShares sdk.Int, exitFee s
 
 // exitPool exits the pool given exitingCoins and exitingShares.
 // updates the pool's liquidity and totalShares.
-func (p *TranchePool) exitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingShares sdk.Int) error {
+func (p *TranchePool) exitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingShares math.Int) error {
 	balances := sdk.Coins(p.PoolAssets).Sub(exitingCoins...)
 	p.PoolAssets = balances
 
@@ -166,12 +167,12 @@ func (p *TranchePool) exitPool(ctx sdk.Context, exitingCoins sdk.Coins, exitingS
 	return nil
 }
 
-func (p *TranchePool) CalcExitPoolCoinsFromShares(ctx sdk.Context, exitingShares sdk.Int, exitFee sdk.Dec) (exitedCoins sdk.Coins, err error) {
+func (p *TranchePool) CalcExitPoolCoinsFromShares(ctx sdk.Context, exitingShares math.Int, exitFee sdk.Dec) (exitedCoins sdk.Coins, err error) {
 	return CalcExitPool(ctx, p, exitingShares, exitFee)
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
-func CalcExitPool(ctx sdk.Context, pool *TranchePool, exitingShares sdk.Int, exitFee sdk.Dec) (sdk.Coins, error) {
+func CalcExitPool(ctx sdk.Context, pool *TranchePool, exitingShares math.Int, exitFee sdk.Dec) (sdk.Coins, error) {
 	totalShares := pool.TotalShares.Amount
 	if exitingShares.GT(totalShares) {
 		return sdk.Coins{}, ErrInvalidTotalShares

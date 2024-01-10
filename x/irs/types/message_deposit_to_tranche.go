@@ -4,13 +4,14 @@ import (
 	// errorsmod "cosmossdk.io/errors"
 	// "github.com/cosmos/cosmos-sdk/types"
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgDepositToTranche{}
 
-func NewMsgDepositToTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin, requiredYt sdk.Int) *MsgDepositToTranche {
+func NewMsgDepositToTranche(sender string, trancheId uint64, trancheType TrancheType, token sdk.Coin, requiredYt math.Int) *MsgDepositToTranche {
 	return &MsgDepositToTranche{
 		Sender:      sender,
 		TrancheId:   trancheId,

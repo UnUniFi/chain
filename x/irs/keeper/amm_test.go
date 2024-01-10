@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -37,8 +38,8 @@ func (s *KeeperTestSuite) TestDepositToLiquidityPool() {
 	tests := []struct {
 		name            string
 		txSender        sdk.AccAddress
-		sharesRequested sdk.Int
-		existingShares  sdk.Int
+		sharesRequested math.Int
+		existingShares  math.Int
 		poolTokens      sdk.Coins
 		tokenInMaxs     sdk.Coins
 		expectPass      bool
@@ -177,8 +178,8 @@ func (suite *KeeperTestSuite) TestGetMaximalNoSwapLPAmount() {
 
 	tests := map[string]struct {
 		poolAssets          sdk.Coins
-		existingShares      sdk.Int
-		shareOutAmount      sdk.Int
+		existingShares      math.Int
+		shareOutAmount      math.Int
 		expectedLpLiquidity sdk.Coins
 		err                 error
 	}{
@@ -277,7 +278,7 @@ func (s *KeeperTestSuite) TestWithdrawFromLiquidityPool() {
 	tests := []struct {
 		name         string
 		txSender     sdk.AccAddress
-		sharesIn     sdk.Int
+		sharesIn     math.Int
 		tokenOutMins sdk.Coins
 		expTokenOut  sdk.Coins
 		expectPass   bool

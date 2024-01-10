@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
@@ -30,9 +31,9 @@ type BankKeeper interface {
 }
 
 type RecordsKeeper interface {
-	GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) sdk.Int
+	GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) math.Int
 	VaultTransfer(ctx sdk.Context, vaultId uint64, contractAddr sdk.AccAddress, msg *ibctypes.MsgTransfer) error
-	GetVaultPendingDeposit(ctx sdk.Context, vaultId uint64) sdk.Int
-	IncreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int)
-	DecreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount sdk.Int)
+	GetVaultPendingDeposit(ctx sdk.Context, vaultId uint64) math.Int
+	IncreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount math.Int)
+	DecreaseVaultPendingDeposit(ctx sdk.Context, vaultId uint64, amount math.Int)
 }
