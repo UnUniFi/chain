@@ -36,7 +36,7 @@ func (k Keeper) SimulateSwapPoolTokens(ctx sdk.Context, pool types.TranchePool, 
 	} else {
 		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
-	tokenOutAmount, err := k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
+	tokenOutAmount, err := k.CalculateSwapExactAmountIn(ctx, &pool, tokenIn, tokenOutDenom, sdk.ZeroInt(), pool.SwapFee)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
@@ -64,7 +64,7 @@ func (k Keeper) SwapExactAmountIn(
 		return sdk.Int{}, err
 	}
 
-	tokenOutAmount, err = k.CalculateSwapExactAmountIn(ctx, pool, tokenIn, tokenOutDenom, tokenOutMinAmount, swapFee)
+	tokenOutAmount, err = k.CalculateSwapExactAmountIn(ctx, &pool, tokenIn, tokenOutDenom, tokenOutMinAmount, swapFee)
 	if err != nil {
 		return sdk.Int{}, err
 	}
@@ -86,7 +86,7 @@ func (k Keeper) SwapExactAmountIn(
 
 func (k Keeper) CalculateSwapExactAmountIn(
 	ctx sdk.Context,
-	pool types.TranchePool,
+	pool *types.TranchePool,
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
 	tokenOutMinAmount sdk.Int,
