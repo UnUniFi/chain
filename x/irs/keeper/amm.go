@@ -23,7 +23,18 @@ func (k Keeper) DepositToLiquidityPool(
 		return nil, sdk.ZeroInt(), types.ErrTrancheNotFound
 	}
 
-	// TODO: ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
+	// Ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	utDenom := depositInfo.Denom
+	ptDenom := types.PtDenom(pool)
+
+	if !tokenInMaxs.AmountOf(ptDenom).IsPositive() {
+		return nil, sdk.ZeroInt(), types.ErrNoPtDenomExists
+	}
+
+	if !tokenInMaxs.AmountOf(utDenom).IsPositive() {
+		return nil, sdk.ZeroInt(), types.ErrNoUtDenomExists
+	}
 
 	// When liquidity is added to the empty pool
 	if pool.TotalShares.IsZero() {

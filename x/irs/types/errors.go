@@ -28,4 +28,6 @@ var (
 	ErrInvalidDepositDenom     = errors.Register(ModuleName, 20, "invalid deposit denom")
 	ErrVaultNotFound           = errors.Register(ModuleName, 22, "vault not found")
 	ErrInvalidAmount           = errors.Register(ModuleName, 23, "invalid amount")
+	ErrNoPtDenomExists         = errors.Register(ModuleName, 24, "no pt denom exists")
+	ErrNoUtDenomExists         = errors.Register(ModuleName, 25, "no ut denom exists")
 )
