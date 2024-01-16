@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount sdk.Int, tokenIn sdk.Coin) error {
+func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount math.Int, tokenIn sdk.Coin) error {
 	// Check if TokenIn is enough to cover to payback loan
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	if tokenIn.Denom != depositInfo.Denom {
@@ -23,7 +24,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	}
 
 	// 1. Take loan from IRS vault account (pool => sender)
-	poolAddr := types.GetVaultModuleAddress(pool)
+	poolAddr := types.GetLiquidityPoolModuleAddress(pool)
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, sender, sdk.NewCoins(loan))
 	if err != nil {
 		return err
@@ -50,7 +51,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	return nil
 }
 
-func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount sdk.Int) (sdk.Coin, error) {
+func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount math.Int) (sdk.Coin, error) {
 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	loan := sdk.NewCoin(depositInfo.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
@@ -68,7 +69,7 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 	return requiredUt, nil
 }
 
-func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, tokens sdk.Coins) error {
+func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount math.Int, tokens sdk.Coins) error {
 	err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
 	if err != nil {
 		return err
@@ -77,7 +78,7 @@ func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 }
 
 // // TODO: This implementation is better if there is no Redeem time lag
-// func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount sdk.Int, token sdk.Coin) error {
+// func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount math.Int, token sdk.Coin) error {
 // 	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 // 	redeemUtAmount, err := k.CalculateRedeemAmount(ctx, pool, token)
 // 	if err != nil {

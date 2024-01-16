@@ -2,13 +2,14 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgWithdrawLiquidity{}
 
-func NewMsgWithdrawLiquidity(sender string, trancheId uint64, shareAmount sdk.Int, tokenOutMins sdk.Coins) *MsgWithdrawLiquidity {
+func NewMsgWithdrawLiquidity(sender string, trancheId uint64, shareAmount math.Int, tokenOutMins sdk.Coins) *MsgWithdrawLiquidity {
 	return &MsgWithdrawLiquidity{
 		Sender:       sender,
 		TrancheId:    trancheId,

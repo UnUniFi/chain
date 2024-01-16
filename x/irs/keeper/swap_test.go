@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -21,8 +22,8 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 	type param struct {
 		tokenIn           sdk.Coin
 		tokenOutDenom     string
-		tokenOutMinAmount sdk.Int
-		expectedTokenOut  sdk.Int
+		tokenOutMinAmount math.Int
+		expectedTokenOut  math.Int
 	}
 
 	tests := []struct {

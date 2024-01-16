@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestSwapUtToYt() {
 	// type param struct {
 	// 	tokenIn          sdk.Coin
 	// 	tokenOutDenom    string
-	// 	requiredYtAmount sdk.Int
+	// 	requiredYtAmount math.Int
 	// }
 
 	// tests := []struct {

@@ -16,7 +16,7 @@ func (k msgServer) DepositLiquidity(goCtx context.Context, msg *types.MsgDeposit
 	}
 
 	// Put tokens on tranche pool and get lp token
-	_, _, err = k.DepositToLiquidityPool(ctx, sender, msg.TrancheId, sdk.ZeroInt(), msg.TokenInMaxs)
+	_, _, err = k.DepositToLiquidityPool(ctx, sender, msg.TrancheId, msg.ShareOutAmount, msg.TokenInMaxs)
 	if err != nil {
 		return nil, err
 	}

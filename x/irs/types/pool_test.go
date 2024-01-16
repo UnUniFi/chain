@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -112,7 +113,7 @@ func TestMaximalExactRatioJoin(t *testing.T) {
 		name        string
 		pool        TranchePool
 		tokensIn    sdk.Coins
-		expNumShare sdk.Int
+		expNumShare math.Int
 		expRemCoin  sdk.Coins
 	}{
 		{
@@ -144,7 +145,7 @@ func TestCalcJoinPoolNoSwapShares(t *testing.T) {
 	tests := map[string]struct {
 		tokensIn        sdk.Coins
 		poolAssets      sdk.Coins
-		expNumShare     sdk.Int
+		expNumShare     math.Int
 		expTokensJoined sdk.Coins
 		expPoolAssets   sdk.Coins
 		expectPass      bool
@@ -316,7 +317,7 @@ func TestCalcExitPool(t *testing.T) {
 	tests := []struct {
 		name          string
 		pool          TranchePool
-		exitingShares sdk.Int
+		exitingShares math.Int
 		expError      bool
 	}{
 		{

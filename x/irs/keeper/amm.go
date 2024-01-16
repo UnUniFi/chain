@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -13,16 +14,27 @@ func (k Keeper) DepositToLiquidityPool(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	poolId uint64,
-	shareOutAmount sdk.Int,
+	shareOutAmount math.Int,
 	tokenInMaxs sdk.Coins,
-) (tokenIn sdk.Coins, sharesOut sdk.Int, err error) {
+) (tokenIn sdk.Coins, sharesOut math.Int, err error) {
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
 	pool, found := k.GetTranchePool(ctx, poolId)
 	if !found {
 		return nil, sdk.ZeroInt(), types.ErrTrancheNotFound
 	}
 
-	// TODO: ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
+	// Ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	utDenom := depositInfo.Denom
+	ptDenom := types.PtDenom(pool)
+
+	if !tokenInMaxs.AmountOf(ptDenom).IsPositive() {
+		return nil, sdk.ZeroInt(), types.ErrNoPtDenomExists
+	}
+
+	if !tokenInMaxs.AmountOf(utDenom).IsPositive() {
+		return nil, sdk.ZeroInt(), types.ErrNoUtDenomExists
+	}
 
 	// When liquidity is added to the empty pool
 	if pool.TotalShares.IsZero() {
@@ -70,7 +82,7 @@ func (k Keeper) DepositToLiquidityPool(
 // 1. calculate how much percent of the pool does given share account for(# of input shares / # of current total shares)
 // 2. since we know how much % of the pool we want, iterate through all pool liquidity to calculate how much coins we need for
 // each pool asset.
-func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutAmount sdk.Int) (neededLpLiquidity sdk.Coins, err error) {
+func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutAmount math.Int) (neededLpLiquidity sdk.Coins, err error) {
 	totalSharesAmount := pool.TotalShares.Amount
 	if totalSharesAmount.IsZero() {
 		return sdk.Coins{}, sdkerrors.Wrapf(types.ErrInvalidMathApprox, "Total shares amount is zero")
@@ -95,7 +107,7 @@ func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutA
 	return neededLpLiquidity, nil
 }
 
-func GetMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutAmount sdk.Int) (neededLpLiquidity sdk.Coins, err error) {
+func GetMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutAmount math.Int) (neededLpLiquidity sdk.Coins, err error) {
 	return getMaximalNoSwapLPAmount(ctx, pool, shareOutAmount)
 }
 
@@ -103,7 +115,7 @@ func (k Keeper) WithdrawFromLiquidityPool(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	poolId uint64,
-	shareInAmount sdk.Int,
+	shareInAmount math.Int,
 	tokenOutMins sdk.Coins,
 ) (exitCoins sdk.Coins, err error) {
 	pool, found := k.GetTranchePool(ctx, poolId)
@@ -134,7 +146,7 @@ func (k Keeper) WithdrawFromLiquidityPool(
 	return exitCoins, nil
 }
 
-func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.TranchePool, joiner sdk.AccAddress, numShares sdk.Int, joinCoins sdk.Coins) error {
+func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.TranchePool, joiner sdk.AccAddress, numShares math.Int, joinCoins sdk.Coins) error {
 	err := k.bankKeeper.SendCoins(ctx, joiner, types.GetLiquidityPoolModuleAddress(pool), joinCoins)
 	if err != nil {
 		return err
@@ -150,7 +162,7 @@ func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.TranchePool
 	return nil
 }
 
-func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.TranchePool, exiter sdk.AccAddress, numShares sdk.Int, exitCoins sdk.Coins) error {
+func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.TranchePool, exiter sdk.AccAddress, numShares math.Int, exitCoins sdk.Coins) error {
 	err := k.bankKeeper.SendCoins(ctx, types.GetLiquidityPoolModuleAddress(pool), exiter, exitCoins)
 	if err != nil {
 		return err
@@ -169,7 +181,7 @@ func (k Keeper) applyExitPoolStateChange(ctx sdk.Context, pool types.TranchePool
 // MintPoolShareToAccount attempts to mint shares of a GAMM denomination to the
 // specified address returning an error upon failure. Shares are minted using
 // the x/gamm module account.
-func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.TranchePool, addr sdk.AccAddress, amount sdk.Int) error {
+func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.TranchePool, addr sdk.AccAddress, amount math.Int) error {
 	amt := sdk.NewCoins(sdk.NewCoin(types.LsDenom(pool), amount))
 
 	err := k.bankKeeper.MintCoins(ctx, types.ModuleName, amt)
@@ -186,7 +198,7 @@ func (k Keeper) MintPoolShareToAccount(ctx sdk.Context, pool types.TranchePool, 
 }
 
 // BurnPoolShareFromAccount burns `amount` of the given pools shares held by `addr`.
-func (k Keeper) BurnPoolShareFromAccount(ctx sdk.Context, pool types.TranchePool, addr sdk.AccAddress, amount sdk.Int) error {
+func (k Keeper) BurnPoolShareFromAccount(ctx sdk.Context, pool types.TranchePool, addr sdk.AccAddress, amount math.Int) error {
 	amt := sdk.Coins{
 		sdk.NewCoin(types.LsDenom(pool), amount),
 	}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -14,7 +15,7 @@ type AmountsResp struct {
 	Unbonding      string `json:"unbonding"`
 }
 
-func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, strategyContract string) (sdk.Int, error) {
+func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, strategyContract string) (math.Int, error) {
 	wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, sender.String())
 	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
 	resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
@@ -35,7 +36,7 @@ func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, st
 	return amount, err
 }
 
-func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, strategyContract string) (sdk.Int, error) {
+func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, sender sdk.AccAddress, strategyContract string) (math.Int, error) {
 	wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, sender.String())
 	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
 	resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
@@ -97,7 +98,7 @@ func (k Keeper) GetStrategyDepositInfo(ctx sdk.Context, strategyContract string)
 }
 
 // unstake worth of withdrawal amount from the strategy
-func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, sender sdk.AccAddress, recipient string, strategyContract string, amount sdk.Int) error {
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, sender sdk.AccAddress, recipient string, strategyContract string, amount math.Int) error {
 	wasmMsg := fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), recipient)
 	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
 	_, err := k.wasmKeeper.Execute(ctx, contractAddr, sender, []byte(wasmMsg), sdk.Coins{})
