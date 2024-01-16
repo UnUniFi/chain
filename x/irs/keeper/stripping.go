@@ -3,6 +3,7 @@ package keeper
 import (
 	"encoding/json"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/irs/types"
@@ -160,6 +161,52 @@ func (k Keeper) CalculateRedeemRequiredPtAndYtAmount(ctx sdk.Context, pool types
 	requiredPt := sdk.NewCoin(ptDenom, requiredPtAmount)
 	requiredYt := sdk.NewCoin(ytDenom, requiredYtAmount)
 	return requiredPt, requiredYt, nil
+}
+
+func (k Keeper) CalculateRedeemAmount(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+	ptDenom := types.PtDenom(pool)
+	ytDenom := types.YtDenom(pool)
+	var redeemDenom string
+	if ptDenom == pool.PoolAssets[0].Denom {
+		redeemDenom = pool.PoolAssets[1].Denom
+	} else if ptDenom == pool.PoolAssets[1].Denom {
+		redeemDenom = pool.PoolAssets[0].Denom
+	} else {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidDepositDenom
+	}
+
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+	if amountFromStrategy.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroAmount
+	}
+
+	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	var redeemAmount math.Int
+	var requiredCoin sdk.Coin
+	if tokenIn.Denom == ptDenom {
+		ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+		if ptSupply.IsZero() {
+			return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+		}
+		redeemAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
+		requiredAmount := tokenIn.Amount.Mul(ytSupply.Amount).Quo(ptSupply.Amount)
+		requiredCoin = sdk.NewCoin(ytDenom, requiredAmount)
+	} else if tokenIn.Denom == ytDenom {
+		if ytSupply.IsZero() {
+			return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+		}
+		redeemAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
+		requiredAmount := tokenIn.Amount.Mul(ptSupply.Amount).Quo(ytSupply.Amount)
+		requiredCoin = sdk.NewCoin(ptDenom, requiredAmount)
+	}
+
+	redeemCoin := sdk.NewCoin(redeemDenom, redeemAmount)
+	return redeemCoin, requiredCoin, nil
 }
 
 func (k Keeper) CalculateRedeemUtAmount(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Int, error) {
