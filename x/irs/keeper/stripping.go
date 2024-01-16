@@ -195,21 +195,21 @@ func (k Keeper) CalculateRedeemAmount(ctx sdk.Context, pool types.TranchePool, t
 	}
 
 	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
+	if ptSupply.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+	}
 	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	if ytSupply.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+	}
 	var redeemAmount math.Int
 	var requiredCoin sdk.Coin
 	if tokenIn.Denom == ptDenom {
 		ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-		if ptSupply.IsZero() {
-			return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
-		}
 		redeemAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ytSupply.Amount).Quo(ptSupply.Amount)
 		requiredCoin = sdk.NewCoin(ytDenom, requiredAmount)
 	} else if tokenIn.Denom == ytDenom {
-		if ytSupply.IsZero() {
-			return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
-		}
 		redeemAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ptSupply.Amount).Quo(ytSupply.Amount)
 		requiredCoin = sdk.NewCoin(ptDenom, requiredAmount)
