@@ -65,7 +65,7 @@ service Query {
   }
   // Estimate swap UT to YT
   rpc EstimateSwapUtToYt(QueryEstimateSwapUtToYtRequest) returns (QueryEstimateSwapUtToYtResponse) {
-    option (google.api.http).get = "/ununifi/irs/estimate-required-ut-swap-to-yt";
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-ut-to-yt";
   }
   // Estimate required UT amount to swap to YT
   rpc EstimateRequiredUtSwapToYt(QueryEstimateRequiredUtSwapToYtRequest) returns (QueryEstimateRequiredUtSwapToYtResponse) {
