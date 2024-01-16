@@ -69,6 +69,34 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 	return requiredUt, nil
 }
 
+func (k Keeper) CalculateSwapUtToYt(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
+	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	if tokenIn.Denom != depositInfo.Denom {
+		return sdk.Coin{}, types.ErrInvalidDepositDenom
+	}
+	ytDenom := types.YtDenom(pool)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	moduleAddr := types.GetVaultModuleAddress(pool)
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	if amountFromStrategy.IsZero() {
+		return sdk.Coin{}, types.ErrInvalidMathApprox
+	}
+	swapCoin := sdk.NewCoin(tokenIn.Denom, sdk.NewInt(1_000_000))
+	pt, err := k.SimulateSwapPoolTokens(ctx, pool, swapCoin)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
+	if ptRate.IsZero() {
+		return sdk.Coin{}, types.ErrInvalidMathApprox
+	}
+	ytAmount := sdk.NewDecFromInt(tokenIn.Amount).MulInt(ytSupply.Amount).QuoInt(amountFromStrategy).Quo(ptRate).TruncateInt()
+	return sdk.NewCoin(ytDenom, ytAmount), nil
+}
+
 func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount math.Int, tokens sdk.Coins) error {
 	err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
 	if err != nil {
