@@ -172,21 +172,24 @@ message QueryEstimateMintPtYtPairResponse {
 
 message QueryEstimateRedeemPtYtPairRequest {
   uint64 id = 1;
-  string desired_ut_amount = 2;
+  string denom = 2;
+  string amount = 3;
 }
 
 message QueryEstimateRedeemPtYtPairResponse {
-  cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin additional_required_amount = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateMintLiquidityPoolTokenRequest {
   uint64 id = 1;
-  string desired_amount = 3;
+  string denom = 2;
+  string amount = 3;
 }
 
 message QueryEstimateMintLiquidityPoolTokenResponse {
-  repeated cosmos.base.v1beta1.Coin required_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin mint_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin additional_required_amount = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateRedeemLiquidityPoolTokenRequest {
