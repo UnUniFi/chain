@@ -175,17 +175,7 @@ func (k Keeper) CalculateRedeemRequiredPtAndYtAmount(ctx sdk.Context, pool types
 func (k Keeper) CalculateRedeemAmount(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, sdk.Coin, error) {
 	ptDenom := types.PtDenom(pool)
 	ytDenom := types.YtDenom(pool)
-	var redeemDenom string
-	if len(pool.PoolAssets) != 2 {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidPoolAssets
-	}
-	if ptDenom == pool.PoolAssets[0].Denom {
-		redeemDenom = pool.PoolAssets[1].Denom
-	} else if ptDenom == pool.PoolAssets[1].Denom {
-		redeemDenom = pool.PoolAssets[0].Denom
-	} else {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidDepositDenom
-	}
+	redeemDenom := pool.Denom
 
 	moduleAddr := types.GetVaultModuleAddress(pool)
 	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
