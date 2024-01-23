@@ -137,6 +137,7 @@ func (s *KeeperTestSuite) TestDepositToLiquidityPool() {
 		tranchePool := types.TranchePool{
 			Id:               1,
 			StrategyContract: strategyContract.String(),
+			Denom:            ut,
 			StartTime:        uint64(ctx.BlockTime().Unix()),
 			Maturity:         86400 * 180,
 			SwapFee:          sdk.NewDecWithPrec(3, 3), // 0.3%
@@ -247,6 +248,7 @@ func (suite *KeeperTestSuite) TestGetMaximalNoSwapLPAmount() {
 			tranchePool := types.TranchePool{
 				Id:               1,
 				StrategyContract: strategyContract.String(),
+				Denom:            ut,
 				StartTime:        uint64(ctx.BlockTime().Unix()),
 				Maturity:         86400 * 180,
 				SwapFee:          sdk.NewDecWithPrec(3, 3), // 0.3%
@@ -345,6 +347,7 @@ func (s *KeeperTestSuite) TestWithdrawFromLiquidityPool() {
 			tranchePool := types.TranchePool{
 				Id:               1,
 				StrategyContract: strategyContract.String(),
+				Denom:            ut,
 				StartTime:        uint64(ctx.BlockTime().Unix()),
 				Maturity:         86400 * 180,
 				SwapFee:          sdk.NewDecWithPrec(3, 3), // 0.3%
@@ -385,7 +388,8 @@ func (suite *KeeperTestSuite) TestMintPoolShareToAccount() {
 	shareAmount := sdk.NewInt(200000)
 	pool := types.TranchePool{
 		Id:               poolId,
-		StrategyContract: "address",
+		StrategyContract: "uatom",
+		Denom:            "denom",
 		StartTime:        1698796800,
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
@@ -410,7 +414,8 @@ func (suite *KeeperTestSuite) TestBurnPoolShareFromAccount() {
 	burnAmount := sdk.NewInt(100000)
 	pool := types.TranchePool{
 		Id:               poolId,
-		StrategyContract: "address",
+		StrategyContract: "uatom",
+		Denom:            "denom",
 		StartTime:        1698796800,
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),

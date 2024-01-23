@@ -11,6 +11,7 @@ func (suite *KeeperTestSuite) TestSetTranchePool() {
 	pool := types.TranchePool{
 		Id:               id,
 		StrategyContract: "address",
+		Denom:            "uatom",
 		StartTime:        1698796800,
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
@@ -34,6 +35,7 @@ func (suite *KeeperTestSuite) TestRemoveTranchePool() {
 	pool := types.TranchePool{
 		Id:               id,
 		StrategyContract: "address",
+		Denom:            "uatom",
 		StartTime:        1698796800,
 		Maturity:         1572800,
 		SwapFee:          sdk.ZeroDec(),
@@ -57,6 +59,7 @@ func (suite *KeeperTestSuite) TestGetTranchesByStrategy() {
 		{
 			Id:               1,
 			StrategyContract: address,
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
@@ -70,6 +73,7 @@ func (suite *KeeperTestSuite) TestGetTranchesByStrategy() {
 		{
 			Id:               2,
 			StrategyContract: address,
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
@@ -94,6 +98,7 @@ func (suite *KeeperTestSuite) TestGetAllTranchePool() {
 		{
 			Id:               1,
 			StrategyContract: "address01",
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
@@ -107,6 +112,7 @@ func (suite *KeeperTestSuite) TestGetAllTranchePool() {
 		{
 			Id:               2,
 			StrategyContract: "address02",
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
@@ -133,6 +139,7 @@ func (suite *KeeperTestSuite) TestGetLastTrancheId() {
 		{
 			Id:               id1,
 			StrategyContract: "address01",
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         1572800,
 			SwapFee:          sdk.ZeroDec(),
@@ -146,6 +153,7 @@ func (suite *KeeperTestSuite) TestGetLastTrancheId() {
 		{
 			Id:               id2,
 			StrategyContract: "address02",
+			Denom:            "uatom",
 			StartTime:        1698796800,
 			Maturity:         31622400,
 			SwapFee:          sdk.ZeroDec(),
