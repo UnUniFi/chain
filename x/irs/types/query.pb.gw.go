@@ -1624,7 +1624,7 @@ var (
 
 	pattern_Query_EstimateRedeemLiquidityPoolToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "irs", "estimate-redeem-liquidity-pool-token"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_EstimateSwapUtToYt_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "irs", "estimate-required-ut-swap-to-yt"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_EstimateSwapUtToYt_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "irs", "estimate-swap-ut-to-yt"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_EstimateRequiredUtSwapToYt_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "irs", "estimate-required-ut-swap-to-yt"}, "", runtime.AssumeColonVerbOpt(false)))
 
