@@ -24,8 +24,7 @@ func (k Keeper) DepositToLiquidityPool(
 	}
 
 	// Ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	utDenom := depositInfo.Denom
+	utDenom := pool.Denom
 	ptDenom := types.PtDenom(pool)
 
 	if !tokenInMaxs.AmountOf(ptDenom).IsPositive() {

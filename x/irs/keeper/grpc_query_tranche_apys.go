@@ -19,8 +19,7 @@ func (k Keeper) TranchePtAPYs(c context.Context, req *types.QueryTranchePtAPYsRe
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	depositInfo := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
-	swapCoin := sdk.NewCoin(depositInfo.Denom, sdk.NewInt(1_000_000))
+	swapCoin := sdk.NewCoin(tranche.Denom, sdk.NewInt(1_000_000))
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err
@@ -76,8 +75,7 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	depositInfo := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
-	swapCoin := sdk.NewCoin(depositInfo.Denom, sdk.NewInt(1_000_000))
+	swapCoin := sdk.NewCoin(tranche.Denom, sdk.NewInt(1_000_000))
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err

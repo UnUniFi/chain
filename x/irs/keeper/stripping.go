@@ -33,10 +33,9 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
 
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 
 	// Stake to strategy
-	if underlyingAmount.Denom == depositInfo.Denom {
+	if underlyingAmount.Denom == pool.Denom {
 		wasmMsg := `{"stake":{}}`
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, moduleAddr, []byte(wasmMsg), sdk.Coins{underlyingAmount})
 		if err != nil {

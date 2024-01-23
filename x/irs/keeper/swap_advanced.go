@@ -9,8 +9,7 @@ import (
 
 func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount math.Int, tokenIn sdk.Coin) error {
 	// Check if TokenIn is enough to cover to payback loan
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	if tokenIn.Denom != depositInfo.Denom {
+	if tokenIn.Denom != pool.Denom {
 		return types.ErrInvalidDepositDenom
 	}
 	loan := sdk.NewCoin(tokenIn.Denom, requiredYtAmount)
@@ -52,8 +51,7 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 }
 
 func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount math.Int) (sdk.Coin, error) {
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	loan := sdk.NewCoin(depositInfo.Denom, requiredYtAmount)
+	loan := sdk.NewCoin(pool.Denom, requiredYtAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
 	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
@@ -70,8 +68,7 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 }
 
 func (k Keeper) CalculateSwapUtToYt(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	if tokenIn.Denom != depositInfo.Denom {
+	if tokenIn.Denom != pool.Denom {
 		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	ytDenom := types.YtDenom(pool)

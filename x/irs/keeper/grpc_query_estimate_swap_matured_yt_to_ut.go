@@ -32,8 +32,7 @@ func (k Keeper) EstimateSwapMaturedYtToUt(c context.Context, req *types.QueryEst
 	if err != nil {
 		return nil, err
 	}
-	depositInfo := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
 	return &types.QueryEstimateSwapMaturedYtToUtResponse{
-		UtAmount: sdk.NewCoin(depositInfo.Denom, redeemAmount),
+		UtAmount: sdk.NewCoin(tranche.Denom, redeemAmount),
 	}, nil
 }
