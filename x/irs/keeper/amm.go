@@ -117,6 +117,9 @@ func (k Keeper) CalculateMintLpAmount(ctx sdk.Context, pool types.TranchePool, t
 	}
 	var requiredPoolLiquidity sdk.Coin
 	var tokenInPoolLiquidity sdk.Coin
+	if len(pool.PoolAssets) != 2 {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidPoolAssets
+	}
 	if tokenIn.Denom == pool.PoolAssets[0].Denom {
 		tokenInPoolLiquidity = pool.PoolAssets[0]
 		requiredPoolLiquidity = pool.PoolAssets[1]

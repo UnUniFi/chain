@@ -88,6 +88,9 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	ptDenom := types.PtDenom(tranche)
 	var utPercentage sdk.Dec
 	var ptPercentage sdk.Dec
+	if len(tranche.PoolAssets) != 2 {
+		return nil, types.ErrInvalidPoolAssets
+	}
 	if ptDenom == tranche.PoolAssets[0].Denom {
 		total := sdk.NewDecFromInt(tranche.PoolAssets[1].Amount).Mul(ptRate).Add(sdk.NewDecFromInt(tranche.PoolAssets[0].Amount))
 		utPercentage = sdk.NewDecFromInt(tranche.PoolAssets[1].Amount).Quo(total)

@@ -13,6 +13,9 @@ import (
 // SwapPoolTokens swaps tokens in a pool. UT => PT or PT => UT
 func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	var tokenOutDenom string
+	if len(pool.PoolAssets) != 2 {
+		return sdk.Coin{}, types.ErrInvalidPoolAssets
+	}
 	if tokenIn.Denom == pool.PoolAssets[0].Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
 	} else if tokenIn.Denom == pool.PoolAssets[1].Denom {
@@ -30,6 +33,9 @@ func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool type
 // SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT
 func (k Keeper) SimulateSwapPoolTokens(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	var tokenOutDenom string
+	if len(pool.PoolAssets) != 2 {
+		return sdk.Coin{}, types.ErrInvalidPoolAssets
+	}
 	if tokenIn.Denom == pool.PoolAssets[0].Denom {
 		tokenOutDenom = pool.PoolAssets[1].Denom
 	} else if tokenIn.Denom == pool.PoolAssets[1].Denom {
