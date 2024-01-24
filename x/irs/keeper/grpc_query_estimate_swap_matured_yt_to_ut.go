@@ -20,9 +20,6 @@ func (k Keeper) EstimateSwapMaturedYtToUt(c context.Context, req *types.QueryEst
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	if uint64(ctx.BlockTime().Unix()) <= tranche.StartTime+tranche.Maturity {
-		return nil, types.ErrTrancheNotMatured
-	}
 	ytDenom := types.YtDenom(tranche)
 	ytAmount, ok := sdk.NewIntFromString(req.YtAmount)
 	if !ok {
