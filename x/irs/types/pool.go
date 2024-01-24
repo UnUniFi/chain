@@ -303,7 +303,13 @@ func solveConstantFunctionInvariant(
 		// Plz verify that y can be 0 in other codes.
 		return sdk.ZeroDec()
 	}
-	y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+
+	// integer exponent too large >512
+	// log(y^n) = n * log(y)
+	// y2 := y2exp.Power(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+	lny2 := y2exp.Ln().Mul(osmomath.BigDecFromSDKDec(sdk.OneDec()).Quo(exp))
+	e := osmomath.NewDecWithPrec(2718281, 6) // 2.718281
+	y2 := e.Power(lny2)
 	// TokenOut to be issued = y1 - y2
 	return y1.Sub(y2).SDKDec()
 }
