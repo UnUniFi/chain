@@ -23,7 +23,7 @@ func (k Keeper) EstimateMintLiquidityPoolToken(c context.Context, req *types.Que
 	// initial deposit
 	if pool.TotalShares.IsZero() {
 		return &types.QueryEstimateMintLiquidityPoolTokenResponse{
-			MintAmount:               sdk.NewCoin(types.LsDenom(pool), sdk.OneInt()),
+			MintAmount:               sdk.NewCoin(types.LsDenom(pool), types.OneShare),
 			AdditionalRequiredAmount: sdk.Coin{},
 		}, nil
 	}
