@@ -6,5 +6,5 @@ import (
 
 var (
 	// OneShare represents the amount of subshares in a single pool share.
-	OneShare = sdk.NewIntFromUint64(1_000_000)
+	OneShare = sdk.NewIntFromBigInt(sdk.OneDec().BigInt())
 )
