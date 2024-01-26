@@ -63,6 +63,9 @@ func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TrancheP
 	if err != nil {
 		return sdk.Coin{}, err
 	}
+	if loan.IsLT(estimatedUt) {
+		return sdk.NewInt64Coin(pool.Denom, 0), nil
+	}
 	requiredUt := loan.Sub(estimatedUt)
 	return requiredUt, nil
 }
