@@ -135,6 +135,7 @@ func (s *KeeperTestSuite) TestSwapExactAmountIn() {
 			tranchePool := types.TranchePool{
 				Id:               1,
 				StrategyContract: strategyContract.String(),
+				Denom:            ut,
 				StartTime:        uint64(ctx.BlockTime().Unix() - 86400*30), // 30 days ago
 				Maturity:         86400 * 180,                               // 180 days maturity
 				SwapFee:          sdk.NewDecWithPrec(3, 3),                  // 0.3%

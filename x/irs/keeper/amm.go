@@ -24,8 +24,7 @@ func (k Keeper) DepositToLiquidityPool(
 	}
 
 	// Ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
-	depositInfo := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	utDenom := depositInfo.Denom
+	utDenom := pool.Denom
 	ptDenom := types.PtDenom(pool)
 
 	if !tokenInMaxs.AmountOf(ptDenom).IsPositive() {
@@ -109,6 +108,36 @@ func getMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutA
 
 func GetMaximalNoSwapLPAmount(ctx sdk.Context, pool types.TranchePool, shareOutAmount math.Int) (neededLpLiquidity sdk.Coins, err error) {
 	return getMaximalNoSwapLPAmount(ctx, pool, shareOutAmount)
+}
+
+func (k Keeper) CalculateMintLpAmount(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+	totalSharesAmount := pool.TotalShares.Amount
+	if totalSharesAmount.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidMathApprox
+	}
+	var requiredPoolLiquidity sdk.Coin
+	var tokenInPoolLiquidity sdk.Coin
+	if len(pool.PoolAssets) != 2 {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidPoolAssets
+	}
+	if tokenIn.Denom == pool.PoolAssets[0].Denom {
+		tokenInPoolLiquidity = pool.PoolAssets[0]
+		requiredPoolLiquidity = pool.PoolAssets[1]
+	} else if tokenIn.Denom == pool.PoolAssets[1].Denom {
+		tokenInPoolLiquidity = pool.PoolAssets[1]
+		requiredPoolLiquidity = pool.PoolAssets[0]
+	} else {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidDepositDenom
+	}
+	if tokenInPoolLiquidity.Amount.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+	}
+	if requiredPoolLiquidity.Amount.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
+	}
+	mintAmount := tokenIn.Amount.Mul(totalSharesAmount).Quo(tokenInPoolLiquidity.Amount)
+	requiredAmount := tokenIn.Amount.Mul(requiredPoolLiquidity.Amount).Quo(tokenInPoolLiquidity.Amount)
+	return sdk.NewCoin(types.LsDenom(pool), mintAmount), sdk.NewCoin(requiredPoolLiquidity.Denom, requiredAmount), nil
 }
 
 func (k Keeper) WithdrawFromLiquidityPool(

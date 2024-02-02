@@ -8,6 +8,7 @@ func (suite *KeeperTestSuite) TestSetGetVault() {
 	address := "address"
 	vault := types.InterestRateSwapVault{
 		StrategyContract: address,
+		Denom:            "uatom",
 		Name:             "name",
 		Description:      "description",
 	}
@@ -23,6 +24,7 @@ func (suite *KeeperTestSuite) TestRemoveVault() {
 	address := "address"
 	vault := types.InterestRateSwapVault{
 		StrategyContract: address,
+		Denom:            "uatom",
 		Name:             "name",
 		Description:      "description",
 	}
@@ -37,11 +39,13 @@ func (suite *KeeperTestSuite) TestGetAllVault() {
 	vaults := []types.InterestRateSwapVault{
 		{
 			StrategyContract: "address01",
+			Denom:            "uatom",
 			Name:             "name01",
 			Description:      "description01",
 		},
 		{
 			StrategyContract: "address02",
+			Denom:            "uatom",
 			Name:             "name02",
 			Description:      "description02",
 		},

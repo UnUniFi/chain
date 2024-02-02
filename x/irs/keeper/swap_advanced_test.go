@@ -67,7 +67,7 @@ func (suite *KeeperTestSuite) TestSwapUtToYt() {
 	// err = bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sender, coins)
 	// suite.Require().NoError(err)
 
-	// existingShares := sdk.OneInt()
+	// existingShares := types.OneShare
 	// tranchePool := types.TranchePool{
 	// 	Id:               1,
 	// 	StrategyContract: strategyContract.String(),

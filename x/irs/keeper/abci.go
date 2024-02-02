@@ -15,9 +15,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	for _, vault := range vaults {
 		// register new tranches per cycle
 		if int64(vault.Cycle+vault.LastTrancheTime) < ctx.BlockTime().Unix() {
+			info := k.GetStrategyDepositInfo(ctx, vault.StrategyContract)
 			k.SetTranchePool(ctx, types.TranchePool{
 				Id:               k.GetLastTrancheId(ctx) + 1,
 				StrategyContract: vault.StrategyContract,
+				Denom:            info.Denom,
 				StartTime:        uint64(ctx.BlockTime().Unix()),
 				Maturity:         vault.MaxMaturity,
 				SwapFee:          params.TradeFeeRate,

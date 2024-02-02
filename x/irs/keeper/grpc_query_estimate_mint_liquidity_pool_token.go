@@ -16,27 +16,27 @@ func (k Keeper) EstimateMintLiquidityPoolToken(c context.Context, req *types.Que
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	tranche, found := k.GetTranchePool(ctx, req.Id)
+	pool, found := k.GetTranchePool(ctx, req.Id)
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
 	// initial deposit
-	if tranche.TotalShares.IsZero() {
+	if pool.TotalShares.IsZero() {
 		return &types.QueryEstimateMintLiquidityPoolTokenResponse{
-			RequiredAmount: sdk.Coins{},
+			MintAmount:               sdk.NewCoin(types.LsDenom(pool), types.OneShare),
+			AdditionalRequiredAmount: sdk.Coin{},
 		}, nil
 	}
-	desiredAmount, ok := sdk.NewIntFromString(req.DesiredAmount)
+	tokenInAmount, ok := sdk.NewIntFromString(req.Amount)
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	// we do an abstract calculation on the lp liquidity coins needed to have
-	// the designated amount of given shares of the pool without performing swap
-	neededLpLiquidity, err := GetMaximalNoSwapLPAmount(ctx, tranche, desiredAmount)
+	mint, require, err := k.CalculateMintLpAmount(ctx, pool, sdk.NewCoin(req.Denom, tokenInAmount))
 	if err != nil {
 		return nil, err
 	}
 	return &types.QueryEstimateMintLiquidityPoolTokenResponse{
-		RequiredAmount: neededLpLiquidity,
+		MintAmount:               mint,
+		AdditionalRequiredAmount: require,
 	}, nil
 }

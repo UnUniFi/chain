@@ -96,10 +96,10 @@ func CmdEstimateMintPtYtPair() *cobra.Command {
 
 func CmdEstimateRedeemPtYtPair() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-redeem-pt-yt-pair [id] [desired-amount]",
-		Short: "estimate require PT & YT to redeem result by desired redeem amount",
+		Use:   "estimate-redeem-pt-yt-pair [id] [amount]",
+		Short: "estimate redeem pt-yt-pair result by each input amount",
 		Long: `Example:
-		ununifid query irs estimate-redeem-pt-yt-pair 1 1000000
+		ununifid query irs estimate-redeem-pt-yt-pair 1 1000000irs/tranche/1/pt
 		`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -111,17 +111,60 @@ func CmdEstimateRedeemPtYtPair() *cobra.Command {
 				return err
 			}
 
-			desiredUt, ok := sdk.NewIntFromString(args[2])
-			if !ok {
-				return fmt.Errorf("error parsing amount")
+			token, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
 			}
 
 			params := &types.QueryEstimateRedeemPtYtPairRequest{
-				Id:              uint64(id),
-				DesiredUtAmount: desiredUt.String(),
+				Id:     uint64(id),
+				Denom:  token.Denom,
+				Amount: token.Amount.String(),
 			}
 
 			res, err := queryClient.EstimateRedeemPtYtPair(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdEstimateSwapUtToYt() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "estimate-swap-ut-to-yt [id] [amount]",
+		Short: "estimate swap to YT result by underlying token amount",
+		Long: `Example:
+		ununifid query irs estimate-swap-ut-to-yt 1 1000000uguu
+		`,
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			token, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryEstimateSwapUtToYtRequest{
+				Id:     uint64(id),
+				Denom:  token.Denom,
+				Amount: token.Amount.String(),
+			}
+
+			res, err := queryClient.EstimateSwapUtToYt(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -216,8 +259,8 @@ func CmdEstimateSwapMaturedYtToUt() *cobra.Command {
 
 func CmdEstimateMintLiquidityPoolToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-mint-liquidity-pool-token [id] [desired-amount]",
-		Short: "estimate mint liquidity pool token by desired amount",
+		Use:   "estimate-mint-liquidity-pool-token [id] [lp-amount]",
+		Short: "estimate mint liquidity pool token result by each input amount",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -228,14 +271,15 @@ func CmdEstimateMintLiquidityPoolToken() *cobra.Command {
 				return err
 			}
 
-			desired, ok := sdk.NewIntFromString(args[2])
-			if !ok {
-				return fmt.Errorf("error parsing amount")
+			token, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
 			}
 
 			params := &types.QueryEstimateMintLiquidityPoolTokenRequest{
-				Id:            uint64(id),
-				DesiredAmount: desired.String(),
+				Id:     uint64(id),
+				Denom:  token.Denom,
+				Amount: token.Amount.String(),
 			}
 
 			res, err := queryClient.EstimateMintLiquidityPoolToken(context.Background(), params)
