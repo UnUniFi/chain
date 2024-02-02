@@ -53,6 +53,12 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	if err != nil {
 		return nil, err
 	}
+	if requiredUt.IsZero() {
+		return &types.QueryTrancheYtAPYsResponse{
+			YtApy:       sdk.ZeroDec(),
+			YtRatePerUt: sdk.ZeroDec(),
+		}, nil
+	}
 	redeemUt, err := k.CalculateRedeemYtAmount(ctx, tranche, yt)
 	if err != nil {
 		return nil, err
