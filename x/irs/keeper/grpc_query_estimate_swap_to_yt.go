@@ -24,7 +24,7 @@ func (k Keeper) EstimateSwapUtToYt(c context.Context, req *types.QueryEstimateSw
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	yt, err := k.CalculateSwapUtToYt(ctx, tranche, sdk.NewCoin(req.Denom, tokenInAmount))
+	yt, err := k.CalculateSwapToYt(ctx, tranche, sdk.NewCoin(req.Denom, tokenInAmount))
 	if err != nil {
 		return nil, err
 	}

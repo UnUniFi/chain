@@ -108,7 +108,7 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 		// MintPtYtPair
 		// Sell msg.AmountToBuy worth of PT
 		// Return borrowed amount
-		err := k.SwapUtToYt(ctx, sender, tranche, requiredYt, token)
+		err := k.SwapToYt(ctx, sender, tranche, requiredYt, token)
 		if err != nil {
 			return err
 		}
@@ -164,7 +164,7 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			if len(tokens) != 2 {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "not matured LEVERAGED_VARIABLE_YIELD, expected 2 coins, got %d", len(tokens))
 			}
-			err := k.SwapYtToUt(ctx, sender, tranche, requiredUt, tokens)
+			err := k.SwapYtToDepositToken(ctx, sender, tranche, requiredUt, tokens)
 			if err != nil {
 				return err
 			}

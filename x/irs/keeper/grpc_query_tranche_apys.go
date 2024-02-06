@@ -49,7 +49,7 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 
 	ytDenom := types.YtDenom(tranche)
 	yt := sdk.NewCoin(ytDenom, sdk.NewInt(1_000_000))
-	requiredUt, err := k.CalculateRequiredUtSwapToYt(ctx, tranche, yt.Amount)
+	requiredUt, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, yt.Amount)
 	if err != nil {
 		return nil, err
 	}

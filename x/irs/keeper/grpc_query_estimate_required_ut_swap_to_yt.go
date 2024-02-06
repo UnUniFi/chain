@@ -24,7 +24,7 @@ func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEs
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	requiredUt, err := k.CalculateRequiredUtSwapToYt(ctx, tranche, desiredAmount)
+	requiredUt, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, desiredAmount)
 	if err != nil {
 		return nil, err
 	}
