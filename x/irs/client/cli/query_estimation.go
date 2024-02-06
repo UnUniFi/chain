@@ -136,12 +136,12 @@ func CmdEstimateRedeemPtYtPair() *cobra.Command {
 	return cmd
 }
 
-func CmdEstimateSwapUtToYt() *cobra.Command {
+func CmdEstimateSwapToYt() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-swap-ut-to-yt [id] [amount]",
+		Use:   "estimate-swap-to-yt [id] [amount]",
 		Short: "estimate swap to YT result by underlying token amount",
 		Long: `Example:
-		ununifid query irs estimate-swap-ut-to-yt 1 1000000uguu
+		ununifid query irs estimate-swap-to-yt 1 1000000uguu
 		`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -158,13 +158,13 @@ func CmdEstimateSwapUtToYt() *cobra.Command {
 				return err
 			}
 
-			params := &types.QueryEstimateSwapUtToYtRequest{
+			params := &types.QueryEstimateSwapToYtRequest{
 				Id:     uint64(id),
 				Denom:  token.Denom,
 				Amount: token.Amount.String(),
 			}
 
-			res, err := queryClient.EstimateSwapUtToYt(context.Background(), params)
+			res, err := queryClient.EstimateSwapToYt(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -178,12 +178,12 @@ func CmdEstimateSwapUtToYt() *cobra.Command {
 	return cmd
 }
 
-func CmdEstimateRequiredUtSwapToYt() *cobra.Command {
+func CmdEstimateRequiredDepositSwapToYt() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-required-ut-swap-to-yt [id] [desired-yt-amount]",
-		Short: "estimate require UT to swap to YT by desired YT amount",
+		Use:   "estimate-required-deposit-swap-to-yt [id] [desired-yt-amount]",
+		Short: "estimate require Deposit-Token to swap to YT by desired YT amount",
 		Long: `Example:
-		ununifid query irs estimate-required-ut-swap-to-yt 1 1000000
+		ununifid query irs estimate-required-deposit-swap-to-yt 1 1000000
 		`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -200,12 +200,12 @@ func CmdEstimateRequiredUtSwapToYt() *cobra.Command {
 				return fmt.Errorf("error parsing amount")
 			}
 
-			params := &types.QueryEstimateRequiredUtSwapToYtRequest{
+			params := &types.QueryEstimateRequiredDepositSwapToYtRequest{
 				Id:              uint64(id),
 				DesiredYtAmount: desiredYt.String(),
 			}
 
-			res, err := queryClient.EstimateRequiredUtSwapToYt(context.Background(), params)
+			res, err := queryClient.EstimateRequiredDepositSwapToYt(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -219,10 +219,10 @@ func CmdEstimateRequiredUtSwapToYt() *cobra.Command {
 	return cmd
 }
 
-func CmdEstimateSwapMaturedYtToUt() *cobra.Command {
+func CmdEstimateRedeemMaturedYt() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-swap-matured-yt-to-ut [id] [yt-amount]",
-		Short: "estimate swap matured YT to UT by YT amount",
+		Use:   "estimate-redeem-matured-yt [id] [yt-amount]",
+		Short: "estimate redeem matured YT to deposited token",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -238,12 +238,12 @@ func CmdEstimateSwapMaturedYtToUt() *cobra.Command {
 				return fmt.Errorf("error parsing amount")
 			}
 
-			params := &types.QueryEstimateSwapMaturedYtToUtRequest{
+			params := &types.QueryEstimateRedeemMaturedYtRequest{
 				Id:       uint64(id),
 				YtAmount: desiredYt.String(),
 			}
 
-			res, err := queryClient.EstimateSwapMaturedYtToUt(context.Background(), params)
+			res, err := queryClient.EstimateRedeemMaturedYt(context.Background(), params)
 			if err != nil {
 				return err
 			}

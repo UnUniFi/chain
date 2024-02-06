@@ -38,9 +38,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdEstimateSwapInPool(),
 		CmdEstimateMintPtYtPair(),
 		CmdEstimateRedeemPtYtPair(),
-		CmdEstimateSwapUtToYt(),
-		CmdEstimateRequiredUtSwapToYt(),
-		CmdEstimateSwapMaturedYtToUt(),
+		CmdEstimateSwapToYt(),
+		CmdEstimateRequiredDepositSwapToYt(),
+		CmdEstimateRedeemMaturedYt(),
 		CmdEstimateMintLiquidityPoolToken(),
 		CmdEstimateRedeemLiquidityPoolToken(),
 	)
