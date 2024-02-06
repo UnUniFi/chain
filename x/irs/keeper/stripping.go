@@ -259,7 +259,11 @@ func (k Keeper) RedeemPtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool 
 		return err
 	}
 
-	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, ptAmount.Amount)
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	redeemAmount := sdk.NewDecFromInt(ptAmount.Amount).Mul(rate).TruncateInt()
+
+	return k.UnstakeFromStrategy(ctx, moduleAddr, sender.String(), pool.StrategyContract, redeemAmount)
 }
 
 func (k Keeper) RedeemYtAtMaturity(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, ytAmount sdk.Coin) error {
@@ -309,7 +313,10 @@ func (k Keeper) CalculateRedeemYtAmount(ctx sdk.Context, pool types.TranchePool,
 		return sdk.ZeroInt(), err
 	}
 
-	redeemAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	utAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	redeemAmount := sdk.NewDecFromInt(utAmount).Mul(rate).TruncateInt()
 	return redeemAmount, nil
 }
 
