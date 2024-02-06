@@ -15,10 +15,10 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 )
 
-func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, underlyingAmount sdk.Coin) (math.Int, error) {
+func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, depositAmount sdk.Coin) (math.Int, error) {
 	// Send coins from sender to IRS vault account
 	moduleAddr := types.GetVaultModuleAddress(pool)
-	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{underlyingAmount})
+	err := k.bankKeeper.SendCoins(ctx, sender, moduleAddr, sdk.Coins{depositAmount})
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -26,7 +26,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	ptDenom := types.PtDenom(pool)
 	ytDenom := types.YtDenom(pool)
 
-	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, underlyingAmount)
+	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, depositAmount)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -35,16 +35,16 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 
 	// Stake to strategy
-	if underlyingAmount.Denom == pool.Denom {
+	if depositAmount.Denom == pool.DepositDenom {
 		wasmMsg := `{"stake":{}}`
-		_, err := k.wasmKeeper.Execute(ctx, contractAddr, moduleAddr, []byte(wasmMsg), sdk.Coins{underlyingAmount})
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, moduleAddr, []byte(wasmMsg), sdk.Coins{depositAmount})
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 	} else {
 		return sdk.ZeroInt(), types.ErrInvalidDepositDenom
 		// TODO: bug here, PT is calculated and minted regardless of denom
-		msg, err := k.ExecuteVaultTransfer(ctx, moduleAddr, pool.StrategyContract, underlyingAmount)
+		msg, err := k.ExecuteVaultTransfer(ctx, moduleAddr, pool.StrategyContract, depositAmount)
 		k.Logger(ctx).Info("transfer_memo " + msg.Memo)
 		if err != nil {
 			return sdk.ZeroInt(), err
@@ -64,7 +64,11 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 
 	// mint YT
 	// YT mint amount = usedUnderlying
-	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, underlyingAmount.Amount)}
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	ytAmount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+
+	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, ytAmount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ytCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -77,7 +81,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 }
 
 // CalculateMintPtAmount calculates the amount of PT to be minted PT & YT pair
-func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, underlyingAmount sdk.Coin) (math.Int, error) {
+func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, depositAmount sdk.Coin) (math.Int, error) {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 
 	ytDenom := types.YtDenom(pool)
@@ -87,7 +91,7 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, u
 
 	// Initial deposit
 	if interestSupply.IsZero() {
-		return underlyingAmount.Amount, nil
+		return depositAmount.Amount, nil
 	}
 
 	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
@@ -95,19 +99,23 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, u
 		return sdk.ZeroInt(), err
 	}
 
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	utAmount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+
 	// mint PT
 	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
 		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
-		ptAmount := underlyingAmount.Amount.
+		ptAmount := utAmount.
 			Sub(
-				underlyingAmount.Amount.
+				utAmount.
 					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
 					Quo(interestSupply.Amount),
 			)
 		return ptAmount, nil
 	}
 
-	return underlyingAmount.Amount, nil
+	return utAmount, nil
 }
 
 // RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
