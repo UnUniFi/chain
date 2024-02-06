@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) EstimateSwapUtToYt(c context.Context, req *types.QueryEstimateSwapUtToYtRequest) (*types.QueryEstimateSwapUtToYtResponse, error) {
+func (k Keeper) EstimateSwapToYt(c context.Context, req *types.QueryEstimateSwapToYtRequest) (*types.QueryEstimateSwapToYtResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -28,7 +28,7 @@ func (k Keeper) EstimateSwapUtToYt(c context.Context, req *types.QueryEstimateSw
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryEstimateSwapUtToYtResponse{
+	return &types.QueryEstimateSwapToYtResponse{
 		YtAmount: yt,
 	}, nil
 }

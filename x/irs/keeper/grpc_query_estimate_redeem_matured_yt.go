@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) EstimateSwapMaturedYtToUt(c context.Context, req *types.QueryEstimateSwapMaturedYtToUtRequest) (*types.QueryEstimateSwapMaturedYtToUtResponse, error) {
+func (k Keeper) EstimateRedeemMaturedYt(c context.Context, req *types.QueryEstimateRedeemMaturedYtRequest) (*types.QueryEstimateRedeemMaturedYtResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -29,7 +29,7 @@ func (k Keeper) EstimateSwapMaturedYtToUt(c context.Context, req *types.QueryEst
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryEstimateSwapMaturedYtToUtResponse{
-		UtAmount: sdk.NewCoin(tranche.Denom, redeemAmount),
+	return &types.QueryEstimateRedeemMaturedYtResponse{
+		RedeemAmount: sdk.NewCoin(tranche.DepositDenom, redeemAmount),
 	}, nil
 }

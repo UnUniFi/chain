@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEstimateRequiredUtSwapToYtRequest) (*types.QueryEstimateRequiredUtSwapToYtResponse, error) {
+func (k Keeper) EstimateRequiredDepositSwapToYt(c context.Context, req *types.QueryEstimateRequiredDepositSwapToYtRequest) (*types.QueryEstimateRequiredDepositSwapToYtResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -24,11 +24,11 @@ func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEs
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	requiredUt, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, desiredAmount)
+	requiredDeposit, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, desiredAmount)
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryEstimateRequiredUtSwapToYtResponse{
-		RequiredUtAmount: requiredUt,
+	return &types.QueryEstimateRequiredDepositSwapToYtResponse{
+		RequiredDepositAmount: requiredDeposit,
 	}, nil
 }
