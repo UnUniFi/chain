@@ -15,4 +15,5 @@ message InterestRateSwapVault {
   uint64 cycle             = 5;  // e.g. 90 days - 90 * 86400
   uint64 last_tranche_time = 6;  // last tranche creation timestamp
   string denom             = 7;  // denom of the underlying asset
+  string deposit_denom     = 8;  // denom of the deposit asset
 }
