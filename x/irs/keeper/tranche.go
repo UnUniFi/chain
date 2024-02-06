@@ -118,14 +118,14 @@ func (k Keeper) DepositToTranchePool(ctx sdk.Context, sender sdk.AccAddress, tra
 	return nil
 }
 
-func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, tokens sdk.Coins, requiredUt math.Int) error {
+func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, trancheId uint64, trancheType types.TrancheType, tokens sdk.Coins, requiredRedeem math.Int) error {
 	tranche, found := k.GetTranchePool(ctx, trancheId)
 	if !found {
 		return types.ErrTrancheNotFound
 	}
 
 	if trancheType == types.TrancheType_NORMAL_YIELD { // Both PT and YT
-		err := k.RedeemPtYtPair(ctx, sender, tranche, requiredUt, tokens)
+		err := k.RedeemPtYtPair(ctx, sender, tranche, requiredRedeem, tokens)
 		if err != nil {
 			return err
 		}
@@ -164,7 +164,7 @@ func (k Keeper) WithdrawFromTranchePool(ctx sdk.Context, sender sdk.AccAddress, 
 			if len(tokens) != 2 {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "not matured LEVERAGED_VARIABLE_YIELD, expected 2 coins, got %d", len(tokens))
 			}
-			err := k.SwapYtToDepositToken(ctx, sender, tranche, requiredUt, tokens)
+			err := k.SwapYtToDepositToken(ctx, sender, tranche, requiredRedeem, tokens)
 			if err != nil {
 				return err
 			}
