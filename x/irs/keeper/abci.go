@@ -20,6 +20,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				Id:               k.GetLastTrancheId(ctx) + 1,
 				StrategyContract: vault.StrategyContract,
 				Denom:            info.Denom,
+				DepositDenom:     info.DepositDenom,
 				StartTime:        uint64(ctx.BlockTime().Unix()),
 				Maturity:         vault.MaxMaturity,
 				SwapFee:          params.TradeFeeRate,

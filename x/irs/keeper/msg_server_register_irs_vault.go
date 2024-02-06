@@ -26,6 +26,7 @@ func (k msgServer) RegisterInterestRateSwapVault(goCtx context.Context, msg *typ
 	k.SetVault(ctx, types.InterestRateSwapVault{
 		StrategyContract: msg.StrategyContract,
 		Denom:            info.Denom,
+		DepositDenom:     info.DepositDenom,
 		Name:             msg.Name,
 		Description:      msg.Description,
 		MaxMaturity:      msg.MaxMaturity,
@@ -38,6 +39,7 @@ func (k msgServer) RegisterInterestRateSwapVault(goCtx context.Context, msg *typ
 		Id:               k.GetLastTrancheId(ctx) + 1,
 		StrategyContract: msg.StrategyContract,
 		Denom:            info.Denom,
+		DepositDenom:     info.DepositDenom,
 		StartTime:        uint64(ctx.BlockTime().Unix()),
 		Maturity:         msg.MaxMaturity,
 		SwapFee:          params.TradeFeeRate,
