@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-// SwapPoolTokens swaps tokens in a pool. UT => PT or PT => UT
+// SwapPoolTokens swaps tokens in a pool. Deposit-Token => PT or PT => Deposit-Token
 func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	var tokenOutDenom string
 	if len(pool.PoolAssets) != 2 {
@@ -30,7 +30,7 @@ func (k Keeper) SwapPoolTokens(ctx sdk.Context, sender sdk.AccAddress, pool type
 	return sdk.NewCoin(tokenOutDenom, tokenOutAmount), nil
 }
 
-// SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. UT => PT or PT => UT
+// SimulateSwapPoolTokens simulates a swap in a pool & return TokenOut Amount value. Deposit-Token => PT or PT => Deposit-Token
 func (k Keeper) SimulateSwapPoolTokens(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
 	var tokenOutDenom string
 	if len(pool.PoolAssets) != 2 {

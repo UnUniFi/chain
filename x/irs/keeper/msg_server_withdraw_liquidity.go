@@ -15,7 +15,7 @@ func (k msgServer) WithdrawLiquidity(goCtx context.Context, msg *types.MsgWithdr
 		return nil, err
 	}
 
-	// Burn lp tokens and get tokens from tranche pool for PT + UT
+	// Burn lp tokens and get tokens from tranche pool for PT + Deposit-Token
 	_, err = k.WithdrawFromLiquidityPool(ctx, sender, msg.TrancheId, msg.ShareAmount, msg.TokenOutMins)
 	if err != nil {
 		return nil, err
