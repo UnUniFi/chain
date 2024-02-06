@@ -24,15 +24,15 @@ func (k Keeper) DepositToLiquidityPool(
 	}
 
 	// Ensure underlying token and pt token denoms are accurate when adding the liquidity for the first time
-	utDenom := pool.Denom
+	depositDenom := pool.DepositDenom
 	ptDenom := types.PtDenom(pool)
 
 	if !tokenInMaxs.AmountOf(ptDenom).IsPositive() {
 		return nil, sdk.ZeroInt(), types.ErrNoPtDenomExists
 	}
 
-	if !tokenInMaxs.AmountOf(utDenom).IsPositive() {
-		return nil, sdk.ZeroInt(), types.ErrNoUtDenomExists
+	if !tokenInMaxs.AmountOf(depositDenom).IsPositive() {
+		return nil, sdk.ZeroInt(), types.ErrNoDepositDenomExists
 	}
 
 	// When liquidity is added to the empty pool
