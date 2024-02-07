@@ -14,6 +14,9 @@ func (k Keeper) SwapToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tran
 	}
 	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	if rate.IsZero() {
+		return types.ErrZeroDepositRate
+	}
 	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
 	loan := sdk.NewCoin(tokenIn.Denom, loanAmount)
 	ptDenom := types.PtDenom(pool)
@@ -56,6 +59,9 @@ func (k Keeper) SwapToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tran
 func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount math.Int) (sdk.Coin, error) {
 	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	if rate.IsZero() {
+		return sdk.Coin{}, types.ErrZeroDepositRate
+	}
 	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
 	loan := sdk.NewCoin(pool.Denom, loanAmount)
 	ptDenom := types.PtDenom(pool)
