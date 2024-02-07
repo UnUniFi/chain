@@ -7738,6 +7738,10 @@ paths:
 
                           signatures required by gogoproto.
                       title: Pool assets are sorted by denomination
+                    denom:
+                      type: string
+                    deposit_denom:
+                      type: string
             description: >-
               QueryTranchesResponse is response type for the Query/Tranches RPC
               method.
@@ -7775,23 +7779,36 @@ paths:
           schema:
             type: object
             properties:
-              required_amount:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    denom:
-                      type: string
-                    amount:
-                      type: string
-                  description: >-
-                    Coin defines a token with a denomination and an amount.
+              mint_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
 
 
-                    NOTE: The amount field is an Int which implements the custom
-                    method
+                  NOTE: The amount field is an Int which implements the custom
+                  method
 
-                    signatures required by gogoproto.
+                  signatures required by gogoproto.
+              additional_required_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -7820,7 +7837,11 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: desired_amount
+        - name: denom
+          in: query
+          required: false
+          type: string
+        - name: amount
           in: query
           required: false
           type: string
@@ -7965,32 +7986,17 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/irs/estimate-redeem-pt-yt-pair:
+  /ununifi/irs/estimate-redeem-matured-yt:
     get:
-      summary: Estimate redeem amount of PT&YT pair
-      operationId: EstimateRedeemPtYtPair
+      summary: Estimate redeem matured YT
+      operationId: EstimateRedeemMaturedYt
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              pt_amount:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              yt_amount:
+              redeem_amount:
                 type: object
                 properties:
                   denom:
@@ -8033,23 +8039,101 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: desired_ut_amount
+        - name: yt_amount
           in: query
           required: false
           type: string
       tags:
         - Query
-  /ununifi/irs/estimate-required-ut-swap-to-yt:
+  /ununifi/irs/estimate-redeem-pt-yt-pair:
     get:
-      summary: Estimate required UT amount to swao to YT
-      operationId: EstimateRequiredUtSwapToYt
+      summary: Estimate redeem amount of PT&YT pair
+      operationId: EstimateRedeemPtYtPair
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              required_ut_amount:
+              redeem_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              additional_required_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: denom
+          in: query
+          required: false
+          type: string
+        - name: amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/irs/estimate-required-deposit-swap-to-yt:
+    get:
+      summary: Estimate required Deposit_Token amount to swap to YT
+      operationId: EstimateRequiredDepositSwapToYt
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              required_deposit_amount:
                 type: object
                 properties:
                   denom:
@@ -8100,7 +8184,7 @@ paths:
         - Query
   /ununifi/irs/estimate-swap-in-pool:
     get:
-      summary: Estimate swap amount of UT/PT (in the pool)
+      summary: Estimate swap amount of Deposit_Token/PT (in the pool)
       operationId: EstimateSwapInPool
       responses:
         '200':
@@ -8161,17 +8245,17 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/irs/estimate-swap-matured-yt-to-ut:
+  /ununifi/irs/estimate-swap-to-yt:
     get:
-      summary: Estimate swap matured YT to UT
-      operationId: EstimateSwapMaturedYtToUt
+      summary: Estimate swap Deposit_Token to YT
+      operationId: EstimateSwapToYt
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              ut_amount:
+              yt_amount:
                 type: object
                 properties:
                   denom:
@@ -8214,7 +8298,11 @@ paths:
           required: false
           type: string
           format: uint64
-        - name: yt_amount
+        - name: denom
+          in: query
+          required: false
+          type: string
+        - name: amount
           in: query
           required: false
           type: string
@@ -8327,6 +8415,10 @@ paths:
 
                         signatures required by gogoproto.
                     title: Pool assets are sorted by denomination
+                  denom:
+                    type: string
+                  deposit_denom:
+                    type: string
             description: >-
               QueryTranchResponse is response type for the Query/Tranch RPC
               method.
@@ -8374,9 +8466,9 @@ paths:
                 type: string
               discount_pt_apy:
                 type: string
-              liquidity_rate_per_ut:
+              liquidity_rate_per_deposit:
                 type: string
-              ut_percentage_in_pool:
+              deposit_token_percentage_in_pool:
                 type: string
               pt_percentage_in_pool:
                 type: string
@@ -8422,7 +8514,7 @@ paths:
             properties:
               pt_apy:
                 type: string
-              pt_rate_per_ut:
+              pt_rate_per_deposit:
                 type: string
         default:
           description: An unexpected error response.
@@ -8466,7 +8558,7 @@ paths:
             properties:
               yt_apy:
                 type: string
-              yt_rate_per_ut:
+              yt_rate_per_deposit:
                 type: string
         default:
           description: An unexpected error response.
@@ -8563,6 +8655,10 @@ paths:
 
                           signatures required by gogoproto.
                       title: Pool assets are sorted by denomination
+                    denom:
+                      type: string
+                    deposit_denom:
+                      type: string
             description: >-
               QueryTranchesResponse is response type for the Query/Tranches RPC
               method.
@@ -8623,6 +8719,10 @@ paths:
                   last_tranche_time:
                     type: string
                     format: uint64
+                  denom:
+                    type: string
+                  deposit_denom:
+                    type: string
             description: >-
               QueryVaultResponse is response type for the Query/Vault RPC
               method.
@@ -8737,6 +8837,10 @@ paths:
                     last_tranche_time:
                       type: string
                       format: uint64
+                    denom:
+                      type: string
+                    deposit_denom:
+                      type: string
             description: >-
               QueryVaultsResponse is response type for the Query/Vaults RPC
               method.
@@ -13114,6 +13218,10 @@ definitions:
       last_tranche_time:
         type: string
         format: uint64
+      denom:
+        type: string
+      deposit_denom:
+        type: string
   ununifi.irs.Params:
     type: object
     properties:
@@ -13124,20 +13232,30 @@ definitions:
   ununifi.irs.QueryEstimateMintLiquidityPoolTokenResponse:
     type: object
     properties:
-      required_amount:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
+      mint_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
 
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      additional_required_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   ununifi.irs.QueryEstimateMintPtYtPairResponse:
     type: object
     properties:
@@ -13182,10 +13300,25 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  ununifi.irs.QueryEstimateRedeemMaturedYtResponse:
+    type: object
+    properties:
+      redeem_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   ununifi.irs.QueryEstimateRedeemPtYtPairResponse:
     type: object
     properties:
-      pt_amount:
+      redeem_amount:
         type: object
         properties:
           denom:
@@ -13197,7 +13330,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      yt_amount:
+      additional_required_amount:
         type: object
         properties:
           denom:
@@ -13209,10 +13342,10 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  ununifi.irs.QueryEstimateRequiredUtSwapToYtResponse:
+  ununifi.irs.QueryEstimateRequiredDepositSwapToYtResponse:
     type: object
     properties:
-      required_ut_amount:
+      required_deposit_amount:
         type: object
         properties:
           denom:
@@ -13239,10 +13372,10 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  ununifi.irs.QueryEstimateSwapMaturedYtToUtResponse:
+  ununifi.irs.QueryEstimateSwapToYtResponse:
     type: object
     properties:
-      ut_amount:
+      yt_amount:
         type: object
         properties:
           denom:
@@ -13273,9 +13406,9 @@ definitions:
         type: string
       discount_pt_apy:
         type: string
-      liquidity_rate_per_ut:
+      liquidity_rate_per_deposit:
         type: string
-      ut_percentage_in_pool:
+      deposit_token_percentage_in_pool:
         type: string
       pt_percentage_in_pool:
         type: string
@@ -13284,7 +13417,7 @@ definitions:
     properties:
       pt_apy:
         type: string
-      pt_rate_per_ut:
+      pt_rate_per_deposit:
         type: string
   ununifi.irs.QueryTrancheResponse:
     type: object
@@ -13341,13 +13474,17 @@ definitions:
 
                 signatures required by gogoproto.
             title: Pool assets are sorted by denomination
+          denom:
+            type: string
+          deposit_denom:
+            type: string
     description: QueryTranchResponse is response type for the Query/Tranch RPC method.
   ununifi.irs.QueryTrancheYtAPYsResponse:
     type: object
     properties:
       yt_apy:
         type: string
-      yt_rate_per_ut:
+      yt_rate_per_deposit:
         type: string
   ununifi.irs.QueryTranchesResponse:
     type: object
@@ -13406,6 +13543,10 @@ definitions:
 
                   signatures required by gogoproto.
               title: Pool assets are sorted by denomination
+            denom:
+              type: string
+            deposit_denom:
+              type: string
     description: QueryTranchesResponse is response type for the Query/Tranches RPC method.
   ununifi.irs.QueryVaultByContractResponse:
     type: object
@@ -13428,6 +13569,10 @@ definitions:
           last_tranche_time:
             type: string
             format: uint64
+          denom:
+            type: string
+          deposit_denom:
+            type: string
     description: QueryVaultResponse is response type for the Query/Vault RPC method.
   ununifi.irs.QueryVaultDetailsResponse:
     type: object
@@ -13464,6 +13609,10 @@ definitions:
             last_tranche_time:
               type: string
               format: uint64
+            denom:
+              type: string
+            deposit_denom:
+              type: string
     description: QueryVaultsResponse is response type for the Query/Vaults RPC method.
   ununifi.irs.TranchePool:
     type: object
@@ -13511,3 +13660,7 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         title: Pool assets are sorted by denomination
+      denom:
+        type: string
+      deposit_denom:
+        type: string
