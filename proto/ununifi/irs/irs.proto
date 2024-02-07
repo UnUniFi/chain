@@ -14,6 +14,6 @@ message InterestRateSwapVault {
   uint64 max_maturity      = 4;  // e.g. 180 days - 180 * 86400
   uint64 cycle             = 5;  // e.g. 90 days - 90 * 86400
   uint64 last_tranche_time = 6;  // last tranche creation timestamp
-  string denom             = 7;  // denom of the underlying asset
-  string deposit_denom     = 8;  // denom of the deposit asset
+  string denom             = 7;  // denom of the underlying asset (e.g. uatom)
+  string deposit_denom     = 8;  // denom of the deposit asset (e.g. ustatom)
 }

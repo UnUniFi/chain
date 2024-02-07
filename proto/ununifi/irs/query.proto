@@ -43,7 +43,7 @@ service Query {
   rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
     option (google.api.http).get = "/ununifi/irs/tranche/{id}";
   }
-  // Estimate swap amount of UT/PT (in the pool)
+  // Estimate swap amount of Deposit_Token/PT (in the pool)
   rpc EstimateSwapInPool(QueryEstimateSwapInPoolRequest) returns (QueryEstimateSwapInPoolResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-swap-in-pool";
   }
@@ -63,17 +63,17 @@ service Query {
   rpc EstimateRedeemLiquidityPoolToken(QueryEstimateRedeemLiquidityPoolTokenRequest) returns (QueryEstimateRedeemLiquidityPoolTokenResponse) {
     option (google.api.http).get = "/ununifi/irs/estimate-redeem-liquidity-pool-token";
   }
-  // Estimate swap UT to YT
-  rpc EstimateSwapUtToYt(QueryEstimateSwapUtToYtRequest) returns (QueryEstimateSwapUtToYtResponse) {
-    option (google.api.http).get = "/ununifi/irs/estimate-swap-ut-to-yt";
+  // Estimate swap Deposit_Token to YT
+  rpc EstimateSwapToYt(QueryEstimateSwapToYtRequest) returns (QueryEstimateSwapToYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-to-yt";
   }
-  // Estimate required UT amount to swap to YT
-  rpc EstimateRequiredUtSwapToYt(QueryEstimateRequiredUtSwapToYtRequest) returns (QueryEstimateRequiredUtSwapToYtResponse) {
-    option (google.api.http).get = "/ununifi/irs/estimate-required-ut-swap-to-yt";
+  // Estimate required Deposit_Token amount to swap to YT
+  rpc EstimateRequiredDepositSwapToYt(QueryEstimateRequiredDepositSwapToYtRequest) returns (QueryEstimateRequiredDepositSwapToYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-required-deposit-swap-to-yt";
   }
-  // Estimate swap matured YT to UT
-  rpc EstimateSwapMaturedYtToUt(QueryEstimateSwapMaturedYtToUtRequest) returns (QueryEstimateSwapMaturedYtToUtResponse) {
-    option (google.api.http).get = "/ununifi/irs/estimate-swap-matured-yt-to-ut";
+  // Estimate redeem matured YT
+  rpc EstimateRedeemMaturedYt(QueryEstimateRedeemMaturedYtRequest) returns (QueryEstimateRedeemMaturedYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-matured-yt";
   }
   // tranche PT APYs by id
   rpc TranchePtAPYs(QueryTranchePtAPYsRequest) returns (QueryTranchePtAPYsResponse) {
@@ -205,32 +205,32 @@ message QueryEstimateRedeemLiquidityPoolTokenResponse {
   repeated cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryEstimateSwapUtToYtRequest {
+message QueryEstimateSwapToYtRequest {
   uint64 id = 1;
   string denom = 2;
   string amount = 3;
 }
 
-message QueryEstimateSwapUtToYtResponse {
+message QueryEstimateSwapToYtResponse {
   cosmos.base.v1beta1.Coin yt_amount = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryEstimateRequiredUtSwapToYtRequest {
+message QueryEstimateRequiredDepositSwapToYtRequest {
   uint64 id = 1;
   string desired_yt_amount = 3;
 }
 
-message QueryEstimateRequiredUtSwapToYtResponse {
-  cosmos.base.v1beta1.Coin required_ut_amount = 1 [(gogoproto.nullable) = false];
+message QueryEstimateRequiredDepositSwapToYtResponse {
+  cosmos.base.v1beta1.Coin required_deposit_amount = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryEstimateSwapMaturedYtToUtRequest {
+message QueryEstimateRedeemMaturedYtRequest {
   uint64 id = 1;
   string yt_amount = 2;
 }
 
-message QueryEstimateSwapMaturedYtToUtResponse {
-  cosmos.base.v1beta1.Coin ut_amount = 1 [(gogoproto.nullable) = false];
+message QueryEstimateRedeemMaturedYtResponse {
+  cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryTranchePtAPYsRequest {
@@ -243,7 +243,7 @@ message QueryTranchePtAPYsResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string pt_rate_per_ut   = 2 [
+  string pt_rate_per_deposit   = 2 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
@@ -260,7 +260,7 @@ message QueryTrancheYtAPYsResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string yt_rate_per_ut   = 2 [
+  string yt_rate_per_deposit   = 2 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
@@ -282,12 +282,12 @@ message QueryTranchePoolAPYsResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string liquidity_rate_per_ut   = 3 [
+  string liquidity_rate_per_deposit   = 3 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string ut_percentage_in_pool   = 4 [
+  string deposit_token_percentage_in_pool   = 4 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false

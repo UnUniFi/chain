@@ -18,6 +18,6 @@ message TranchePool {
   cosmos.base.v1beta1.Coin total_shares = 7 [(gogoproto.nullable) = false];
   // Pool assets are sorted by denomination
   repeated cosmos.base.v1beta1.Coin pool_assets = 8 [(gogoproto.nullable) = false];
-  string denom = 9; // denom of the underlying asset
-  string deposit_denom = 10; // denom of the deposit asset
+  string denom = 9; // denom of the underlying asset e.g. uatom
+  string deposit_denom = 10; // denom of the deposit asset e.g. ustatom
 }

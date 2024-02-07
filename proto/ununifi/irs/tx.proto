@@ -124,6 +124,7 @@ message MsgWithdrawFromTranche {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];  // Only valid for NORMAL_YIELD tranche type
+  // deposit_denom (e.g. ustatom) will be redeemed
 }
 
 message MsgWithdrawFromTrancheResponse {}
