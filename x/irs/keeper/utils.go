@@ -76,6 +76,8 @@ func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategyContract string) uin
 
 type DenomInfo struct {
 	Denom            string `json:"denom"`
+	DepositDenom     string `json:"deposit_denom"`
+	DepositDenomRate string `json:"deposit_denom_rate"`
 	TargetChainId    string `json:"target_chain_id"`
 	TargetChainDenom string `json:"target_chain_denom"`
 	TargetChainAddr  string `json:"target_chain_addr"`

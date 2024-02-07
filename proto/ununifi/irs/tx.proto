@@ -119,7 +119,7 @@ message MsgWithdrawFromTranche {
   TrancheType tranche_type                 = 3;
   repeated cosmos.base.v1beta1.Coin tokens = 4
       [(gogoproto.nullable) = false];  // YT if tranche type is yield, PT if tranche type is fixed yield
-  string required_ut = 5 [
+  string required_redeem_amount = 5 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false

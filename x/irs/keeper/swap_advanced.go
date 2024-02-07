@@ -7,18 +7,21 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount math.Int, tokenIn sdk.Coin) error {
+func (k Keeper) SwapToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredYtAmount math.Int, tokenIn sdk.Coin) error {
 	// Check if TokenIn is enough to cover to payback loan
-	if tokenIn.Denom != pool.Denom {
+	if tokenIn.Denom != pool.DepositDenom {
 		return types.ErrInvalidDepositDenom
 	}
-	loan := sdk.NewCoin(tokenIn.Denom, requiredYtAmount)
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
+	loan := sdk.NewCoin(tokenIn.Denom, loanAmount)
 	ptDenom := types.PtDenom(pool)
-	requiredUt, err := k.CalculateRequiredUtSwapToYt(ctx, pool, requiredYtAmount)
+	requiredDeposit, err := k.CalculateRequiredDepositSwapToYt(ctx, pool, requiredYtAmount)
 	if err != nil {
 		return err
 	}
-	if tokenIn.Amount.LT(requiredUt.Amount) {
+	if tokenIn.Amount.LT(requiredDeposit.Amount) {
 		return types.ErrInsufficientFunds
 	}
 
@@ -50,28 +53,31 @@ func (k Keeper) SwapUtToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tr
 	return nil
 }
 
-func (k Keeper) CalculateRequiredUtSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount math.Int) (sdk.Coin, error) {
-	loan := sdk.NewCoin(pool.Denom, requiredYtAmount)
+func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.TranchePool, requiredYtAmount math.Int) (sdk.Coin, error) {
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
+	loan := sdk.NewCoin(pool.Denom, loanAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
 	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-	// estimation 3. UT amount to get by selling PT
-	estimatedUt, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+	// estimation 3. token amount to get by selling PT
+	estimatedSwap, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-	if loan.IsLT(estimatedUt) {
+	if loan.IsLT(estimatedSwap) {
 		return sdk.NewInt64Coin(pool.Denom, 0), nil
 	}
-	requiredUt := loan.Sub(estimatedUt)
-	return requiredUt, nil
+	requiredDeposit := loan.Sub(estimatedSwap)
+	return requiredDeposit, nil
 }
 
-func (k Keeper) CalculateSwapUtToYt(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
-	if tokenIn.Denom != pool.Denom {
+func (k Keeper) CalculateSwapToYt(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
+	if tokenIn.Denom != pool.DepositDenom {
 		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	ytDenom := types.YtDenom(pool)
@@ -97,8 +103,8 @@ func (k Keeper) CalculateSwapUtToYt(ctx sdk.Context, pool types.TranchePool, tok
 	return sdk.NewCoin(ytDenom, ytAmount), nil
 }
 
-func (k Keeper) SwapYtToUt(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredUtAmount math.Int, tokens sdk.Coins) error {
-	err := k.RedeemPtYtPair(ctx, sender, pool, requiredUtAmount, tokens)
+func (k Keeper) SwapYtToDepositToken(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredTokenAmount math.Int, tokens sdk.Coins) error {
+	err := k.RedeemPtYtPair(ctx, sender, pool, requiredTokenAmount, tokens)
 	if err != nil {
 		return err
 	}

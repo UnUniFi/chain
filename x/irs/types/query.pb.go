@@ -1172,24 +1172,24 @@ func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) GetRedeemAmount() []type
 	return nil
 }
 
-type QueryEstimateSwapUtToYtRequest struct {
+type QueryEstimateSwapToYtRequest struct {
 	Id     uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	Amount string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) Reset()         { *m = QueryEstimateSwapUtToYtRequest{} }
-func (m *QueryEstimateSwapUtToYtRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateSwapUtToYtRequest) ProtoMessage()    {}
-func (*QueryEstimateSwapUtToYtRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateSwapToYtRequest) Reset()         { *m = QueryEstimateSwapToYtRequest{} }
+func (m *QueryEstimateSwapToYtRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateSwapToYtRequest) ProtoMessage()    {}
+func (*QueryEstimateSwapToYtRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{23}
 }
-func (m *QueryEstimateSwapUtToYtRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateSwapToYtRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateSwapUtToYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateSwapToYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateSwapUtToYtRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateSwapToYtRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1199,55 +1199,55 @@ func (m *QueryEstimateSwapUtToYtRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateSwapUtToYtRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateSwapUtToYtRequest.Merge(m, src)
+func (m *QueryEstimateSwapToYtRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateSwapToYtRequest.Merge(m, src)
 }
-func (m *QueryEstimateSwapUtToYtRequest) XXX_Size() int {
+func (m *QueryEstimateSwapToYtRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateSwapUtToYtRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateSwapUtToYtRequest.DiscardUnknown(m)
+func (m *QueryEstimateSwapToYtRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateSwapToYtRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateSwapUtToYtRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateSwapToYtRequest proto.InternalMessageInfo
 
-func (m *QueryEstimateSwapUtToYtRequest) GetId() uint64 {
+func (m *QueryEstimateSwapToYtRequest) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) GetDenom() string {
+func (m *QueryEstimateSwapToYtRequest) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) GetAmount() string {
+func (m *QueryEstimateSwapToYtRequest) GetAmount() string {
 	if m != nil {
 		return m.Amount
 	}
 	return ""
 }
 
-type QueryEstimateSwapUtToYtResponse struct {
+type QueryEstimateSwapToYtResponse struct {
 	YtAmount types.Coin `protobuf:"bytes,1,opt,name=yt_amount,json=ytAmount,proto3" json:"yt_amount"`
 }
 
-func (m *QueryEstimateSwapUtToYtResponse) Reset()         { *m = QueryEstimateSwapUtToYtResponse{} }
-func (m *QueryEstimateSwapUtToYtResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateSwapUtToYtResponse) ProtoMessage()    {}
-func (*QueryEstimateSwapUtToYtResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateSwapToYtResponse) Reset()         { *m = QueryEstimateSwapToYtResponse{} }
+func (m *QueryEstimateSwapToYtResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateSwapToYtResponse) ProtoMessage()    {}
+func (*QueryEstimateSwapToYtResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{24}
 }
-func (m *QueryEstimateSwapUtToYtResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateSwapToYtResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateSwapUtToYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateSwapToYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateSwapUtToYtResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateSwapToYtResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1257,44 +1257,46 @@ func (m *QueryEstimateSwapUtToYtResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateSwapUtToYtResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateSwapUtToYtResponse.Merge(m, src)
+func (m *QueryEstimateSwapToYtResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateSwapToYtResponse.Merge(m, src)
 }
-func (m *QueryEstimateSwapUtToYtResponse) XXX_Size() int {
+func (m *QueryEstimateSwapToYtResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateSwapUtToYtResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateSwapUtToYtResponse.DiscardUnknown(m)
+func (m *QueryEstimateSwapToYtResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateSwapToYtResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateSwapUtToYtResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateSwapToYtResponse proto.InternalMessageInfo
 
-func (m *QueryEstimateSwapUtToYtResponse) GetYtAmount() types.Coin {
+func (m *QueryEstimateSwapToYtResponse) GetYtAmount() types.Coin {
 	if m != nil {
 		return m.YtAmount
 	}
 	return types.Coin{}
 }
 
-type QueryEstimateRequiredUtSwapToYtRequest struct {
+type QueryEstimateRequiredDepositSwapToYtRequest struct {
 	Id              uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	DesiredYtAmount string `protobuf:"bytes,3,opt,name=desired_yt_amount,json=desiredYtAmount,proto3" json:"desired_yt_amount,omitempty"`
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) Reset() {
-	*m = QueryEstimateRequiredUtSwapToYtRequest{}
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) Reset() {
+	*m = QueryEstimateRequiredDepositSwapToYtRequest{}
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateRequiredUtSwapToYtRequest) ProtoMessage()    {}
-func (*QueryEstimateRequiredUtSwapToYtRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateRequiredDepositSwapToYtRequest) ProtoMessage() {}
+func (*QueryEstimateRequiredDepositSwapToYtRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{25}
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateRequiredUtSwapToYtRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1304,50 +1306,52 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_Marshal(b []byte, determini
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateRequiredUtSwapToYtRequest.Merge(m, src)
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtRequest.Merge(m, src)
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_Size() int {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateRequiredUtSwapToYtRequest.DiscardUnknown(m)
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateRequiredUtSwapToYtRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtRequest proto.InternalMessageInfo
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) GetId() uint64 {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) GetDesiredYtAmount() string {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) GetDesiredYtAmount() string {
 	if m != nil {
 		return m.DesiredYtAmount
 	}
 	return ""
 }
 
-type QueryEstimateRequiredUtSwapToYtResponse struct {
-	RequiredUtAmount types.Coin `protobuf:"bytes,1,opt,name=required_ut_amount,json=requiredUtAmount,proto3" json:"required_ut_amount"`
+type QueryEstimateRequiredDepositSwapToYtResponse struct {
+	RequiredDepositAmount types.Coin `protobuf:"bytes,1,opt,name=required_deposit_amount,json=requiredDepositAmount,proto3" json:"required_deposit_amount"`
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) Reset() {
-	*m = QueryEstimateRequiredUtSwapToYtResponse{}
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) Reset() {
+	*m = QueryEstimateRequiredDepositSwapToYtResponse{}
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateRequiredUtSwapToYtResponse) ProtoMessage()    {}
-func (*QueryEstimateRequiredUtSwapToYtResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryEstimateRequiredDepositSwapToYtResponse) ProtoMessage() {}
+func (*QueryEstimateRequiredDepositSwapToYtResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{26}
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateRequiredUtSwapToYtResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1357,42 +1361,42 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_Marshal(b []byte, determin
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateRequiredUtSwapToYtResponse.Merge(m, src)
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtResponse.Merge(m, src)
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_Size() int {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateRequiredUtSwapToYtResponse.DiscardUnknown(m)
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateRequiredUtSwapToYtResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateRequiredDepositSwapToYtResponse proto.InternalMessageInfo
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) GetRequiredUtAmount() types.Coin {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) GetRequiredDepositAmount() types.Coin {
 	if m != nil {
-		return m.RequiredUtAmount
+		return m.RequiredDepositAmount
 	}
 	return types.Coin{}
 }
 
-type QueryEstimateSwapMaturedYtToUtRequest struct {
+type QueryEstimateRedeemMaturedYtRequest struct {
 	Id       uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	YtAmount string `protobuf:"bytes,2,opt,name=yt_amount,json=ytAmount,proto3" json:"yt_amount,omitempty"`
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) Reset()         { *m = QueryEstimateSwapMaturedYtToUtRequest{} }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateSwapMaturedYtToUtRequest) ProtoMessage()    {}
-func (*QueryEstimateSwapMaturedYtToUtRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateRedeemMaturedYtRequest) Reset()         { *m = QueryEstimateRedeemMaturedYtRequest{} }
+func (m *QueryEstimateRedeemMaturedYtRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateRedeemMaturedYtRequest) ProtoMessage()    {}
+func (*QueryEstimateRedeemMaturedYtRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{27}
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateRedeemMaturedYtRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateRedeemMaturedYtRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateSwapMaturedYtToUtRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateRedeemMaturedYtRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1402,50 +1406,48 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_Marshal(b []byte, determinis
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateSwapMaturedYtToUtRequest.Merge(m, src)
+func (m *QueryEstimateRedeemMaturedYtRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemMaturedYtRequest.Merge(m, src)
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_Size() int {
+func (m *QueryEstimateRedeemMaturedYtRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateSwapMaturedYtToUtRequest.DiscardUnknown(m)
+func (m *QueryEstimateRedeemMaturedYtRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemMaturedYtRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateSwapMaturedYtToUtRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateRedeemMaturedYtRequest proto.InternalMessageInfo
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) GetId() uint64 {
+func (m *QueryEstimateRedeemMaturedYtRequest) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) GetYtAmount() string {
+func (m *QueryEstimateRedeemMaturedYtRequest) GetYtAmount() string {
 	if m != nil {
 		return m.YtAmount
 	}
 	return ""
 }
 
-type QueryEstimateSwapMaturedYtToUtResponse struct {
-	UtAmount types.Coin `protobuf:"bytes,1,opt,name=ut_amount,json=utAmount,proto3" json:"ut_amount"`
+type QueryEstimateRedeemMaturedYtResponse struct {
+	RedeemAmount types.Coin `protobuf:"bytes,1,opt,name=redeem_amount,json=redeemAmount,proto3" json:"redeem_amount"`
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) Reset() {
-	*m = QueryEstimateSwapMaturedYtToUtResponse{}
-}
-func (m *QueryEstimateSwapMaturedYtToUtResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEstimateSwapMaturedYtToUtResponse) ProtoMessage()    {}
-func (*QueryEstimateSwapMaturedYtToUtResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEstimateRedeemMaturedYtResponse) Reset()         { *m = QueryEstimateRedeemMaturedYtResponse{} }
+func (m *QueryEstimateRedeemMaturedYtResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEstimateRedeemMaturedYtResponse) ProtoMessage()    {}
+func (*QueryEstimateRedeemMaturedYtResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4e7a0ad685398d1e, []int{28}
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEstimateRedeemMaturedYtResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEstimateRedeemMaturedYtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEstimateSwapMaturedYtToUtResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEstimateRedeemMaturedYtResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -1455,21 +1457,21 @@ func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_Marshal(b []byte, determini
 		return b[:n], nil
 	}
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEstimateSwapMaturedYtToUtResponse.Merge(m, src)
+func (m *QueryEstimateRedeemMaturedYtResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEstimateRedeemMaturedYtResponse.Merge(m, src)
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_Size() int {
+func (m *QueryEstimateRedeemMaturedYtResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEstimateSwapMaturedYtToUtResponse.DiscardUnknown(m)
+func (m *QueryEstimateRedeemMaturedYtResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEstimateRedeemMaturedYtResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEstimateSwapMaturedYtToUtResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEstimateRedeemMaturedYtResponse proto.InternalMessageInfo
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) GetUtAmount() types.Coin {
+func (m *QueryEstimateRedeemMaturedYtResponse) GetRedeemAmount() types.Coin {
 	if m != nil {
-		return m.UtAmount
+		return m.RedeemAmount
 	}
 	return types.Coin{}
 }
@@ -1519,8 +1521,8 @@ func (m *QueryTranchePtAPYsRequest) GetId() uint64 {
 }
 
 type QueryTranchePtAPYsResponse struct {
-	PtApy       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=pt_apy,json=ptApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_apy"`
-	PtRatePerUt cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=pt_rate_per_ut,json=ptRatePerUt,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_rate_per_ut"`
+	PtApy            cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=pt_apy,json=ptApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_apy"`
+	PtRatePerDeposit cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=pt_rate_per_deposit,json=ptRatePerDeposit,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_rate_per_deposit"`
 }
 
 func (m *QueryTranchePtAPYsResponse) Reset()         { *m = QueryTranchePtAPYsResponse{} }
@@ -1601,8 +1603,8 @@ func (m *QueryTrancheYtAPYsRequest) GetId() uint64 {
 }
 
 type QueryTrancheYtAPYsResponse struct {
-	YtApy       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=yt_apy,json=ytApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"yt_apy"`
-	YtRatePerUt cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=yt_rate_per_ut,json=ytRatePerUt,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"yt_rate_per_ut"`
+	YtApy            cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=yt_apy,json=ytApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"yt_apy"`
+	YtRatePerDeposit cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=yt_rate_per_deposit,json=ytRatePerDeposit,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"yt_rate_per_deposit"`
 }
 
 func (m *QueryTrancheYtAPYsResponse) Reset()         { *m = QueryTrancheYtAPYsResponse{} }
@@ -1683,11 +1685,11 @@ func (m *QueryTranchePoolAPYsRequest) GetId() uint64 {
 }
 
 type QueryTranchePoolAPYsResponse struct {
-	LiquidityApy       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=liquidity_apy,json=liquidityApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"liquidity_apy"`
-	DiscountPtApy      cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=discount_pt_apy,json=discountPtApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"discount_pt_apy"`
-	LiquidityRatePerUt cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=liquidity_rate_per_ut,json=liquidityRatePerUt,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"liquidity_rate_per_ut"`
-	UtPercentageInPool cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=ut_percentage_in_pool,json=utPercentageInPool,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"ut_percentage_in_pool"`
-	PtPercentageInPool cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=pt_percentage_in_pool,json=ptPercentageInPool,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_percentage_in_pool"`
+	LiquidityApy                 cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=liquidity_apy,json=liquidityApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"liquidity_apy"`
+	DiscountPtApy                cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=discount_pt_apy,json=discountPtApy,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"discount_pt_apy"`
+	LiquidityRatePerDeposit      cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=liquidity_rate_per_deposit,json=liquidityRatePerDeposit,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"liquidity_rate_per_deposit"`
+	DepositTokenPercentageInPool cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=deposit_token_percentage_in_pool,json=depositTokenPercentageInPool,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"deposit_token_percentage_in_pool"`
+	PtPercentageInPool           cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=pt_percentage_in_pool,json=ptPercentageInPool,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pt_percentage_in_pool"`
 }
 
 func (m *QueryTranchePoolAPYsResponse) Reset()         { *m = QueryTranchePoolAPYsResponse{} }
@@ -1747,12 +1749,12 @@ func init() {
 	proto.RegisterType((*QueryEstimateMintLiquidityPoolTokenResponse)(nil), "ununifi.irs.QueryEstimateMintLiquidityPoolTokenResponse")
 	proto.RegisterType((*QueryEstimateRedeemLiquidityPoolTokenRequest)(nil), "ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenRequest")
 	proto.RegisterType((*QueryEstimateRedeemLiquidityPoolTokenResponse)(nil), "ununifi.irs.QueryEstimateRedeemLiquidityPoolTokenResponse")
-	proto.RegisterType((*QueryEstimateSwapUtToYtRequest)(nil), "ununifi.irs.QueryEstimateSwapUtToYtRequest")
-	proto.RegisterType((*QueryEstimateSwapUtToYtResponse)(nil), "ununifi.irs.QueryEstimateSwapUtToYtResponse")
-	proto.RegisterType((*QueryEstimateRequiredUtSwapToYtRequest)(nil), "ununifi.irs.QueryEstimateRequiredUtSwapToYtRequest")
-	proto.RegisterType((*QueryEstimateRequiredUtSwapToYtResponse)(nil), "ununifi.irs.QueryEstimateRequiredUtSwapToYtResponse")
-	proto.RegisterType((*QueryEstimateSwapMaturedYtToUtRequest)(nil), "ununifi.irs.QueryEstimateSwapMaturedYtToUtRequest")
-	proto.RegisterType((*QueryEstimateSwapMaturedYtToUtResponse)(nil), "ununifi.irs.QueryEstimateSwapMaturedYtToUtResponse")
+	proto.RegisterType((*QueryEstimateSwapToYtRequest)(nil), "ununifi.irs.QueryEstimateSwapToYtRequest")
+	proto.RegisterType((*QueryEstimateSwapToYtResponse)(nil), "ununifi.irs.QueryEstimateSwapToYtResponse")
+	proto.RegisterType((*QueryEstimateRequiredDepositSwapToYtRequest)(nil), "ununifi.irs.QueryEstimateRequiredDepositSwapToYtRequest")
+	proto.RegisterType((*QueryEstimateRequiredDepositSwapToYtResponse)(nil), "ununifi.irs.QueryEstimateRequiredDepositSwapToYtResponse")
+	proto.RegisterType((*QueryEstimateRedeemMaturedYtRequest)(nil), "ununifi.irs.QueryEstimateRedeemMaturedYtRequest")
+	proto.RegisterType((*QueryEstimateRedeemMaturedYtResponse)(nil), "ununifi.irs.QueryEstimateRedeemMaturedYtResponse")
 	proto.RegisterType((*QueryTranchePtAPYsRequest)(nil), "ununifi.irs.QueryTranchePtAPYsRequest")
 	proto.RegisterType((*QueryTranchePtAPYsResponse)(nil), "ununifi.irs.QueryTranchePtAPYsResponse")
 	proto.RegisterType((*QueryTrancheYtAPYsRequest)(nil), "ununifi.irs.QueryTrancheYtAPYsRequest")
@@ -1764,115 +1766,114 @@ func init() {
 func init() { proto.RegisterFile("ununifi/irs/query.proto", fileDescriptor_4e7a0ad685398d1e) }
 
 var fileDescriptor_4e7a0ad685398d1e = []byte{
-	// 1725 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x59, 0xcd, 0x6f, 0xdc, 0xc6,
-	0x15, 0x17, 0xf5, 0xed, 0x27, 0xcb, 0xb2, 0xc7, 0x92, 0x2d, 0x51, 0xc6, 0x4a, 0xa2, 0xad, 0x0f,
-	0x4b, 0xe6, 0xb2, 0x92, 0x0c, 0xf8, 0x03, 0x86, 0x51, 0xc9, 0x6a, 0x61, 0x17, 0x36, 0xb0, 0x5d,
-	0x4b, 0x2a, 0xd6, 0x40, 0xbd, 0xa5, 0x76, 0xa9, 0xd5, 0xd4, 0xbb, 0x24, 0x45, 0x0e, 0x65, 0xb3,
-	0x86, 0x2f, 0x6d, 0x4f, 0x3d, 0x15, 0x2d, 0xd0, 0x4b, 0x0b, 0xf4, 0xd0, 0x1e, 0x73, 0xcc, 0x25,
-	0x87, 0xe4, 0x6c, 0x04, 0x41, 0x60, 0x24, 0x39, 0x04, 0x39, 0x18, 0x81, 0x9d, 0x3f, 0x21, 0x7f,
-	0x40, 0xc0, 0xe1, 0x23, 0x77, 0xb9, 0x24, 0xf7, 0x43, 0x16, 0x72, 0xd3, 0xce, 0xbc, 0xf7, 0x7e,
-	0xbf, 0xdf, 0x9b, 0xe1, 0xcc, 0xfc, 0x20, 0xb8, 0xe8, 0xe8, 0x8e, 0x4e, 0xf7, 0xa9, 0x42, 0x2d,
-	0x5b, 0x39, 0x74, 0x34, 0xcb, 0xcd, 0x9a, 0x96, 0xc1, 0x0c, 0x32, 0x82, 0x13, 0x59, 0x6a, 0xd9,
-	0xe2, 0x78, 0xc5, 0xa8, 0x18, 0x7c, 0x5c, 0xf1, 0xfe, 0xf2, 0x43, 0xc4, 0xa9, 0x92, 0x61, 0xd7,
-	0x0c, 0xbb, 0xe8, 0x4f, 0xf8, 0x3f, 0x70, 0xea, 0x52, 0xc5, 0x30, 0x2a, 0x55, 0x4d, 0x51, 0x4d,
-	0xaa, 0xa8, 0xba, 0x6e, 0x30, 0x95, 0x51, 0x43, 0x0f, 0x66, 0x97, 0xfd, 0x58, 0x65, 0x4f, 0xb5,
-	0x35, 0x1f, 0x54, 0x39, 0x5a, 0xdd, 0xd3, 0x98, 0xba, 0xaa, 0x98, 0x6a, 0x85, 0xea, 0x3c, 0x18,
-	0x63, 0x33, 0x8d, 0xb1, 0x41, 0x54, 0xc9, 0xa0, 0xc1, 0xfc, 0x64, 0xa3, 0x00, 0x53, 0xb5, 0xd4,
-	0x5a, 0x80, 0x32, 0xd1, 0x38, 0x43, 0xad, 0xc4, 0x61, 0xb5, 0x56, 0xf3, 0x87, 0xa5, 0x71, 0x20,
-	0xbf, 0xf5, 0x98, 0xe4, 0x78, 0x89, 0xbc, 0x76, 0xe8, 0x68, 0x36, 0x93, 0xee, 0xc3, 0xf9, 0xc8,
-	0xa8, 0x6d, 0x1a, 0xba, 0xad, 0x91, 0x55, 0x18, 0xf4, 0xa1, 0x26, 0x85, 0x59, 0x61, 0x69, 0x64,
-	0xed, 0x7c, 0xb6, 0xa1, 0x5b, 0x59, 0x3f, 0x78, 0xb3, 0xff, 0xf5, 0xdb, 0x99, 0x9e, 0x3c, 0x06,
-	0x86, 0xf5, 0x77, 0x55, 0xa7, 0xca, 0xc2, 0xfa, 0xbf, 0xc3, 0xfa, 0xc1, 0x28, 0xd6, 0xff, 0x25,
-	0x0c, 0x1e, 0xf1, 0x91, 0x49, 0x61, 0xb6, 0x6f, 0x69, 0x64, 0x4d, 0x8a, 0xd4, 0x7f, 0xa0, 0x33,
-	0xcd, 0xd2, 0x6c, 0x96, 0x57, 0x99, 0xf6, 0xf8, 0xb9, 0x6a, 0xf2, 0xe4, 0x00, 0xce, 0xcf, 0x93,
-	0x7e, 0x03, 0xd3, 0xf5, 0xc2, 0x9b, 0xee, 0x3d, 0x43, 0x67, 0x96, 0x5a, 0x62, 0x88, 0x4b, 0x56,
-	0xe0, 0x9c, 0xcd, 0x2c, 0x95, 0x69, 0x15, 0xb7, 0x58, 0xc2, 0x39, 0xae, 0xe5, 0x54, 0xfe, 0x6c,
-	0x30, 0x11, 0xe4, 0x48, 0x4f, 0xe1, 0x52, 0x72, 0x2d, 0x64, 0x7b, 0x17, 0x06, 0x38, 0x2a, 0x36,
-	0xa3, 0x73, 0xb2, 0x7e, 0x9a, 0x54, 0x82, 0xc9, 0x7a, 0xfd, 0x2d, 0x8d, 0xa9, 0xb4, 0x6a, 0x1f,
-	0x87, 0x28, 0x11, 0x61, 0xb8, 0xa6, 0x32, 0xc7, 0xa2, 0xcc, 0x9d, 0xec, 0xe5, 0x31, 0xe1, 0x6f,
-	0xe9, 0x08, 0xa6, 0x12, 0x40, 0x50, 0xc1, 0x3c, 0x9c, 0xa9, 0xd2, 0x43, 0x87, 0x96, 0x29, 0x73,
-	0x8b, 0xa6, 0x61, 0x54, 0x11, 0x62, 0x34, 0x1c, 0xcd, 0x19, 0x46, 0x95, 0x5c, 0x84, 0xa1, 0x7d,
-	0xb7, 0xe8, 0x81, 0x62, 0xf9, 0xc1, 0x7d, 0xd7, 0xd3, 0x45, 0xa6, 0x60, 0xb8, 0x7a, 0x84, 0x33,
-	0x7d, 0x7c, 0x66, 0xa8, 0x7a, 0xc4, 0xa7, 0xa4, 0x29, 0xb8, 0xc8, 0x71, 0x37, 0xaa, 0xd5, 0x6d,
-	0x4b, 0xd5, 0x4b, 0x07, 0x5a, 0xb8, 0xf8, 0xf7, 0x60, 0x9c, 0x4f, 0x35, 0x8d, 0x77, 0xb7, 0x38,
-	0x8f, 0x61, 0xa2, 0xa9, 0x08, 0x6a, 0xba, 0x0d, 0xc3, 0x0c, 0xc7, 0x70, 0x17, 0x4d, 0x46, 0x16,
-	0x06, 0x13, 0x3c, 0x61, 0xb8, 0x1c, 0x61, 0xbc, 0x34, 0x8f, 0xdb, 0x12, 0x63, 0x02, 0x62, 0x67,
-	0xa0, 0x97, 0x96, 0x39, 0x93, 0xfe, 0x7c, 0x2f, 0x2d, 0x4b, 0xb9, 0xa8, 0x80, 0x10, 0xfa, 0x26,
-	0x0c, 0x61, 0x29, 0xdc, 0x12, 0xed, 0x90, 0x83, 0x70, 0xe9, 0x29, 0x64, 0x78, 0xc5, 0x5f, 0xd9,
-	0x8c, 0xd6, 0x70, 0xc7, 0x3c, 0xd0, 0xbd, 0xc8, 0x14, 0x0e, 0x64, 0x1c, 0x06, 0xca, 0x9a, 0x6e,
-	0xd4, 0x70, 0x45, 0xfc, 0x1f, 0xe4, 0x02, 0x0c, 0xaa, 0x35, 0xc3, 0xd1, 0x19, 0x2e, 0x07, 0xfe,
-	0x92, 0x9e, 0xc0, 0x4c, 0x6a, 0x7d, 0x24, 0x7f, 0x23, 0x4c, 0xf5, 0xb9, 0x4f, 0x65, 0xf1, 0x64,
-	0xf3, 0x4e, 0xa0, 0x2c, 0x9e, 0x40, 0xd9, 0x7b, 0x06, 0xd5, 0x83, 0x4f, 0x0e, 0x6b, 0xff, 0x01,
-	0x66, 0x23, 0xb5, 0x1f, 0x51, 0x9d, 0xe5, 0x58, 0x81, 0xe5, 0x54, 0x6a, 0x9d, 0x0c, 0xfb, 0xff,
-	0x0a, 0x30, 0xd7, 0x02, 0x02, 0x05, 0xdc, 0x81, 0x53, 0x26, 0x2b, 0x76, 0xa7, 0x61, 0xd8, 0x64,
-	0x1b, 0x3c, 0xc1, 0xcb, 0x76, 0xc3, 0xec, 0xde, 0x0e, 0xb3, 0x5d, 0xcc, 0x96, 0xf6, 0x40, 0x8a,
-	0x10, 0xcc, 0x6b, 0x65, 0x4d, 0xab, 0x9d, 0x6c, 0x17, 0x3e, 0x17, 0xe0, 0x72, 0x4b, 0x10, 0xec,
-	0xc3, 0x16, 0x8c, 0x5a, 0x7c, 0xa6, 0xcb, 0x5e, 0x9c, 0xf6, 0xb3, 0xb0, 0x1f, 0xbf, 0x07, 0x51,
-	0x2d, 0x97, 0xa9, 0x77, 0x23, 0xa9, 0xd5, 0xa2, 0xa5, 0x1d, 0x3a, 0xd4, 0xd2, 0xca, 0x5d, 0x36,
-	0x68, 0xb2, 0x5e, 0x22, 0x8f, 0x15, 0xb0, 0x61, 0x7f, 0x84, 0xe5, 0xd8, 0x8a, 0x3e, 0x6c, 0x3c,
-	0x74, 0xb6, 0x8d, 0x67, 0x9a, 0x7e, 0x32, 0x8d, 0xfb, 0x52, 0x80, 0x95, 0x8e, 0xc0, 0xc2, 0x5b,
-	0x68, 0xa4, 0x46, 0xf5, 0x6e, 0xb7, 0x12, 0x78, 0x39, 0x3f, 0x4f, 0xf3, 0x76, 0xe1, 0x5a, 0xc2,
-	0x46, 0xe8, 0xbc, 0x7d, 0x69, 0x8d, 0x72, 0x40, 0xee, 0xb0, 0x6e, 0xfa, 0x56, 0xeb, 0xeb, 0x7a,
-	0xab, 0x25, 0x1e, 0x7e, 0x3b, 0x6c, 0xdb, 0x28, 0xb0, 0x93, 0x59, 0xff, 0x62, 0xc2, 0xe1, 0x17,
-	0xd4, 0xaf, 0x9f, 0x1d, 0x6e, 0xd7, 0x67, 0x47, 0xf8, 0xf5, 0x97, 0x61, 0xa1, 0xa9, 0x6f, 0xfe,
-	0x72, 0xed, 0x30, 0x0f, 0xaa, 0x95, 0x90, 0x65, 0x38, 0x57, 0xd6, 0x6c, 0xbe, 0x39, 0xea, 0xf8,
-	0x3e, 0xfb, 0x31, 0x9c, 0x28, 0x04, 0x28, 0x2f, 0x60, 0xb1, 0x2d, 0x0a, 0xca, 0x79, 0x04, 0x24,
-	0xdc, 0x74, 0x4e, 0xb7, 0xba, 0xce, 0x5a, 0x61, 0x61, 0x44, 0xde, 0x86, 0xf9, 0x58, 0x03, 0x1f,
-	0x79, 0x0f, 0x0c, 0x8f, 0xdd, 0xb6, 0xb1, 0x93, 0x2a, 0x6f, 0xba, 0xf9, 0x50, 0x3d, 0xd5, 0xd0,
-	0xb5, 0xfd, 0xa6, 0xae, 0x25, 0x54, 0xad, 0xaf, 0x4e, 0xd7, 0x2a, 0x86, 0x9d, 0x00, 0x67, 0x05,
-	0x5f, 0x40, 0xc1, 0xf5, 0xcb, 0x36, 0x72, 0x05, 0x3b, 0xed, 0x6a, 0xff, 0x4c, 0x00, 0x31, 0x29,
-	0x1a, 0x99, 0xdc, 0x87, 0x41, 0xef, 0x8e, 0x31, 0x5d, 0xff, 0x5d, 0xb2, 0xb9, 0xea, 0x61, 0x7d,
-	0xf7, 0x76, 0x66, 0xda, 0x67, 0x63, 0x97, 0x9f, 0x65, 0xa9, 0xa1, 0xd4, 0x54, 0x76, 0x90, 0x7d,
-	0xa8, 0x55, 0xd4, 0x92, 0xbb, 0xa5, 0x95, 0xbe, 0xfa, 0x58, 0x06, 0x24, 0xbb, 0xa5, 0x95, 0xf2,
-	0x03, 0x26, 0xdb, 0x30, 0x5d, 0xb2, 0x0b, 0x67, 0x4c, 0xc6, 0x5f, 0x4e, 0x45, 0x53, 0xb3, 0x8a,
-	0x0e, 0xf6, 0xe7, 0x38, 0x15, 0x47, 0x4c, 0xfe, 0xca, 0xcc, 0x69, 0xd6, 0x4e, 0x4c, 0x6d, 0xa1,
-	0x2b, 0xb5, 0x85, 0x98, 0x5a, 0xf7, 0x43, 0xd5, 0xba, 0x81, 0x5a, 0xf7, 0xa4, 0xd4, 0xba, 0x0d,
-	0x6a, 0x65, 0x7c, 0xee, 0x37, 0x3c, 0xad, 0x5a, 0xe9, 0xfd, 0x4b, 0x3f, 0x3e, 0xe9, 0x63, 0xf1,
-	0xa8, 0x78, 0x17, 0xea, 0x4f, 0xdf, 0x0f, 0x13, 0x7e, 0x3a, 0xac, 0xe3, 0xe9, 0x2f, 0xc0, 0x58,
-	0x99, 0xda, 0x25, 0x6f, 0x3f, 0x16, 0x71, 0x03, 0x1d, 0xbb, 0x01, 0xa3, 0x41, 0xa5, 0x1c, 0x6f,
-	0x6d, 0x19, 0x26, 0xea, 0x94, 0x1b, 0x3b, 0xdc, 0x77, 0x5c, 0x00, 0x12, 0xd6, 0x0b, 0x1b, 0xed,
-	0xa1, 0x38, 0xcc, 0xab, 0x5c, 0xd2, 0x74, 0xa6, 0x56, 0xb4, 0x22, 0xd5, 0x7d, 0xc3, 0xd0, 0x7f,
-	0x6c, 0x14, 0x87, 0xe5, 0xc2, 0x72, 0xfe, 0x5b, 0xd4, 0x43, 0x31, 0x13, 0x51, 0x06, 0x8e, 0x8d,
-	0x62, 0xc6, 0x50, 0xd6, 0x7e, 0x9c, 0x80, 0x01, 0xbe, 0x0b, 0xc8, 0x01, 0x0c, 0xfa, 0xa6, 0x95,
-	0xcc, 0x44, 0x5e, 0xea, 0x71, 0x47, 0x2c, 0xce, 0xa6, 0x07, 0xf8, 0x7b, 0x47, 0x9a, 0xfe, 0xf3,
-	0xd7, 0x3f, 0xfc, 0xb3, 0x77, 0x82, 0x9c, 0x57, 0xe2, 0xd6, 0xdc, 0x43, 0xf2, 0xbd, 0x6e, 0x12,
-	0x52, 0xc4, 0x1b, 0x27, 0x21, 0x45, 0x6d, 0x72, 0x0a, 0x92, 0xef, 0x80, 0xc9, 0xbf, 0x04, 0x18,
-	0x6b, 0x72, 0xac, 0x64, 0x29, 0xa5, 0x64, 0xcc, 0x20, 0x8b, 0x57, 0x3b, 0x88, 0x44, 0x16, 0x59,
-	0xce, 0x62, 0x89, 0x2c, 0xc4, 0x59, 0x28, 0x2f, 0x63, 0x46, 0xee, 0x15, 0xf9, 0x9f, 0x00, 0xa7,
-	0x1b, 0x5d, 0x28, 0x99, 0x4f, 0xc1, 0x8a, 0x5a, 0x61, 0x71, 0xa1, 0x5d, 0x18, 0xf2, 0xd9, 0xe2,
-	0x7c, 0xee, 0x92, 0x3b, 0x9d, 0xf1, 0x51, 0xd0, 0x22, 0x53, 0xcd, 0x56, 0x5e, 0x06, 0x76, 0xf9,
-	0x15, 0xf9, 0x13, 0x8c, 0x34, 0x58, 0x56, 0x72, 0x25, 0x0e, 0x1e, 0x77, 0xb4, 0xa2, 0x14, 0x8f,
-	0x6a, 0xf6, 0xa5, 0xd2, 0x1c, 0xa7, 0x37, 0x4d, 0xa6, 0x22, 0xf4, 0xd4, 0x6a, 0x55, 0x0e, 0xec,
-	0x27, 0xf9, 0xab, 0x00, 0xc3, 0x21, 0xf2, 0x5c, 0xab, 0x9a, 0x9d, 0xc3, 0xae, 0x72, 0xd8, 0x15,
-	0x72, 0x35, 0x02, 0x1b, 0x40, 0x26, 0x2e, 0xd4, 0x21, 0x0c, 0x61, 0x19, 0x32, 0x9b, 0x8a, 0x10,
-	0x70, 0x98, 0x6b, 0x11, 0xd1, 0x52, 0x39, 0x52, 0x50, 0x5e, 0xd2, 0xf2, 0x2b, 0xf2, 0x6f, 0x01,
-	0x48, 0xdc, 0x9b, 0x92, 0x95, 0x78, 0xf1, 0x54, 0x87, 0x2c, 0x5e, 0xeb, 0x2c, 0x18, 0x49, 0x2d,
-	0x73, 0x52, 0x57, 0x88, 0x14, 0x21, 0xa5, 0x61, 0x82, 0x6c, 0x3f, 0x57, 0x4d, 0x99, 0xea, 0xb2,
-	0x77, 0xfa, 0x90, 0xff, 0x0b, 0x30, 0x9e, 0x64, 0x3d, 0x89, 0x9c, 0x0e, 0x99, 0xe0, 0x82, 0xc5,
-	0x6c, 0xa7, 0xe1, 0xc8, 0x51, 0xe6, 0x1c, 0x17, 0xc9, 0x7c, 0x32, 0x47, 0xcf, 0x70, 0xc8, 0x26,
-	0x93, 0x5d, 0x26, 0x9b, 0x1e, 0x9b, 0x8f, 0x04, 0xb8, 0x90, 0xec, 0x0d, 0x89, 0x92, 0x8e, 0x9c,
-	0x68, 0x55, 0xc5, 0x5f, 0x74, 0x9e, 0x80, 0x64, 0x15, 0x4e, 0xf6, 0x2a, 0x59, 0x4c, 0x26, 0xeb,
-	0xbf, 0xf8, 0x1b, 0xe9, 0x7e, 0x21, 0x40, 0xa6, 0xb5, 0x23, 0x23, 0x37, 0x5a, 0x37, 0x2c, 0xd5,
-	0xf1, 0x88, 0x37, 0xbb, 0x4f, 0x44, 0x19, 0x37, 0xb8, 0x8c, 0x55, 0xa2, 0xb4, 0xe8, 0x79, 0x78,
-	0x3f, 0xf2, 0xed, 0x21, 0x33, 0xce, 0xf5, 0x1b, 0x01, 0x66, 0xdb, 0x19, 0x27, 0x72, 0xab, 0x5d,
-	0x5b, 0xd3, 0x25, 0xdd, 0x3e, 0x4e, 0x2a, 0x8a, 0xba, 0xc5, 0x45, 0xad, 0x93, 0xd5, 0x96, 0x6b,
-	0x93, 0x28, 0xeb, 0x3f, 0x4d, 0x5f, 0xa6, 0x6f, 0x9c, 0xda, 0x7d, 0x99, 0x11, 0xfb, 0xd6, 0xee,
-	0xcb, 0x8c, 0x7a, 0x31, 0x69, 0x85, 0x93, 0x9d, 0x27, 0x97, 0x5b, 0x7c, 0x99, 0x0e, 0x93, 0x99,
-	0x21, 0xbb, 0x8c, 0x7c, 0x2a, 0x80, 0x98, 0x6e, 0x88, 0xc8, 0x7a, 0xab, 0xa6, 0xa5, 0x98, 0x34,
-	0xf1, 0x7a, 0x77, 0x49, 0x48, 0xfb, 0x3a, 0xa7, 0x9d, 0x25, 0xd7, 0xd2, 0x7a, 0xec, 0x67, 0x7a,
-	0xd4, 0xb9, 0x04, 0x9f, 0xff, 0x27, 0x02, 0x4c, 0xa5, 0x1a, 0x20, 0xb2, 0xd6, 0xba, 0x71, 0x49,
-	0x1e, 0x4c, 0x5c, 0xef, 0x2a, 0x07, 0xc9, 0xaf, 0x73, 0xf2, 0x32, 0x59, 0x69, 0xd1, 0xf3, 0x9a,
-	0x9f, 0xe9, 0x7d, 0xbf, 0xcc, 0x90, 0x1d, 0x46, 0xfe, 0x26, 0xc0, 0x68, 0xc4, 0x26, 0x91, 0x85,
-	0xd4, 0xcb, 0x20, 0xe2, 0xba, 0xc4, 0xc5, 0xb6, 0x71, 0xc8, 0x6b, 0x89, 0xf3, 0x92, 0xc8, 0x6c,
-	0xea, 0xd5, 0xa1, 0x98, 0x4c, 0x56, 0x4d, 0xb7, 0x91, 0x4c, 0xa1, 0x1d, 0x99, 0x42, 0x87, 0x64,
-	0x0a, 0x5d, 0x93, 0x71, 0x7d, 0x32, 0xff, 0x10, 0x60, 0xac, 0xc9, 0x62, 0x24, 0xbd, 0xc1, 0x92,
-	0x5d, 0x4b, 0xd2, 0x1b, 0x2c, 0xc5, 0xaf, 0xa4, 0xdc, 0x62, 0xd1, 0xfe, 0x78, 0xdf, 0xb2, 0x6a,
-	0xba, 0x9b, 0x77, 0x5f, 0xbf, 0xcb, 0x08, 0x6f, 0xde, 0x65, 0x84, 0xef, 0xdf, 0x65, 0x84, 0xbf,
-	0xbf, 0xcf, 0xf4, 0xbc, 0x79, 0x9f, 0xe9, 0xf9, 0xf6, 0x7d, 0xa6, 0xe7, 0xc9, 0x95, 0x0a, 0x65,
-	0x07, 0xce, 0x5e, 0xb6, 0x64, 0xd4, 0x94, 0x1d, 0x7d, 0x47, 0xa7, 0xbf, 0xa6, 0x4a, 0xe9, 0x40,
-	0xa5, 0xba, 0xf2, 0xc2, 0xaf, 0xe7, 0x9a, 0x9a, 0xbd, 0x37, 0xc8, 0xff, 0x61, 0xb4, 0xfe, 0x53,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x27, 0x64, 0x7b, 0x2e, 0x3b, 0x1b, 0x00, 0x00,
+	// 1707 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x59, 0x4b, 0x6f, 0xdb, 0xcc,
+	0x15, 0x35, 0xfd, 0xce, 0x75, 0xfc, 0x39, 0x19, 0xdb, 0xb1, 0x4d, 0xa7, 0xb2, 0xcc, 0xda, 0x89,
+	0x1f, 0xa1, 0x58, 0x25, 0x8b, 0x3c, 0x10, 0x04, 0xb5, 0xe3, 0x16, 0x49, 0x91, 0x00, 0xaa, 0xf2,
+	0x82, 0x82, 0x26, 0x0a, 0x2d, 0x4d, 0xe4, 0x69, 0x24, 0x92, 0x26, 0x47, 0x4e, 0xd9, 0x20, 0x9b,
+	0xa2, 0x40, 0x81, 0xae, 0x8a, 0x06, 0xe8, 0xa6, 0x8b, 0x02, 0x6d, 0x97, 0x05, 0xba, 0xe9, 0x8f,
+	0x08, 0x8a, 0xa2, 0x48, 0x1f, 0x8b, 0xa2, 0x8b, 0xa0, 0x48, 0xfa, 0x17, 0xba, 0x2f, 0x38, 0xbc,
+	0xa4, 0x45, 0x89, 0xa4, 0x1e, 0x31, 0xbe, 0x9d, 0x35, 0x73, 0xef, 0x39, 0xe7, 0xde, 0x19, 0xce,
+	0xcc, 0x81, 0x61, 0xa1, 0x69, 0x34, 0x0d, 0xf6, 0x92, 0x69, 0xcc, 0x76, 0xb4, 0xc3, 0x26, 0xb5,
+	0xdd, 0x9c, 0x65, 0x9b, 0xdc, 0x24, 0x53, 0x38, 0x91, 0x63, 0xb6, 0x23, 0xcf, 0xd5, 0xcc, 0x9a,
+	0x29, 0xc6, 0x35, 0xef, 0x2f, 0x3f, 0x44, 0x5e, 0xaa, 0x98, 0x4e, 0xc3, 0x74, 0xca, 0xfe, 0x84,
+	0xff, 0x03, 0xa7, 0xce, 0xd7, 0x4c, 0xb3, 0x56, 0xa7, 0x9a, 0x6e, 0x31, 0x4d, 0x37, 0x0c, 0x93,
+	0xeb, 0x9c, 0x99, 0x46, 0x30, 0xbb, 0xe5, 0xc7, 0x6a, 0xfb, 0xba, 0x43, 0x7d, 0x52, 0xed, 0x28,
+	0xbf, 0x4f, 0xb9, 0x9e, 0xd7, 0x2c, 0xbd, 0xc6, 0x0c, 0x11, 0x8c, 0xb1, 0x99, 0xd6, 0xd8, 0x20,
+	0xaa, 0x62, 0xb2, 0x60, 0x7e, 0xb1, 0xb5, 0x00, 0x4b, 0xb7, 0xf5, 0x46, 0xc0, 0x32, 0xdf, 0x3a,
+	0xc3, 0xec, 0xd8, 0x61, 0xbd, 0xd1, 0xf0, 0x87, 0x95, 0x39, 0x20, 0xdf, 0xf7, 0x94, 0x14, 0x04,
+	0x44, 0x91, 0x1e, 0x36, 0xa9, 0xc3, 0x95, 0x3b, 0x30, 0x1b, 0x19, 0x75, 0x2c, 0xd3, 0x70, 0x28,
+	0xc9, 0xc3, 0xb8, 0x4f, 0xb5, 0x28, 0x65, 0xa5, 0x8d, 0xa9, 0xcb, 0xb3, 0xb9, 0x96, 0x6e, 0xe5,
+	0xfc, 0xe0, 0xdd, 0xd1, 0xf7, 0x1f, 0x57, 0x86, 0x8a, 0x18, 0x18, 0xe2, 0x3f, 0xd6, 0x9b, 0x75,
+	0x1e, 0xe2, 0x3f, 0x41, 0xfc, 0x60, 0x14, 0xf1, 0xbf, 0x0d, 0xe3, 0x47, 0x62, 0x64, 0x51, 0xca,
+	0x8e, 0x6c, 0x4c, 0x5d, 0x56, 0x22, 0xf8, 0x77, 0x0d, 0x4e, 0x6d, 0xea, 0xf0, 0xa2, 0xce, 0xe9,
+	0x83, 0xd7, 0xba, 0x25, 0x92, 0x03, 0x3a, 0x3f, 0x4f, 0xf9, 0x1e, 0x2c, 0x1f, 0x03, 0xef, 0xba,
+	0xb7, 0x4d, 0x83, 0xdb, 0x7a, 0x85, 0x23, 0x2f, 0xd9, 0x86, 0xb3, 0x0e, 0xb7, 0x75, 0x4e, 0x6b,
+	0x6e, 0xb9, 0x82, 0x73, 0xa2, 0x96, 0x53, 0xc5, 0x33, 0xc1, 0x44, 0x90, 0xa3, 0x3c, 0x87, 0xf3,
+	0xf1, 0x58, 0xa8, 0xf6, 0x16, 0x8c, 0x09, 0x56, 0x6c, 0x46, 0xef, 0x62, 0xfd, 0x34, 0xa5, 0x02,
+	0x8b, 0xc7, 0xf8, 0x7b, 0x94, 0xeb, 0xac, 0xee, 0x0c, 0x22, 0x94, 0xc8, 0x30, 0xd9, 0xd0, 0x79,
+	0xd3, 0x66, 0xdc, 0x5d, 0x1c, 0x16, 0x31, 0xe1, 0x6f, 0xe5, 0x08, 0x96, 0x62, 0x48, 0xb0, 0x82,
+	0x75, 0xf8, 0xaa, 0xce, 0x0e, 0x9b, 0xac, 0xca, 0xb8, 0x5b, 0xb6, 0x4c, 0xb3, 0x8e, 0x14, 0xd3,
+	0xe1, 0x68, 0xc1, 0x34, 0xeb, 0x64, 0x01, 0x26, 0x5e, 0xba, 0x65, 0x8f, 0x14, 0xe1, 0xc7, 0x5f,
+	0xba, 0x5e, 0x5d, 0x64, 0x09, 0x26, 0xeb, 0x47, 0x38, 0x33, 0x22, 0x66, 0x26, 0xea, 0x47, 0x62,
+	0x4a, 0x59, 0x82, 0x05, 0xc1, 0xbb, 0x53, 0xaf, 0x3f, 0xb4, 0x75, 0xa3, 0x72, 0x40, 0xc3, 0xc5,
+	0xbf, 0x0d, 0x73, 0x62, 0xaa, 0x6d, 0xbc, 0xbf, 0xc5, 0x79, 0x00, 0xf3, 0x6d, 0x20, 0x58, 0xd3,
+	0x0d, 0x98, 0xe4, 0x38, 0x86, 0xbb, 0x68, 0x31, 0xb2, 0x30, 0x98, 0xe0, 0x15, 0x86, 0xcb, 0x11,
+	0xc6, 0x2b, 0xeb, 0xb8, 0x2d, 0x31, 0x26, 0x10, 0xf6, 0x15, 0x0c, 0xb3, 0xaa, 0x50, 0x32, 0x5a,
+	0x1c, 0x66, 0x55, 0xa5, 0x10, 0x2d, 0x20, 0xa4, 0xbe, 0x06, 0x13, 0x08, 0x85, 0x5b, 0xa2, 0x1b,
+	0x73, 0x10, 0xae, 0x3c, 0x87, 0x8c, 0x40, 0xfc, 0x8e, 0xc3, 0x59, 0x03, 0x77, 0xcc, 0x5d, 0xc3,
+	0x8b, 0x4c, 0xd0, 0x40, 0xe6, 0x60, 0xac, 0x4a, 0x0d, 0xb3, 0x81, 0x2b, 0xe2, 0xff, 0x20, 0xe7,
+	0x60, 0x5c, 0x6f, 0x98, 0x4d, 0x83, 0xe3, 0x72, 0xe0, 0x2f, 0xe5, 0x29, 0xac, 0x24, 0xe2, 0xa3,
+	0xf8, 0xab, 0x61, 0xaa, 0xaf, 0x7d, 0x29, 0x87, 0x27, 0x9b, 0x77, 0x02, 0xe5, 0xf0, 0x04, 0xca,
+	0xdd, 0x36, 0x99, 0x11, 0x7c, 0x72, 0x88, 0xfd, 0x02, 0xb2, 0x11, 0xec, 0xfb, 0xcc, 0xe0, 0x05,
+	0x5e, 0xe2, 0x05, 0x9d, 0xd9, 0x27, 0xa3, 0xfe, 0x37, 0x12, 0xac, 0xa6, 0x50, 0x60, 0x01, 0x37,
+	0xe1, 0x94, 0xc5, 0xcb, 0xfd, 0xd5, 0x30, 0x69, 0xf1, 0x1d, 0x91, 0xe0, 0x65, 0xbb, 0x61, 0xf6,
+	0x70, 0x8f, 0xd9, 0x2e, 0x66, 0x2b, 0xfb, 0xa0, 0x44, 0x04, 0x16, 0x69, 0x95, 0xd2, 0xc6, 0xc9,
+	0x76, 0xe1, 0xcf, 0x12, 0x7c, 0x33, 0x95, 0x04, 0xfb, 0xb0, 0x07, 0xd3, 0xb6, 0x98, 0xe9, 0xb3,
+	0x17, 0xa7, 0xfd, 0x2c, 0xec, 0xc7, 0x33, 0x90, 0xf5, 0x6a, 0x95, 0x79, 0x37, 0x92, 0x5e, 0x2f,
+	0xdb, 0xf4, 0xb0, 0xc9, 0x6c, 0x5a, 0xed, 0xb3, 0x41, 0x8b, 0xc7, 0x10, 0x45, 0x44, 0xc0, 0x86,
+	0xfd, 0x10, 0xb6, 0x3a, 0x56, 0xf4, 0x5e, 0xeb, 0xa1, 0xf3, 0xd0, 0x7c, 0x45, 0x8d, 0x93, 0x69,
+	0xdc, 0x5f, 0x25, 0xd8, 0xee, 0x89, 0x2c, 0xbc, 0x85, 0xa6, 0x1a, 0xcc, 0xe8, 0x77, 0x2b, 0x81,
+	0x97, 0xf3, 0xf5, 0x34, 0xef, 0x31, 0x5c, 0x8a, 0xd9, 0x08, 0xbd, 0xb7, 0x2f, 0xa9, 0x51, 0x4d,
+	0x50, 0x7b, 0xc4, 0x4d, 0xde, 0x6a, 0x23, 0x7d, 0x6f, 0x35, 0xe5, 0x07, 0x78, 0xcf, 0xb6, 0x1e,
+	0x4e, 0x0f, 0xcd, 0x12, 0x3f, 0x99, 0xd5, 0x7f, 0x06, 0xdf, 0x48, 0x40, 0x3f, 0x3e, 0x37, 0xdc,
+	0xbe, 0xcf, 0x8d, 0xf0, 0xcb, 0x67, 0x6d, 0x7b, 0x2b, 0x58, 0xaa, 0x3d, 0x6a, 0x99, 0x0e, 0xe3,
+	0xdd, 0x6a, 0xd9, 0x82, 0xb3, 0x55, 0xea, 0x88, 0xdd, 0x71, 0x2c, 0xc2, 0x2f, 0x60, 0x06, 0x27,
+	0x4a, 0x01, 0xd5, 0xcf, 0xa4, 0x8e, 0x75, 0x4f, 0xe0, 0xc2, 0xca, 0x9e, 0xc0, 0x42, 0xb8, 0xf7,
+	0xaa, 0x7e, 0x4c, 0x9f, 0x75, 0xce, 0xdb, 0x51, 0x0a, 0x54, 0x52, 0x8c, 0x3d, 0x89, 0xee, 0x7b,
+	0x6f, 0x0e, 0x4f, 0x6f, 0x52, 0xb1, 0xcb, 0xed, 0x67, 0xec, 0xa9, 0x96, 0x46, 0xd6, 0x61, 0x2d,
+	0x1d, 0xf3, 0x24, 0x8f, 0x37, 0x65, 0x1b, 0x9f, 0x45, 0xc1, 0x9d, 0xcc, 0x77, 0x0a, 0x25, 0x27,
+	0xe9, 0xbe, 0x7f, 0x2f, 0x81, 0x1c, 0x17, 0x8d, 0x8a, 0xee, 0xc0, 0xb8, 0x77, 0xf1, 0x58, 0xae,
+	0xff, 0x58, 0xd9, 0xcd, 0x7b, 0x7c, 0xff, 0xfe, 0xb8, 0xb2, 0xec, 0x2b, 0x72, 0xaa, 0xaf, 0x72,
+	0xcc, 0xd4, 0x1a, 0x3a, 0x3f, 0xc8, 0xdd, 0xa3, 0x35, 0xbd, 0xe2, 0xee, 0xd1, 0xca, 0xdf, 0xff,
+	0xa4, 0x02, 0x0a, 0xde, 0xa3, 0x95, 0xe2, 0x98, 0xc5, 0x77, 0x2c, 0x97, 0xbc, 0x80, 0x59, 0x8b,
+	0x8b, 0xe7, 0x54, 0xd9, 0xa2, 0x76, 0xb0, 0x66, 0x7e, 0xab, 0x06, 0x81, 0x3d, 0x63, 0x89, 0xf7,
+	0x67, 0x81, 0xda, 0xb8, 0x7e, 0xed, 0x75, 0x97, 0xfa, 0xaa, 0xbb, 0xd4, 0x51, 0xb7, 0xfb, 0xa5,
+	0x75, 0xbb, 0x41, 0xdd, 0xee, 0x89, 0xd6, 0xed, 0xb6, 0xd7, 0xad, 0xa2, 0x2f, 0x68, 0x79, 0x83,
+	0xa5, 0x55, 0xfe, 0xdb, 0x51, 0x3c, 0x93, 0x3a, 0xe2, 0xb1, 0xf6, 0xc7, 0x70, 0xfc, 0x46, 0xfe,
+	0xb2, 0x16, 0x9c, 0x0e, 0x71, 0xbc, 0x4e, 0x94, 0x60, 0xa6, 0xca, 0x9c, 0x8a, 0xb7, 0x47, 0xcb,
+	0xb8, 0xa9, 0x06, 0xee, 0xc2, 0x74, 0x80, 0x54, 0x10, 0x4d, 0x36, 0x40, 0x3e, 0x96, 0xdc, 0xd1,
+	0xeb, 0x91, 0x41, 0x59, 0x16, 0x42, 0xd0, 0x68, 0xcb, 0x89, 0x0b, 0xd9, 0xe0, 0xd0, 0xe1, 0xde,
+	0xad, 0xe1, 0xd1, 0x55, 0xa8, 0xc1, 0xf5, 0x1a, 0x2d, 0x33, 0xc3, 0xb7, 0x1b, 0xa3, 0x83, 0xb2,
+	0x9e, 0x47, 0x68, 0x71, 0x1f, 0x15, 0x42, 0x60, 0xff, 0x4d, 0x4b, 0xaa, 0x30, 0x6f, 0xf1, 0x38,
+	0xbe, 0xb1, 0x41, 0xf9, 0x88, 0xc5, 0xdb, 0x59, 0x2e, 0xff, 0x6f, 0x1e, 0xc6, 0xc4, 0x26, 0x21,
+	0x07, 0x30, 0xee, 0x9b, 0x5f, 0xb2, 0x12, 0x79, 0xf1, 0x77, 0x3a, 0x6b, 0x39, 0x9b, 0x1c, 0xe0,
+	0x6f, 0x2d, 0x65, 0xf9, 0x27, 0xff, 0xf8, 0xef, 0xbb, 0xe1, 0x79, 0x32, 0xab, 0x75, 0x5a, 0x7c,
+	0x8f, 0xc9, 0xf7, 0xcc, 0x71, 0x4c, 0x11, 0x8f, 0x1d, 0xc7, 0x14, 0xb5, 0xdb, 0x09, 0x4c, 0xbe,
+	0x93, 0x26, 0xbf, 0x92, 0x60, 0xa6, 0xcd, 0xf9, 0x92, 0x8d, 0x04, 0xc8, 0x0e, 0xa3, 0x2d, 0x6f,
+	0xf6, 0x10, 0x89, 0x2a, 0x72, 0x42, 0xc5, 0x06, 0xb9, 0xd0, 0xa9, 0x42, 0x7b, 0xd3, 0x61, 0x08,
+	0xdf, 0x92, 0xdf, 0x49, 0x70, 0xba, 0xd5, 0xcd, 0x92, 0xf5, 0x04, 0xae, 0xa8, 0xa5, 0x96, 0x2f,
+	0x74, 0x0b, 0x43, 0x3d, 0x7b, 0x42, 0xcf, 0x2d, 0x72, 0xb3, 0x37, 0x3d, 0x1a, 0x5a, 0x6d, 0x46,
+	0x1d, 0xed, 0x4d, 0x60, 0xbb, 0xdf, 0x92, 0x1f, 0xc3, 0x54, 0x8b, 0xf5, 0x25, 0x6b, 0x9d, 0xe4,
+	0x9d, 0xce, 0x58, 0x56, 0x3a, 0xa3, 0xda, 0xfd, 0xad, 0xb2, 0x2a, 0xe4, 0x2d, 0x93, 0xa5, 0x88,
+	0x3c, 0xbd, 0x5e, 0x57, 0x03, 0x1b, 0x4b, 0x7e, 0x2a, 0xc1, 0x64, 0xc8, 0xbc, 0x9a, 0x86, 0xd9,
+	0x3b, 0x6d, 0x5e, 0xd0, 0x6e, 0x93, 0xcd, 0x08, 0x6d, 0x40, 0x19, 0xbb, 0x50, 0x87, 0x30, 0x81,
+	0x30, 0x24, 0x9b, 0xc8, 0x10, 0x68, 0x58, 0x4d, 0x89, 0x48, 0xad, 0x1c, 0x25, 0x68, 0x6f, 0x58,
+	0xf5, 0x2d, 0xf9, 0xb5, 0x04, 0xa4, 0xd3, 0xe3, 0x92, 0xed, 0x4e, 0xf0, 0x44, 0xa7, 0x2d, 0x5f,
+	0xea, 0x2d, 0x18, 0x45, 0x6d, 0x09, 0x51, 0x6b, 0x44, 0x89, 0x88, 0xa2, 0x98, 0xa0, 0x3a, 0xaf,
+	0x75, 0x4b, 0x65, 0x86, 0xea, 0x9d, 0x3e, 0xe4, 0xf7, 0x12, 0xcc, 0xc5, 0x59, 0x58, 0xa2, 0x26,
+	0x53, 0xc6, 0xb8, 0x69, 0x39, 0xd7, 0x6b, 0x38, 0x6a, 0x54, 0x85, 0xc6, 0x8b, 0x64, 0x3d, 0x5e,
+	0xa3, 0x67, 0x5c, 0x54, 0x8b, 0xab, 0x2e, 0x57, 0x2d, 0x4f, 0xcd, 0x1f, 0x24, 0x38, 0x17, 0xef,
+	0x31, 0x89, 0x96, 0xcc, 0x1c, 0x6b, 0x79, 0xe5, 0x6f, 0xf5, 0x9e, 0x80, 0x62, 0x35, 0x21, 0x76,
+	0x93, 0x5c, 0x8c, 0x17, 0xeb, 0xbf, 0xe2, 0x5a, 0xe5, 0xfe, 0x45, 0x82, 0x4c, 0xba, 0xb3, 0x23,
+	0x57, 0xd3, 0x1b, 0x96, 0xe8, 0x9c, 0xe4, 0x6b, 0xfd, 0x27, 0x62, 0x19, 0x57, 0x45, 0x19, 0x79,
+	0xa2, 0xa5, 0xf4, 0x3c, 0xbc, 0x39, 0xc5, 0xf6, 0x50, 0xc5, 0x2d, 0x49, 0xfe, 0x29, 0x41, 0xb6,
+	0x9b, 0x01, 0x23, 0xd7, 0xbb, 0xb5, 0x35, 0xb9, 0xa4, 0x1b, 0x83, 0xa4, 0x62, 0x51, 0xd7, 0x45,
+	0x51, 0x57, 0x48, 0x3e, 0x75, 0x6d, 0x62, 0xcb, 0x7a, 0x27, 0xc1, 0x99, 0x76, 0x0b, 0x46, 0x36,
+	0xd3, 0x3f, 0xb5, 0x16, 0xe3, 0x24, 0x6f, 0xf5, 0x12, 0x8a, 0x32, 0x37, 0x84, 0x4c, 0x85, 0x64,
+	0x53, 0xbe, 0x49, 0x6e, 0xaa, 0x2e, 0x27, 0x7f, 0x93, 0x60, 0xa5, 0x8b, 0x9b, 0x22, 0xd7, 0xd2,
+	0x1a, 0x96, 0x66, 0xf6, 0xe4, 0xeb, 0x03, 0x64, 0xf6, 0xda, 0x69, 0x3f, 0x5d, 0xc5, 0x67, 0x50,
+	0x6b, 0x4d, 0x7f, 0x94, 0x60, 0x21, 0xc1, 0x44, 0x91, 0xae, 0x9f, 0x63, 0xbb, 0x87, 0x93, 0xf3,
+	0x7d, 0x64, 0xf4, 0xf5, 0x05, 0x37, 0xfc, 0x3c, 0x4f, 0xf1, 0xcf, 0x25, 0x98, 0x8e, 0x58, 0x2b,
+	0x72, 0x21, 0xf1, 0x36, 0x88, 0x38, 0x35, 0xf9, 0x62, 0xd7, 0xb8, 0xd4, 0x2d, 0xd1, 0x7a, 0x77,
+	0x68, 0x16, 0x57, 0x75, 0xcb, 0x6d, 0x15, 0x53, 0xea, 0x26, 0xa6, 0xd4, 0xa3, 0x98, 0x52, 0xdf,
+	0x62, 0x5c, 0x5f, 0xcc, 0x2f, 0x25, 0x98, 0x69, 0xb3, 0x20, 0x71, 0x8f, 0xb0, 0x78, 0x57, 0x13,
+	0xf7, 0x08, 0x4b, 0xf0, 0x33, 0x09, 0xd7, 0x58, 0xb4, 0x3f, 0xde, 0xc7, 0xac, 0x5b, 0xee, 0xee,
+	0xad, 0xf7, 0x9f, 0x32, 0xd2, 0x87, 0x4f, 0x19, 0xe9, 0x3f, 0x9f, 0x32, 0xd2, 0x2f, 0x3e, 0x67,
+	0x86, 0x3e, 0x7c, 0xce, 0x0c, 0xfd, 0xeb, 0x73, 0x66, 0xe8, 0xe9, 0x5a, 0x8d, 0xf1, 0x83, 0xe6,
+	0x7e, 0xae, 0x62, 0x36, 0xb4, 0x47, 0xc6, 0x23, 0x83, 0x7d, 0x97, 0x69, 0x95, 0x03, 0x9d, 0x19,
+	0xda, 0x8f, 0x7c, 0x3c, 0xd7, 0xa2, 0xce, 0xfe, 0xb8, 0xf8, 0xcf, 0xd3, 0x95, 0xff, 0x07, 0x00,
+	0x00, 0xff, 0xff, 0xc3, 0x26, 0xfc, 0x37, 0x84, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1901,7 +1902,7 @@ type QueryClient interface {
 	Tranches(ctx context.Context, in *QueryTranchesRequest, opts ...grpc.CallOption) (*QueryTranchesResponse, error)
 	// Tranche by id
 	Tranche(ctx context.Context, in *QueryTrancheRequest, opts ...grpc.CallOption) (*QueryTrancheResponse, error)
-	// Estimate swap amount of UT/PT (in the pool)
+	// Estimate swap amount of Deposit_Token/PT (in the pool)
 	EstimateSwapInPool(ctx context.Context, in *QueryEstimateSwapInPoolRequest, opts ...grpc.CallOption) (*QueryEstimateSwapInPoolResponse, error)
 	// Estimate mint amount of PT&YT pair
 	EstimateMintPtYtPair(ctx context.Context, in *QueryEstimateMintPtYtPairRequest, opts ...grpc.CallOption) (*QueryEstimateMintPtYtPairResponse, error)
@@ -1911,12 +1912,12 @@ type QueryClient interface {
 	EstimateMintLiquidityPoolToken(ctx context.Context, in *QueryEstimateMintLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateMintLiquidityPoolTokenResponse, error)
 	// Estimate redeem amount of liquidity pool token
 	EstimateRedeemLiquidityPoolToken(ctx context.Context, in *QueryEstimateRedeemLiquidityPoolTokenRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error)
-	// Estimate swap UT to YT
-	EstimateSwapUtToYt(ctx context.Context, in *QueryEstimateSwapUtToYtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapUtToYtResponse, error)
-	// Estimate required UT amount to swap to YT
-	EstimateRequiredUtSwapToYt(ctx context.Context, in *QueryEstimateRequiredUtSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateRequiredUtSwapToYtResponse, error)
-	// Estimate swap matured YT to UT
-	EstimateSwapMaturedYtToUt(ctx context.Context, in *QueryEstimateSwapMaturedYtToUtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapMaturedYtToUtResponse, error)
+	// Estimate swap Deposit_Token to YT
+	EstimateSwapToYt(ctx context.Context, in *QueryEstimateSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapToYtResponse, error)
+	// Estimate required Deposit_Token amount to swap to YT
+	EstimateRequiredDepositSwapToYt(ctx context.Context, in *QueryEstimateRequiredDepositSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateRequiredDepositSwapToYtResponse, error)
+	// Estimate redeem matured YT
+	EstimateRedeemMaturedYt(ctx context.Context, in *QueryEstimateRedeemMaturedYtRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemMaturedYtResponse, error)
 	// tranche PT APYs by id
 	TranchePtAPYs(ctx context.Context, in *QueryTranchePtAPYsRequest, opts ...grpc.CallOption) (*QueryTranchePtAPYsResponse, error)
 	// tranche YT APYs by id
@@ -2041,27 +2042,27 @@ func (c *queryClient) EstimateRedeemLiquidityPoolToken(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *queryClient) EstimateSwapUtToYt(ctx context.Context, in *QueryEstimateSwapUtToYtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapUtToYtResponse, error) {
-	out := new(QueryEstimateSwapUtToYtResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateSwapUtToYt", in, out, opts...)
+func (c *queryClient) EstimateSwapToYt(ctx context.Context, in *QueryEstimateSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapToYtResponse, error) {
+	out := new(QueryEstimateSwapToYtResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateSwapToYt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) EstimateRequiredUtSwapToYt(ctx context.Context, in *QueryEstimateRequiredUtSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateRequiredUtSwapToYtResponse, error) {
-	out := new(QueryEstimateRequiredUtSwapToYtResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateRequiredUtSwapToYt", in, out, opts...)
+func (c *queryClient) EstimateRequiredDepositSwapToYt(ctx context.Context, in *QueryEstimateRequiredDepositSwapToYtRequest, opts ...grpc.CallOption) (*QueryEstimateRequiredDepositSwapToYtResponse, error) {
+	out := new(QueryEstimateRequiredDepositSwapToYtResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateRequiredDepositSwapToYt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) EstimateSwapMaturedYtToUt(ctx context.Context, in *QueryEstimateSwapMaturedYtToUtRequest, opts ...grpc.CallOption) (*QueryEstimateSwapMaturedYtToUtResponse, error) {
-	out := new(QueryEstimateSwapMaturedYtToUtResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateSwapMaturedYtToUt", in, out, opts...)
+func (c *queryClient) EstimateRedeemMaturedYt(ctx context.Context, in *QueryEstimateRedeemMaturedYtRequest, opts ...grpc.CallOption) (*QueryEstimateRedeemMaturedYtResponse, error) {
+	out := new(QueryEstimateRedeemMaturedYtResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.irs.Query/EstimateRedeemMaturedYt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2111,7 +2112,7 @@ type QueryServer interface {
 	Tranches(context.Context, *QueryTranchesRequest) (*QueryTranchesResponse, error)
 	// Tranche by id
 	Tranche(context.Context, *QueryTrancheRequest) (*QueryTrancheResponse, error)
-	// Estimate swap amount of UT/PT (in the pool)
+	// Estimate swap amount of Deposit_Token/PT (in the pool)
 	EstimateSwapInPool(context.Context, *QueryEstimateSwapInPoolRequest) (*QueryEstimateSwapInPoolResponse, error)
 	// Estimate mint amount of PT&YT pair
 	EstimateMintPtYtPair(context.Context, *QueryEstimateMintPtYtPairRequest) (*QueryEstimateMintPtYtPairResponse, error)
@@ -2121,12 +2122,12 @@ type QueryServer interface {
 	EstimateMintLiquidityPoolToken(context.Context, *QueryEstimateMintLiquidityPoolTokenRequest) (*QueryEstimateMintLiquidityPoolTokenResponse, error)
 	// Estimate redeem amount of liquidity pool token
 	EstimateRedeemLiquidityPoolToken(context.Context, *QueryEstimateRedeemLiquidityPoolTokenRequest) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error)
-	// Estimate swap UT to YT
-	EstimateSwapUtToYt(context.Context, *QueryEstimateSwapUtToYtRequest) (*QueryEstimateSwapUtToYtResponse, error)
-	// Estimate required UT amount to swap to YT
-	EstimateRequiredUtSwapToYt(context.Context, *QueryEstimateRequiredUtSwapToYtRequest) (*QueryEstimateRequiredUtSwapToYtResponse, error)
-	// Estimate swap matured YT to UT
-	EstimateSwapMaturedYtToUt(context.Context, *QueryEstimateSwapMaturedYtToUtRequest) (*QueryEstimateSwapMaturedYtToUtResponse, error)
+	// Estimate swap Deposit_Token to YT
+	EstimateSwapToYt(context.Context, *QueryEstimateSwapToYtRequest) (*QueryEstimateSwapToYtResponse, error)
+	// Estimate required Deposit_Token amount to swap to YT
+	EstimateRequiredDepositSwapToYt(context.Context, *QueryEstimateRequiredDepositSwapToYtRequest) (*QueryEstimateRequiredDepositSwapToYtResponse, error)
+	// Estimate redeem matured YT
+	EstimateRedeemMaturedYt(context.Context, *QueryEstimateRedeemMaturedYtRequest) (*QueryEstimateRedeemMaturedYtResponse, error)
 	// tranche PT APYs by id
 	TranchePtAPYs(context.Context, *QueryTranchePtAPYsRequest) (*QueryTranchePtAPYsResponse, error)
 	// tranche YT APYs by id
@@ -2175,14 +2176,14 @@ func (*UnimplementedQueryServer) EstimateMintLiquidityPoolToken(ctx context.Cont
 func (*UnimplementedQueryServer) EstimateRedeemLiquidityPoolToken(ctx context.Context, req *QueryEstimateRedeemLiquidityPoolTokenRequest) (*QueryEstimateRedeemLiquidityPoolTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EstimateRedeemLiquidityPoolToken not implemented")
 }
-func (*UnimplementedQueryServer) EstimateSwapUtToYt(ctx context.Context, req *QueryEstimateSwapUtToYtRequest) (*QueryEstimateSwapUtToYtResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EstimateSwapUtToYt not implemented")
+func (*UnimplementedQueryServer) EstimateSwapToYt(ctx context.Context, req *QueryEstimateSwapToYtRequest) (*QueryEstimateSwapToYtResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateSwapToYt not implemented")
 }
-func (*UnimplementedQueryServer) EstimateRequiredUtSwapToYt(ctx context.Context, req *QueryEstimateRequiredUtSwapToYtRequest) (*QueryEstimateRequiredUtSwapToYtResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EstimateRequiredUtSwapToYt not implemented")
+func (*UnimplementedQueryServer) EstimateRequiredDepositSwapToYt(ctx context.Context, req *QueryEstimateRequiredDepositSwapToYtRequest) (*QueryEstimateRequiredDepositSwapToYtResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateRequiredDepositSwapToYt not implemented")
 }
-func (*UnimplementedQueryServer) EstimateSwapMaturedYtToUt(ctx context.Context, req *QueryEstimateSwapMaturedYtToUtRequest) (*QueryEstimateSwapMaturedYtToUtResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EstimateSwapMaturedYtToUt not implemented")
+func (*UnimplementedQueryServer) EstimateRedeemMaturedYt(ctx context.Context, req *QueryEstimateRedeemMaturedYtRequest) (*QueryEstimateRedeemMaturedYtResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EstimateRedeemMaturedYt not implemented")
 }
 func (*UnimplementedQueryServer) TranchePtAPYs(ctx context.Context, req *QueryTranchePtAPYsRequest) (*QueryTranchePtAPYsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TranchePtAPYs not implemented")
@@ -2414,56 +2415,56 @@ func _Query_EstimateRedeemLiquidityPoolToken_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_EstimateSwapUtToYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEstimateSwapUtToYtRequest)
+func _Query_EstimateSwapToYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateSwapToYtRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).EstimateSwapUtToYt(ctx, in)
+		return srv.(QueryServer).EstimateSwapToYt(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.irs.Query/EstimateSwapUtToYt",
+		FullMethod: "/ununifi.irs.Query/EstimateSwapToYt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EstimateSwapUtToYt(ctx, req.(*QueryEstimateSwapUtToYtRequest))
+		return srv.(QueryServer).EstimateSwapToYt(ctx, req.(*QueryEstimateSwapToYtRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_EstimateRequiredUtSwapToYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEstimateRequiredUtSwapToYtRequest)
+func _Query_EstimateRequiredDepositSwapToYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateRequiredDepositSwapToYtRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).EstimateRequiredUtSwapToYt(ctx, in)
+		return srv.(QueryServer).EstimateRequiredDepositSwapToYt(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.irs.Query/EstimateRequiredUtSwapToYt",
+		FullMethod: "/ununifi.irs.Query/EstimateRequiredDepositSwapToYt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EstimateRequiredUtSwapToYt(ctx, req.(*QueryEstimateRequiredUtSwapToYtRequest))
+		return srv.(QueryServer).EstimateRequiredDepositSwapToYt(ctx, req.(*QueryEstimateRequiredDepositSwapToYtRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_EstimateSwapMaturedYtToUt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEstimateSwapMaturedYtToUtRequest)
+func _Query_EstimateRedeemMaturedYt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEstimateRedeemMaturedYtRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).EstimateSwapMaturedYtToUt(ctx, in)
+		return srv.(QueryServer).EstimateRedeemMaturedYt(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.irs.Query/EstimateSwapMaturedYtToUt",
+		FullMethod: "/ununifi.irs.Query/EstimateRedeemMaturedYt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EstimateSwapMaturedYtToUt(ctx, req.(*QueryEstimateSwapMaturedYtToUtRequest))
+		return srv.(QueryServer).EstimateRedeemMaturedYt(ctx, req.(*QueryEstimateRedeemMaturedYtRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2575,16 +2576,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_EstimateRedeemLiquidityPoolToken_Handler,
 		},
 		{
-			MethodName: "EstimateSwapUtToYt",
-			Handler:    _Query_EstimateSwapUtToYt_Handler,
+			MethodName: "EstimateSwapToYt",
+			Handler:    _Query_EstimateSwapToYt_Handler,
 		},
 		{
-			MethodName: "EstimateRequiredUtSwapToYt",
-			Handler:    _Query_EstimateRequiredUtSwapToYt_Handler,
+			MethodName: "EstimateRequiredDepositSwapToYt",
+			Handler:    _Query_EstimateRequiredDepositSwapToYt_Handler,
 		},
 		{
-			MethodName: "EstimateSwapMaturedYtToUt",
-			Handler:    _Query_EstimateSwapMaturedYtToUt_Handler,
+			MethodName: "EstimateRedeemMaturedYt",
+			Handler:    _Query_EstimateRedeemMaturedYt_Handler,
 		},
 		{
 			MethodName: "TranchePtAPYs",
@@ -3416,7 +3417,7 @@ func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) MarshalToSizedBuffer(dAt
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateSwapToYtRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3426,12 +3427,12 @@ func (m *QueryEstimateSwapUtToYtRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateSwapToYtRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateSwapToYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3458,7 +3459,7 @@ func (m *QueryEstimateSwapUtToYtRequest) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateSwapUtToYtResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateSwapToYtResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3468,12 +3469,12 @@ func (m *QueryEstimateSwapUtToYtResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateSwapUtToYtResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateSwapToYtResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateSwapUtToYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateSwapToYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3491,7 +3492,7 @@ func (m *QueryEstimateSwapUtToYtResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3501,12 +3502,12 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) Marshal() (dAtA []byte, err err
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3526,7 +3527,7 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) MarshalToSizedBuffer(dAtA []byt
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3536,18 +3537,18 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) Marshal() (dAtA []byte, err er
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.RequiredUtAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.RequiredDepositAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -3559,7 +3560,7 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) MarshalToSizedBuffer(dAtA []by
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateRedeemMaturedYtRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3569,12 +3570,12 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) Marshal() (dAtA []byte, err erro
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateRedeemMaturedYtRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateRedeemMaturedYtRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3594,7 +3595,7 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) MarshalToSizedBuffer(dAtA []byte
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEstimateRedeemMaturedYtResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3604,18 +3605,18 @@ func (m *QueryEstimateSwapMaturedYtToUtResponse) Marshal() (dAtA []byte, err err
 	return dAtA[:n], nil
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEstimateRedeemMaturedYtResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEstimateRedeemMaturedYtResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.UtAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.RedeemAmount.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -3676,9 +3677,9 @@ func (m *QueryTranchePtAPYsResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	var l int
 	_ = l
 	{
-		size := m.PtRatePerUt.Size()
+		size := m.PtRatePerDeposit.Size()
 		i -= size
-		if _, err := m.PtRatePerUt.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.PtRatePerDeposit.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintQuery(dAtA, i, uint64(size))
@@ -3747,9 +3748,9 @@ func (m *QueryTrancheYtAPYsResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	var l int
 	_ = l
 	{
-		size := m.YtRatePerUt.Size()
+		size := m.YtRatePerDeposit.Size()
 		i -= size
-		if _, err := m.YtRatePerUt.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.YtRatePerDeposit.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintQuery(dAtA, i, uint64(size))
@@ -3828,9 +3829,9 @@ func (m *QueryTranchePoolAPYsResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	i--
 	dAtA[i] = 0x2a
 	{
-		size := m.UtPercentageInPool.Size()
+		size := m.DepositTokenPercentageInPool.Size()
 		i -= size
-		if _, err := m.UtPercentageInPool.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.DepositTokenPercentageInPool.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintQuery(dAtA, i, uint64(size))
@@ -3838,9 +3839,9 @@ func (m *QueryTranchePoolAPYsResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	i--
 	dAtA[i] = 0x22
 	{
-		size := m.LiquidityRatePerUt.Size()
+		size := m.LiquidityRatePerDeposit.Size()
 		i -= size
-		if _, err := m.LiquidityRatePerUt.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LiquidityRatePerDeposit.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintQuery(dAtA, i, uint64(size))
@@ -4208,7 +4209,7 @@ func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryEstimateSwapUtToYtRequest) Size() (n int) {
+func (m *QueryEstimateSwapToYtRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4228,7 +4229,7 @@ func (m *QueryEstimateSwapUtToYtRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryEstimateSwapUtToYtResponse) Size() (n int) {
+func (m *QueryEstimateSwapToYtResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4239,7 +4240,7 @@ func (m *QueryEstimateSwapUtToYtResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtRequest) Size() (n int) {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4255,18 +4256,18 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryEstimateRequiredUtSwapToYtResponse) Size() (n int) {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.RequiredUtAmount.Size()
+	l = m.RequiredDepositAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtRequest) Size() (n int) {
+func (m *QueryEstimateRedeemMaturedYtRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4282,13 +4283,13 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryEstimateSwapMaturedYtToUtResponse) Size() (n int) {
+func (m *QueryEstimateRedeemMaturedYtResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.UtAmount.Size()
+	l = m.RedeemAmount.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -4313,7 +4314,7 @@ func (m *QueryTranchePtAPYsResponse) Size() (n int) {
 	_ = l
 	l = m.PtApy.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.PtRatePerUt.Size()
+	l = m.PtRatePerDeposit.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -4338,7 +4339,7 @@ func (m *QueryTrancheYtAPYsResponse) Size() (n int) {
 	_ = l
 	l = m.YtApy.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.YtRatePerUt.Size()
+	l = m.YtRatePerDeposit.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -4365,9 +4366,9 @@ func (m *QueryTranchePoolAPYsResponse) Size() (n int) {
 	n += 1 + l + sovQuery(uint64(l))
 	l = m.DiscountPtApy.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.LiquidityRatePerUt.Size()
+	l = m.LiquidityRatePerDeposit.Size()
 	n += 1 + l + sovQuery(uint64(l))
-	l = m.UtPercentageInPool.Size()
+	l = m.DepositTokenPercentageInPool.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	l = m.PtPercentageInPool.Size()
 	n += 1 + l + sovQuery(uint64(l))
@@ -6588,7 +6589,7 @@ func (m *QueryEstimateRedeemLiquidityPoolTokenResponse) Unmarshal(dAtA []byte) e
 	}
 	return nil
 }
-func (m *QueryEstimateSwapUtToYtRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateSwapToYtRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6611,10 +6612,10 @@ func (m *QueryEstimateSwapUtToYtRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateSwapUtToYtRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateSwapToYtRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateSwapUtToYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateSwapToYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6721,7 +6722,7 @@ func (m *QueryEstimateSwapUtToYtRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEstimateSwapUtToYtResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateSwapToYtResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6744,10 +6745,10 @@ func (m *QueryEstimateSwapUtToYtResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateSwapUtToYtResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateSwapToYtResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateSwapUtToYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateSwapToYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6804,7 +6805,7 @@ func (m *QueryEstimateSwapUtToYtResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEstimateRequiredUtSwapToYtRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateRequiredDepositSwapToYtRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6827,10 +6828,10 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateRequiredUtSwapToYtRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateRequiredDepositSwapToYtRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateRequiredUtSwapToYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateRequiredDepositSwapToYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6905,7 +6906,7 @@ func (m *QueryEstimateRequiredUtSwapToYtRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEstimateRequiredUtSwapToYtResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateRequiredDepositSwapToYtResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6928,15 +6929,15 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateRequiredUtSwapToYtResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateRequiredDepositSwapToYtResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateRequiredUtSwapToYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateRequiredDepositSwapToYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RequiredUtAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RequiredDepositAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -6963,7 +6964,7 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.RequiredUtAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.RequiredDepositAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6988,7 +6989,7 @@ func (m *QueryEstimateRequiredUtSwapToYtResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEstimateSwapMaturedYtToUtRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateRedeemMaturedYtRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7011,10 +7012,10 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateSwapMaturedYtToUtRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateRedeemMaturedYtRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateSwapMaturedYtToUtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateRedeemMaturedYtRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7089,7 +7090,7 @@ func (m *QueryEstimateSwapMaturedYtToUtRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEstimateSwapMaturedYtToUtResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEstimateRedeemMaturedYtResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7112,15 +7113,15 @@ func (m *QueryEstimateSwapMaturedYtToUtResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEstimateSwapMaturedYtToUtResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEstimateRedeemMaturedYtResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEstimateSwapMaturedYtToUtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEstimateRedeemMaturedYtResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UtAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RedeemAmount", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -7147,7 +7148,7 @@ func (m *QueryEstimateSwapMaturedYtToUtResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.UtAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.RedeemAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7306,7 +7307,7 @@ func (m *QueryTranchePtAPYsResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PtRatePerUt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field PtRatePerDeposit", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -7334,7 +7335,7 @@ func (m *QueryTranchePtAPYsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.PtRatePerUt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.PtRatePerDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7493,7 +7494,7 @@ func (m *QueryTrancheYtAPYsResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field YtRatePerUt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field YtRatePerDeposit", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -7521,7 +7522,7 @@ func (m *QueryTrancheYtAPYsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.YtRatePerUt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.YtRatePerDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7714,7 +7715,7 @@ func (m *QueryTranchePoolAPYsResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityRatePerUt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityRatePerDeposit", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -7742,13 +7743,13 @@ func (m *QueryTranchePoolAPYsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.LiquidityRatePerUt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LiquidityRatePerDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UtPercentageInPool", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DepositTokenPercentageInPool", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -7776,7 +7777,7 @@ func (m *QueryTranchePoolAPYsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.UtPercentageInPool.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DepositTokenPercentageInPool.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

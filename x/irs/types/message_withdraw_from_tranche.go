@@ -9,13 +9,13 @@ import (
 
 var _ sdk.Msg = &MsgWithdrawFromTranche{}
 
-func NewMsgWithdrawFromTranche(sender string, trancheId uint64, trancheType TrancheType, tokens sdk.Coins, requiredUt math.Int) *MsgWithdrawFromTranche {
+func NewMsgWithdrawFromTranche(sender string, trancheId uint64, trancheType TrancheType, tokens sdk.Coins, requiredRedeemAmount math.Int) *MsgWithdrawFromTranche {
 	return &MsgWithdrawFromTranche{
-		Sender:      sender,
-		TrancheId:   trancheId,
-		TrancheType: trancheType,
-		Tokens:      tokens,
-		RequiredUt:  requiredUt,
+		Sender:               sender,
+		TrancheId:            trancheId,
+		TrancheType:          trancheType,
+		Tokens:               tokens,
+		RequiredRedeemAmount: requiredRedeemAmount,
 	}
 }
 

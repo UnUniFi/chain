@@ -15,7 +15,7 @@ func (k msgServer) WithdrawFromTranche(goCtx context.Context, msg *types.MsgWith
 		return nil, err
 	}
 
-	err = k.WithdrawFromTranchePool(ctx, sender, msg.TrancheId, msg.TrancheType, msg.Tokens, msg.RequiredUt)
+	err = k.WithdrawFromTranchePool(ctx, sender, msg.TrancheId, msg.TrancheType, msg.Tokens, msg.RequiredRedeemAmount)
 	if err != nil {
 		return nil, err
 	}

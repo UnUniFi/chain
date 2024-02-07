@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEstimateRequiredUtSwapToYtRequest) (*types.QueryEstimateRequiredUtSwapToYtResponse, error) {
+func (k Keeper) EstimateRedeemMaturedYt(c context.Context, req *types.QueryEstimateRedeemMaturedYtRequest) (*types.QueryEstimateRedeemMaturedYtResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -20,15 +20,16 @@ func (k Keeper) EstimateRequiredUtSwapToYt(c context.Context, req *types.QueryEs
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	desiredAmount, ok := sdk.NewIntFromString(req.DesiredYtAmount)
+	ytDenom := types.YtDenom(tranche)
+	ytAmount, ok := sdk.NewIntFromString(req.YtAmount)
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	requiredUt, err := k.CalculateRequiredUtSwapToYt(ctx, tranche, desiredAmount)
+	redeemAmount, err := k.CalculateRedeemYtAmount(ctx, tranche, sdk.NewCoin(ytDenom, ytAmount))
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryEstimateRequiredUtSwapToYtResponse{
-		RequiredUtAmount: requiredUt,
+	return &types.QueryEstimateRedeemMaturedYtResponse{
+		RedeemAmount: sdk.NewCoin(tranche.DepositDenom, redeemAmount),
 	}, nil
 }
