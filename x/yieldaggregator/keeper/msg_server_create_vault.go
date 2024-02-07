@@ -52,9 +52,13 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 	}
 
 	for _, strategyWeight := range msg.StrategyWeights {
-		_, found := k.Keeper.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
+		val, found := k.Keeper.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			return nil, types.ErrInvalidStrategyInvolved
+		}
+		denomInfo := k.GetDenomInfo(ctx, val.Denom)
+		if denomInfo.Symbol != msg.Symbol {
+			return nil, types.ErrDenomDoesNotMatchVaultSymbol
 		}
 	}
 

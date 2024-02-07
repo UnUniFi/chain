@@ -33,7 +33,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 		interAcc := yieldaggregatortypes.IntermediaryAccountInfo{}
 		if ctx.ChainID() == "ununifi-beta-v1" { // mainnet
 			denomInfos = []yieldaggregatortypes.DenomInfo{
-				{ // ATOM.osmosis.ununifi
+				{ // ATOM.osmosis
 					Denom:  "ibc/20D06D04E1BC1FAC482FECC06C2E2879A596904D64D8BA3285B4A3789DEAF910",
 					Symbol: "ATOM",
 					Channels: []yieldaggregatortypes.TransferChannel{
@@ -49,7 +49,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 						},
 					},
 				},
-				{ // ATOM.ununifi
+				{ // ATOM.cosmoshub
 					Denom:  "ibc/25418646C017D377ADF3202FF1E43590D0DAE3346E594E8D78176A139A928F88",
 					Symbol: "ATOM",
 					Channels: []yieldaggregatortypes.TransferChannel{
@@ -57,6 +57,17 @@ func CreateUpgradeHandler(mm *module.Manager,
 							RecvChainId: "cosmoshub-4",
 							SendChainId: "ununifi-beta-v1",
 							ChannelId:   "channel-7",
+						},
+					},
+				},
+				{ // OSMO.osmosis
+					Denom:  "ibc/05AC4BBA78C5951339A47DD1BC1E7FC922A9311DF81C85745B1C162F516FF2F1",
+					Symbol: "OSMO",
+					Channels: []yieldaggregatortypes.TransferChannel{
+						{
+							RecvChainId: "osmosis-1",
+							SendChainId: "ununifi-beta-v1",
+							ChannelId:   "channel-4",
 						},
 					},
 				},
@@ -76,6 +87,17 @@ func CreateUpgradeHandler(mm *module.Manager,
 							SendChainId: "cosmoshub-4",
 							RecvChainId: "ununifi-beta-v1",
 							ChannelId:   "channel-683",
+						},
+					},
+				},
+				{
+					Symbol:        "OSMO",
+					NativeChainId: "osmosis-1",
+					Channels: []yieldaggregatortypes.TransferChannel{
+						{
+							SendChainId: "osmosis-1",
+							RecvChainId: "ununifi-beta-v1",
+							ChannelId:   "channel-2638",
 						},
 					},
 				},
