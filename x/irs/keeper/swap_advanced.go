@@ -63,7 +63,7 @@ func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.Tra
 		return sdk.Coin{}, types.ErrZeroDepositRate
 	}
 	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
-	loan := sdk.NewCoin(pool.Denom, loanAmount)
+	loan := sdk.NewCoin(pool.DepositDenom, loanAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
 	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
@@ -76,7 +76,7 @@ func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.Tra
 		return sdk.Coin{}, err
 	}
 	if loan.IsLT(estimatedSwap) {
-		return sdk.NewInt64Coin(pool.Denom, 0), nil
+		return sdk.NewInt64Coin(pool.DepositDenom, 0), nil
 	}
 	requiredDeposit := loan.Sub(estimatedSwap)
 	return requiredDeposit, nil
