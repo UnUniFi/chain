@@ -63,7 +63,7 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	if err != nil {
 		return nil, err
 	}
-	ytAPY := sdk.NewDecFromInt(redeemAmount.Sub(requiredDeposit.Amount)).QuoInt(requiredDeposit.Amount).Mul(maturityPerYear)
+	ytAPY := sdk.NewDecFromInt(redeemAmount.Sub(requiredDeposit.Amount)).QuoInt(requiredDeposit.Amount).Quo(maturityPerYear)
 	ytRate := sdk.NewDecFromInt(yt.Amount).QuoInt(requiredDeposit.Amount)
 
 	return &types.QueryTrancheYtAPYsResponse{
