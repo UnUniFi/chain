@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -83,29 +85,66 @@ func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.Tra
 }
 
 func (k Keeper) CalculateSwapToYt(ctx sdk.Context, pool types.TranchePool, tokenIn sdk.Coin) (sdk.Coin, error) {
+	// if tokenIn.Denom != pool.DepositDenom {
+	// 	return sdk.Coin{}, types.ErrInvalidDepositDenom
+	// }
+	// ytDenom := types.YtDenom(pool)
+	// ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	// moduleAddr := types.GetVaultModuleAddress(pool)
+	// amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+	// if amountFromStrategy.IsZero() {
+	// 	return sdk.Coin{}, types.ErrInvalidMathApprox
+	// }
+	// swapCoin := sdk.NewCoin(tokenIn.Denom, sdk.NewInt(1_000_000))
+	// pt, err := k.SimulateSwapPoolTokens(ctx, pool, swapCoin)
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+	// ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
+	// if ptRate.IsZero() {
+	// 	return sdk.Coin{}, types.ErrInvalidMathApprox
+	// }
+	// ytAmount := sdk.NewDecFromInt(tokenIn.Amount).MulInt(ytSupply.Amount).QuoInt(amountFromStrategy).Quo(ptRate).TruncateInt()
+	// return sdk.NewCoin(ytDenom, ytAmount), nil
 	if tokenIn.Denom != pool.DepositDenom {
 		return sdk.Coin{}, types.ErrInvalidDepositDenom
 	}
 	ytDenom := types.YtDenom(pool)
-	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
-	moduleAddr := types.GetVaultModuleAddress(pool)
-	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	ptDenom := types.PtDenom(pool)
+	ytAmount := tokenIn.Amount
+	// First
+	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, tokenIn)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-	if amountFromStrategy.IsZero() {
-		return sdk.Coin{}, types.ErrInvalidMathApprox
-	}
-	swapCoin := sdk.NewCoin(tokenIn.Denom, sdk.NewInt(1_000_000))
-	pt, err := k.SimulateSwapPoolTokens(ctx, pool, swapCoin)
+	estimatedSwap, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
-	if ptRate.IsZero() {
-		return sdk.Coin{}, types.ErrInvalidMathApprox
+	ytAmount = ytAmount.Add(estimatedSwap.Amount)
+
+	// TODO: Replace loop function
+	// count := 0
+	// for ; count < 5 && estimatedSwap.Amount.LT(sdk.NewInt(10)); count++ {
+	for estimatedSwap.Amount.LT(sdk.NewInt(10)) {
+		fmt.Println("estimatedSwap: ", estimatedSwap)
+		tokenIn = estimatedSwap
+
+		// next loop
+		estimatedPtAmount, err = k.CalculateMintPtAmount(ctx, pool, tokenIn)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		fmt.Println("estimatedPtAmount: ", estimatedPtAmount)
+		estimatedSwap, err = k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		ytAmount = ytAmount.Add(estimatedSwap.Amount)
 	}
-	ytAmount := sdk.NewDecFromInt(tokenIn.Amount).MulInt(ytSupply.Amount).QuoInt(amountFromStrategy).Quo(ptRate).TruncateInt()
 	return sdk.NewCoin(ytDenom, ytAmount), nil
 }
 
