@@ -26,7 +26,7 @@ func (k Keeper) TranchePtAPYs(c context.Context, req *types.QueryTranchePtAPYsRe
 	}
 	restMaturity := tranche.StartTime + tranche.Maturity - uint64(ctx.BlockTime().Unix())
 	maturityPerYear := sdk.NewDecFromInt(sdk.NewIntFromUint64(restMaturity)).QuoInt(sdk.NewInt(365 * 24 * 60 * 60))
-	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Mul(maturityPerYear)
+	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Quo(maturityPerYear)
 	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
 
 	return &types.QueryTranchePtAPYsResponse{
@@ -89,7 +89,7 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	}
 	restMaturity := tranche.StartTime + tranche.Maturity - uint64(ctx.BlockTime().Unix())
 	maturityPerYear := sdk.NewDecFromInt(sdk.NewIntFromUint64(restMaturity)).QuoInt(sdk.NewInt(365 * 24 * 60 * 60))
-	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Mul(maturityPerYear)
+	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Quo(maturityPerYear)
 	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
 
 	ptDenom := types.PtDenom(tranche)

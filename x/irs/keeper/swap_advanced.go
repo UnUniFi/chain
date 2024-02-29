@@ -107,6 +107,48 @@ func (k Keeper) CalculateSwapToYt(ctx sdk.Context, pool types.TranchePool, token
 	}
 	ytAmount := sdk.NewDecFromInt(tokenIn.Amount).MulInt(ytSupply.Amount).QuoInt(amountFromStrategy).Quo(ptRate).TruncateInt()
 	return sdk.NewCoin(ytDenom, ytAmount), nil
+
+	// Deprecated: Loop
+	// if tokenIn.Denom != pool.DepositDenom {
+	// 	return sdk.Coin{}, types.ErrInvalidDepositDenom
+	// }
+	// ytDenom := types.YtDenom(pool)
+	// ptDenom := types.PtDenom(pool)
+	// ytAmount := tokenIn.Amount
+	// // First
+	// estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, tokenIn)
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+	// estimatedSwap, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+	// ytAmount = ytAmount.Add(estimatedSwap.Amount)
+
+	// // TODO: Replace loop function
+	// for estimatedSwap.Amount.GT(tokenIn.Amount.Quo(sdk.NewInt(10))) {
+	// 	tokenIn = estimatedSwap
+
+	// 	// Mint PT + YT
+	// 	estimatedPtAmount, err = k.CalculateMintPtAmount(ctx, pool, tokenIn)
+	// 	if err != nil {
+	// 		return sdk.Coin{}, err
+	// 	}
+	// 	ytAmount = ytAmount.Add(estimatedSwap.Amount)
+	// 	estimatedSwap, err = k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+	// 	if err != nil {
+	// 		return sdk.Coin{}, err
+	// 	}
+	// 	if pool.PoolAssets[0].Denom == ptDenom {
+	// 		pool.PoolAssets[0] = sdk.NewCoin(ptDenom, pool.PoolAssets[0].Amount.Add(estimatedPtAmount))
+	// 		pool.PoolAssets[1] = sdk.NewCoin(pool.PoolAssets[1].Denom, pool.PoolAssets[1].Amount.Sub(estimatedSwap.Amount))
+	// 	} else {
+	// 		pool.PoolAssets[1] = sdk.NewCoin(ptDenom, pool.PoolAssets[1].Amount.Add(estimatedPtAmount))
+	// 		pool.PoolAssets[0] = sdk.NewCoin(pool.PoolAssets[0].Denom, pool.PoolAssets[0].Amount.Sub(estimatedSwap.Amount))
+	// 	}
+	// }
+	// return sdk.NewCoin(ytDenom, ytAmount), nil
 }
 
 func (k Keeper) SwapYtToDepositToken(ctx sdk.Context, sender sdk.AccAddress, pool types.TranchePool, requiredTokenAmount math.Int, tokens sdk.Coins) error {
