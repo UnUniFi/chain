@@ -70,6 +70,7 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	return &types.QueryTrancheYtAPYsResponse{
 		YtApy:            ytAPY,
 		YtRatePerDeposit: ytRate,
+		LsApy:            lsDenomApy,
 	}, nil
 }
 
