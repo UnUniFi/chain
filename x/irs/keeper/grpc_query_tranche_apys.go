@@ -44,8 +44,6 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	restMaturity := tranche.StartTime + tranche.Maturity - uint64(ctx.BlockTime().Unix())
-	maturityPerYear := sdk.NewDecFromInt(sdk.NewIntFromUint64(restMaturity)).QuoInt(sdk.NewInt(365 * 24 * 60 * 60))
 
 	ytDenom := types.YtDenom(tranche)
 	yt := sdk.NewCoin(ytDenom, sdk.NewInt(1_000_000))
@@ -59,12 +57,15 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 			YtRatePerDeposit: sdk.ZeroDec(),
 		}, nil
 	}
-	redeemAmount, err := k.CalculateRedeemYtAmount(ctx, tranche, yt)
+
+	// YT APY = stATOM APY * SwapRate (stATOM => YT) - 1
+	info := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
+	lsDenomApy, err := sdk.NewDecFromStr(info.DepositDenomApy)
 	if err != nil {
-		return nil, err
+		lsDenomApy = sdk.ZeroDec()
 	}
-	ytAPY := sdk.NewDecFromInt(redeemAmount.Sub(requiredDeposit.Amount)).QuoInt(requiredDeposit.Amount).Quo(maturityPerYear)
 	ytRate := sdk.NewDecFromInt(yt.Amount).QuoInt(requiredDeposit.Amount)
+	ytAPY := lsDenomApy.Mul(ytRate).Sub(sdk.OneDec())
 
 	return &types.QueryTrancheYtAPYsResponse{
 		YtApy:            ytAPY,

@@ -78,13 +78,14 @@ type DenomInfo struct {
 	Denom            string `json:"denom"`
 	DepositDenom     string `json:"deposit_denom"`
 	DepositDenomRate string `json:"deposit_denom_rate"`
+	DepositDenomApy  string `json:"deposit_denom_apy"`
 	TargetChainId    string `json:"target_chain_id"`
 	TargetChainDenom string `json:"target_chain_denom"`
 	TargetChainAddr  string `json:"target_chain_addr"`
 }
 
 func (k Keeper) GetStrategyDepositInfo(ctx sdk.Context, strategyContract string) (info DenomInfo) {
-	wasmQuery := fmt.Sprintf(`{"deposit_denom":{}}`)
+	wasmQuery := `{"deposit_denom":{}}`
 	contractAddr := sdk.MustAccAddressFromBech32(strategyContract)
 	result, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
 	if err != nil {
