@@ -111,13 +111,9 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 
 	// mint PT
 	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
-		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
+		// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
 		ptAmount := utAmount.
-			Sub(
-				utAmount.
-					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
-					Quo(interestSupply.Amount),
-			)
+			Sub(utAmount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
 		return ptAmount, nil
 	}
 
