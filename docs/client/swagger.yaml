@@ -8566,6 +8566,8 @@ paths:
                 type: string
               yt_rate_per_deposit:
                 type: string
+              ls_apy:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -13499,6 +13501,8 @@ definitions:
       yt_apy:
         type: string
       yt_rate_per_deposit:
+        type: string
+      ls_apy:
         type: string
   ununifi.irs.QueryTranchesResponse:
     type: object
