@@ -26,12 +26,6 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	ptDenom := types.PtDenom(pool)
 	ytDenom := types.YtDenom(pool)
 
-	ptAmount, err := k.CalculateMintPtAmount(ctx, pool, depositAmount)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
-	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
-
 	contractAddr := sdk.MustAccAddressFromBech32(pool.StrategyContract)
 
 	// Stake to strategy
@@ -51,8 +45,23 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 		}
 	}
 
+	// get rate deposit_denom : denom
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	if rate.IsZero() {
+		return sdk.ZeroInt(), types.ErrZeroDepositRate
+	}
+
+	// old: PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	// ptAmount, err := k.CalculateMintPtAmount(ctx, pool, depositAmount)
+	// if err != nil {
+	// 	return sdk.ZeroInt(), err
+	// }
+	// ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, ptAmount)}
+
 	// mint PT
-	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	amount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+	ptCoins := sdk.Coins{sdk.NewCoin(ptDenom, amount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -64,14 +73,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 
 	// mint YT
 	// YT mint amount = usedUnderlying
-	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
-	if rate.IsZero() {
-		return sdk.ZeroInt(), types.ErrZeroDepositRate
-	}
-	ytAmount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
-
-	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, ytAmount)}
+	ytCoins := sdk.Coins{sdk.NewCoin(ytDenom, amount)}
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ytCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -80,10 +82,10 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-	return ptAmount, nil
+	return amount, nil
 }
 
-// CalculateMintPtAmount calculates the amount of PT to be minted PT & YT pair
+// deprecated: CalculateMintPtAmount calculates the amount of PT to be minted PT & YT pair
 func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, depositAmount sdk.Coin) (math.Int, error) {
 	moduleAddr := types.GetVaultModuleAddress(pool)
 

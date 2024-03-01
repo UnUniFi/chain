@@ -52,10 +52,7 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 		return nil, err
 	}
 	if requiredDeposit.IsZero() {
-		return &types.QueryTrancheYtAPYsResponse{
-			YtApy:            sdk.ZeroDec(),
-			YtRatePerDeposit: sdk.ZeroDec(),
-		}, nil
+		return nil, types.ErrNoDepositRequired
 	}
 
 	// YT APY = stATOM APY * SwapRate (stATOM => YT) - 1

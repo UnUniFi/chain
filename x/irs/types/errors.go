@@ -33,4 +33,5 @@ var (
 	ErrInvalidPoolAssets       = errors.Register(ModuleName, 26, "invalid pool assets")
 	ErrZeroDepositRate         = errors.Register(ModuleName, 27, "zero deposit rate")
 	ErrNoDepositDenomExists    = errors.Register(ModuleName, 28, "no deposit denom exists")
+	ErrNoDepositRequired       = errors.Register(ModuleName, 28, "no deposit required")
 )

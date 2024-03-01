@@ -65,13 +65,15 @@ func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.Tra
 	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
 	loan := sdk.NewCoin(pool.DepositDenom, loanAmount)
 	ptDenom := types.PtDenom(pool)
-	// estimation 2. PT amount to mint
-	estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
+
+	// deprecated: estimation 2. PT amount to mint
+	// estimatedPtAmount, err := k.CalculateMintPtAmount(ctx, pool, loan)
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+
 	// estimation 3. token amount to get by selling PT
-	estimatedSwap, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, estimatedPtAmount))
+	estimatedSwap, err := k.SimulateSwapPoolTokens(ctx, pool, sdk.NewCoin(ptDenom, loanAmount))
 	if err != nil {
 		return sdk.Coin{}, err
 	}

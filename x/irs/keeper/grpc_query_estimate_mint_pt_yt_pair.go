@@ -27,15 +27,17 @@ func (k Keeper) EstimateMintPtYtPair(c context.Context, req *types.QueryEstimate
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
-	mintAmount, err := k.CalculateMintPtAmount(ctx, tranche, sdk.NewCoin(req.Denom, depositAmount))
-	if err != nil {
-		return nil, err
-	}
+
+	// old impl
+	// mintAmount, err := k.CalculateMintPtAmount(ctx, tranche, sdk.NewCoin(req.Denom, depositAmount))
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	ptDenom := types.PtDenom(tranche)
 	ytDenom := types.YtDenom(tranche)
 	return &types.QueryEstimateMintPtYtPairResponse{
-		PtAmount: sdk.NewCoin(ptDenom, mintAmount),
+		PtAmount: sdk.NewCoin(ptDenom, depositAmount),
 		YtAmount: sdk.NewCoin(ytDenom, depositAmount),
 	}, nil
 }
