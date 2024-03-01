@@ -321,6 +321,8 @@ func (k Keeper) CalculateRedeemYtAmount(ctx sdk.Context, pool types.TranchePool,
 		return sdk.ZeroInt(), err
 	}
 
+	// vault amount: UT (NOT deposit_denom) present in strategy
+	// Redeemed UT Amount = (amount in vault - PT supply) * (redeem YT / YT supply)
 	utAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
 	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
