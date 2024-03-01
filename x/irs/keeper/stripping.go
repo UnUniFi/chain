@@ -52,7 +52,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	}
 
 	// mint PT
-	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -111,9 +111,13 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 
 	// mint PT
 	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
-		// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
 		ptAmount := utAmount.
-			Sub(utAmount.Mul(amountFromStrategy).Quo(interestSupply.Amount))
+			Sub(
+				utAmount.
+					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
+					Quo(interestSupply.Amount),
+			)
 		return ptAmount, nil
 	}
 
