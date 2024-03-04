@@ -186,9 +186,10 @@ func (k Keeper) CalculateRedeemRequiredPtAndYtAmount(ctx sdk.Context, pool types
 	if rate.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
 	}
-	utAmount := sdk.NewDecFromInt(redeemAmount).Quo(rate).TruncateInt()
-	requiredPtAmount := ptSupply.Amount.Mul(utAmount).Quo(amountFromStrategy)
-	requiredYtAmount := ytSupply.Amount.Mul(utAmount).Quo(amountFromStrategy)
+	utAmountRedeem := sdk.NewDecFromInt(redeemAmount).Quo(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+	requiredPtAmount := ptSupply.Amount.Mul(utAmountRedeem).Quo(utAmountFromStrategy)
+	requiredYtAmount := ytSupply.Amount.Mul(utAmountRedeem).Quo(utAmountFromStrategy)
 	requiredPt := sdk.NewCoin(ptDenom, requiredPtAmount)
 	requiredYt := sdk.NewCoin(ytDenom, requiredYtAmount)
 	return requiredPt, requiredYt, nil
@@ -216,25 +217,28 @@ func (k Keeper) CalculateRedeemAmount(ctx sdk.Context, pool types.TranchePool, t
 	if ytSupply.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
 	}
+
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+
+	if rate.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
+	}
 	var utAmount math.Int
 	var requiredCoin sdk.Coin
 
 	if tokenIn.Denom == ptDenom {
 		ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-		utAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
+		utAmount = utAmountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ytSupply.Amount).Quo(ptSupply.Amount)
 		requiredCoin = sdk.NewCoin(ytDenom, requiredAmount)
 	} else if tokenIn.Denom == ytDenom {
-		utAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
+		utAmount = utAmountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ptSupply.Amount).Quo(ytSupply.Amount)
 		requiredCoin = sdk.NewCoin(ptDenom, requiredAmount)
 	}
 
-	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
-	if rate.IsZero() {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
-	}
 	redeemAmount := sdk.NewDecFromInt(utAmount).Mul(rate).TruncateInt()
 
 	redeemCoin := sdk.NewCoin(redeemDenom, redeemAmount)
