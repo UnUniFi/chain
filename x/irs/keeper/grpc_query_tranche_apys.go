@@ -71,14 +71,15 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 		return nil, types.ErrNoDepositRequired
 	}
 
-	// YT APY = stATOM APY * SwapRate (stATOM => YT) - 1
+	// YT offers the APY multiplied by YT's swap rate multiplied by the underlying APY without guarantee of principal.
+	// YT APY = stATOM APY * SwapRate (stATOM => YT)
 	info := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
 	lsDenomApy, err := sdk.NewDecFromStr(info.DepositDenomApy)
 	if err != nil {
 		lsDenomApy = sdk.ZeroDec()
 	}
 	ytRate := sdk.NewDecFromInt(yt.Amount).QuoInt(requiredDeposit.Amount)
-	ytAPY := lsDenomApy.Mul(ytRate).Sub(sdk.OneDec())
+	ytAPY := lsDenomApy.Mul(ytRate)
 
 	return &types.QueryTrancheYtAPYsResponse{
 		YtApy:            ytAPY,
