@@ -320,18 +320,19 @@ func (k Keeper) CalculateRedeemYtAmount(ctx sdk.Context, pool types.TranchePool,
 	}
 
 	moduleAddr := types.GetVaultModuleAddress(pool)
-	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-
-	utAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
 	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
 	if rate.IsZero() {
 		return sdk.ZeroInt(), types.ErrZeroDepositRate
 	}
-	redeemAmount := sdk.NewDecFromInt(utAmount).Mul(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+
+	utRedeemAmount := utAmountFromStrategy.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	redeemAmount := sdk.NewDecFromInt(utRedeemAmount).Mul(rate).TruncateInt()
 	return redeemAmount, nil
 }
 
