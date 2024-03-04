@@ -19,7 +19,15 @@ func (k Keeper) TranchePtAPYs(c context.Context, req *types.QueryTranchePtAPYsRe
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	swapCoin := sdk.NewCoin(tranche.DepositDenom, sdk.NewInt(1_000_000)) // 1 stATOM
+	depositAmount := sdk.NewInt(1_000_000) // 1 stATOM
+	var ok bool
+	if req.DepositAmount != "" {
+		depositAmount, ok = sdk.NewIntFromString(req.DepositAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	swapCoin := sdk.NewCoin(tranche.DepositDenom, depositAmount)
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err
@@ -46,7 +54,15 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	}
 
 	ytDenom := types.YtDenom(tranche)
-	yt := sdk.NewCoin(ytDenom, sdk.NewInt(10_000_000)) // 10 YT (about 10% APY for mint)
+	desiredYtAmount := sdk.NewInt(10_000_000) // 10 YT (about 10% APY for mint)
+	var ok bool
+	if req.DesiredYtAmount != "" {
+		desiredYtAmount, ok = sdk.NewIntFromString(req.DesiredYtAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	yt := sdk.NewCoin(ytDenom, desiredYtAmount)
 	requiredDeposit, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, yt.Amount)
 	if err != nil {
 		return nil, err
@@ -80,7 +96,15 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	swapCoin := sdk.NewCoin(tranche.DepositDenom, sdk.NewInt(1_000_000))
+	depositAmount := sdk.NewInt(1_000_000) // 1 stATOM
+	var ok bool
+	if req.DepositAmount != "" {
+		depositAmount, ok = sdk.NewIntFromString(req.DepositAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	swapCoin := sdk.NewCoin(tranche.DepositDenom, depositAmount)
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err
@@ -107,7 +131,7 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	}
 	discountPtAPY := ptAPY.Mul(ptPercentage)
 
-	lpAmount := sdk.NewInt(1_000_000)
+	lpAmount := sdk.NewInt(1_000_000) // 1 LP
 	requiredCoins, err := GetMaximalNoSwapLPAmount(ctx, tranche, lpAmount)
 	if err != nil {
 		return nil, err
