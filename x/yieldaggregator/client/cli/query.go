@@ -36,6 +36,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQuerySymbolInfo(),
 		CmdQueryDenomInfo(),
 		CmdQueryIntermediaryAccounts(),
+		CmdVaultAddress(),
 	)
 
 	return cmd

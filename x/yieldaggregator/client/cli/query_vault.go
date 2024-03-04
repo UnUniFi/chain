@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
@@ -165,6 +167,31 @@ func CmdVaultEstimatedRedeemAmount() *cobra.Command {
 			}
 
 			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdVaultAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-vault-address [id]",
+		Short: "shows a vault address",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			vaultModName := types.GetVaultModuleAccountName(id)
+			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+
+			return clientCtx.PrintString(vaultModAddr.String())
 		},
 	}
 
