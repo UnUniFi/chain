@@ -235,6 +235,7 @@ message QueryEstimateRedeemMaturedYtResponse {
 
 message QueryTranchePtAPYsRequest {
   uint64 id = 1;
+  string deposit_amount = 2;
 }
 
 message QueryTranchePtAPYsResponse {
@@ -252,6 +253,7 @@ message QueryTranchePtAPYsResponse {
 
 message QueryTrancheYtAPYsRequest {
   uint64 id = 1;
+  string desired_yt_amount = 2;
 }
 
 message QueryTrancheYtAPYsResponse {
@@ -274,6 +276,7 @@ message QueryTrancheYtAPYsResponse {
 
 message QueryTranchePoolAPYsRequest {
   uint64 id = 1;
+  string deposit_amount = 2;
 }
 
 message QueryTranchePoolAPYsResponse {
