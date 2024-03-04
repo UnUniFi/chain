@@ -52,7 +52,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	}
 
 	// mint PT
-	// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
+	// PT mint amount = usedUnderlying * (1-(strategyAmount-ptSupply)/ytSupply)
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -89,11 +89,11 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 
 	ytDenom := types.YtDenom(pool)
 	ptDenom := types.PtDenom(pool)
-	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
 
 	// Initial deposit
-	if interestSupply.IsZero() {
+	if ytSupply.IsZero() {
 		return depositAmount.Amount, nil
 	}
 
@@ -107,21 +107,23 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 	if rate.IsZero() {
 		return sdk.ZeroInt(), types.ErrZeroDepositRate
 	}
-	utAmount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+	utAmountDeposit := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
 
 	// mint PT
-	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
-		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
-		ptAmount := utAmount.
+	if ptSupply.IsPositive() && utAmountFromStrategy.GT(ptSupply.Amount) {
+		// PT mint amount = depositUnderlying * (1-(strategyAmount-ptSupply)/ytSupply)
+		// (strategyUTAmount-ptSupply)/ytSupply is 1YT value(UT based)
+		ptAmount := utAmountDeposit.
 			Sub(
-				utAmount.
-					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
-					Quo(interestSupply.Amount),
+				utAmountDeposit.
+					Mul(utAmountFromStrategy.Sub(ptSupply.Amount)).
+					Quo(ytSupply.Amount),
 			)
 		return ptAmount, nil
 	}
 
-	return utAmount, nil
+	return utAmountDeposit, nil
 }
 
 // RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
