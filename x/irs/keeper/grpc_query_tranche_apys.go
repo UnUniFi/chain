@@ -19,7 +19,15 @@ func (k Keeper) TranchePtAPYs(c context.Context, req *types.QueryTranchePtAPYsRe
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	swapCoin := sdk.NewCoin(tranche.DepositDenom, sdk.NewInt(1_000_000))
+	depositAmount := sdk.NewInt(1_000_000) // 1 stATOM
+	var ok bool
+	if req.DepositAmount != "" {
+		depositAmount, ok = sdk.NewIntFromString(req.DepositAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	swapCoin := sdk.NewCoin(tranche.DepositDenom, depositAmount)
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err
@@ -46,26 +54,32 @@ func (k Keeper) TrancheYtAPYs(c context.Context, req *types.QueryTrancheYtAPYsRe
 	}
 
 	ytDenom := types.YtDenom(tranche)
-	yt := sdk.NewCoin(ytDenom, sdk.NewInt(1_000_000))
+	desiredYtAmount := sdk.NewInt(10_000_000) // 10 YT (about 10% APY for mint)
+	var ok bool
+	if req.DesiredYtAmount != "" {
+		desiredYtAmount, ok = sdk.NewIntFromString(req.DesiredYtAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	yt := sdk.NewCoin(ytDenom, desiredYtAmount)
 	requiredDeposit, err := k.CalculateRequiredDepositSwapToYt(ctx, tranche, yt.Amount)
 	if err != nil {
 		return nil, err
 	}
 	if requiredDeposit.IsZero() {
-		return &types.QueryTrancheYtAPYsResponse{
-			YtApy:            sdk.ZeroDec(),
-			YtRatePerDeposit: sdk.ZeroDec(),
-		}, nil
+		return nil, types.ErrNoDepositRequired
 	}
 
-	// YT APY = stATOM APY * SwapRate (stATOM => YT) - 1
+	// YT offers the APY multiplied by YT's swap rate multiplied by the underlying APY without guarantee of principal.
+	// YT APY = stATOM APY * SwapRate (stATOM => YT)
 	info := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
 	lsDenomApy, err := sdk.NewDecFromStr(info.DepositDenomApy)
 	if err != nil {
 		lsDenomApy = sdk.ZeroDec()
 	}
 	ytRate := sdk.NewDecFromInt(yt.Amount).QuoInt(requiredDeposit.Amount)
-	ytAPY := lsDenomApy.Mul(ytRate).Sub(sdk.OneDec())
+	ytAPY := lsDenomApy.Mul(ytRate)
 
 	return &types.QueryTrancheYtAPYsResponse{
 		YtApy:            ytAPY,
@@ -83,7 +97,15 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	if !found {
 		return nil, types.ErrTrancheNotFound
 	}
-	swapCoin := sdk.NewCoin(tranche.DepositDenom, sdk.NewInt(1_000_000))
+	depositAmount := sdk.NewInt(1_000_000) // 1 stATOM
+	var ok bool
+	if req.DepositAmount != "" {
+		depositAmount, ok = sdk.NewIntFromString(req.DepositAmount)
+		if !ok {
+			return nil, types.ErrInvalidAmount
+		}
+	}
+	swapCoin := sdk.NewCoin(tranche.DepositDenom, depositAmount)
 	pt, err := k.SimulateSwapPoolTokens(ctx, tranche, swapCoin)
 	if err != nil {
 		return nil, err
@@ -110,7 +132,7 @@ func (k Keeper) TranchePoolAPYs(c context.Context, req *types.QueryTranchePoolAP
 	}
 	discountPtAPY := ptAPY.Mul(ptPercentage)
 
-	lpAmount := sdk.NewInt(1_000_000)
+	lpAmount := sdk.NewInt(1_000_000) // 1 LP
 	requiredCoins, err := GetMaximalNoSwapLPAmount(ctx, tranche, lpAmount)
 	if err != nil {
 		return nil, err

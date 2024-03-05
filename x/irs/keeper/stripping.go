@@ -52,7 +52,7 @@ func (k Keeper) MintPtYtPair(ctx sdk.Context, sender sdk.AccAddress, pool types.
 	}
 
 	// mint PT
-	// PT mint amount = usedUnderlying * (1-(strategyAmount)/interestSupply)
+	// PT mint amount = usedUnderlying * (1-(strategyAmount-ptSupply)/ytSupply)
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, ptCoins)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -89,11 +89,11 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 
 	ytDenom := types.YtDenom(pool)
 	ptDenom := types.PtDenom(pool)
-	interestSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
+	ytSupply := k.bankKeeper.GetSupply(ctx, ytDenom)
 	ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
 
 	// Initial deposit
-	if interestSupply.IsZero() {
+	if ytSupply.IsZero() {
 		return depositAmount.Amount, nil
 	}
 
@@ -107,21 +107,23 @@ func (k Keeper) CalculateMintPtAmount(ctx sdk.Context, pool types.TranchePool, d
 	if rate.IsZero() {
 		return sdk.ZeroInt(), types.ErrZeroDepositRate
 	}
-	utAmount := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+	utAmountDeposit := sdk.NewDecFromInt(depositAmount.Amount).Quo(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
 
 	// mint PT
-	if ptSupply.IsPositive() && amountFromStrategy.GT(ptSupply.Amount) {
-		// PT mint amount = usedUnderlying * (1-(strategyAmount-ptAmount)/interestSupply)
-		ptAmount := utAmount.
+	if ptSupply.IsPositive() && utAmountFromStrategy.GT(ptSupply.Amount) {
+		// PT mint amount = depositUnderlying * (1-(strategyAmount-ptSupply)/ytSupply)
+		// (strategyUTAmount-ptSupply)/ytSupply is 1YT value(UT based)
+		ptAmount := utAmountDeposit.
 			Sub(
-				utAmount.
-					Mul(amountFromStrategy.Sub(ptSupply.Amount)).
-					Quo(interestSupply.Amount),
+				utAmountDeposit.
+					Mul(utAmountFromStrategy.Sub(ptSupply.Amount)).
+					Quo(ytSupply.Amount),
 			)
 		return ptAmount, nil
 	}
 
-	return utAmount, nil
+	return utAmountDeposit, nil
 }
 
 // RedeemPtYtPair redeems Pt and Yt pair and can be executed before maturity
@@ -184,9 +186,10 @@ func (k Keeper) CalculateRedeemRequiredPtAndYtAmount(ctx sdk.Context, pool types
 	if rate.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
 	}
-	utAmount := sdk.NewDecFromInt(redeemAmount).Quo(rate).TruncateInt()
-	requiredPtAmount := ptSupply.Amount.Mul(utAmount).Quo(amountFromStrategy)
-	requiredYtAmount := ytSupply.Amount.Mul(utAmount).Quo(amountFromStrategy)
+	utAmountRedeem := sdk.NewDecFromInt(redeemAmount).Quo(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+	requiredPtAmount := ptSupply.Amount.Mul(utAmountRedeem).Quo(utAmountFromStrategy)
+	requiredYtAmount := ytSupply.Amount.Mul(utAmountRedeem).Quo(utAmountFromStrategy)
 	requiredPt := sdk.NewCoin(ptDenom, requiredPtAmount)
 	requiredYt := sdk.NewCoin(ytDenom, requiredYtAmount)
 	return requiredPt, requiredYt, nil
@@ -214,25 +217,28 @@ func (k Keeper) CalculateRedeemAmount(ctx sdk.Context, pool types.TranchePool, t
 	if ytSupply.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrSupplyNotFound
 	}
+
+	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
+	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+
+	if rate.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
+	}
 	var utAmount math.Int
 	var requiredCoin sdk.Coin
 
 	if tokenIn.Denom == ptDenom {
 		ptSupply := k.bankKeeper.GetSupply(ctx, ptDenom)
-		utAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
+		utAmount = utAmountFromStrategy.Mul(tokenIn.Amount).Quo(ptSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ytSupply.Amount).Quo(ptSupply.Amount)
 		requiredCoin = sdk.NewCoin(ytDenom, requiredAmount)
 	} else if tokenIn.Denom == ytDenom {
-		utAmount = amountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
+		utAmount = utAmountFromStrategy.Mul(tokenIn.Amount).Quo(ytSupply.Amount)
 		requiredAmount := tokenIn.Amount.Mul(ptSupply.Amount).Quo(ytSupply.Amount)
 		requiredCoin = sdk.NewCoin(ptDenom, requiredAmount)
 	}
 
-	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
-	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
-	if rate.IsZero() {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroDepositRate
-	}
 	redeemAmount := sdk.NewDecFromInt(utAmount).Mul(rate).TruncateInt()
 
 	redeemCoin := sdk.NewCoin(redeemDenom, redeemAmount)
@@ -314,18 +320,19 @@ func (k Keeper) CalculateRedeemYtAmount(ctx sdk.Context, pool types.TranchePool,
 	}
 
 	moduleAddr := types.GetVaultModuleAddress(pool)
-	vaultAmount, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
+	amountFromStrategy, err := k.GetAmountFromStrategy(ctx, moduleAddr, pool.StrategyContract)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
-
-	utAmount := vaultAmount.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
 	info := k.GetStrategyDepositInfo(ctx, pool.StrategyContract)
 	rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
 	if rate.IsZero() {
 		return sdk.ZeroInt(), types.ErrZeroDepositRate
 	}
-	redeemAmount := sdk.NewDecFromInt(utAmount).Mul(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+
+	utRedeemAmount := utAmountFromStrategy.Sub(ptSupply.Amount).Mul(ytAmount.Amount).Quo(ytSupply.Amount)
+	redeemAmount := sdk.NewDecFromInt(utRedeemAmount).Mul(rate).TruncateInt()
 	return redeemAmount, nil
 }
 
