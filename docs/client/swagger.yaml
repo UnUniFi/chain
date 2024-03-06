@@ -8506,6 +8506,10 @@ paths:
           required: true
           type: string
           format: uint64
+        - name: deposit_amount
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /ununifi/irs/tranche/{id}/pt-apy:
@@ -8550,6 +8554,10 @@ paths:
           required: true
           type: string
           format: uint64
+        - name: deposit_amount
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /ununifi/irs/tranche/{id}/yt-apy:
@@ -8596,6 +8604,10 @@ paths:
           required: true
           type: string
           format: uint64
+        - name: desired_yt_amount
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /ununifi/irs/tranches/{strategy_contract}:
