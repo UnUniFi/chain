@@ -24,6 +24,23 @@ func (k Keeper) EstimateSwapInPool(c context.Context, req *types.QueryEstimateSw
 	if !ok {
 		return nil, types.ErrInvalidAmount
 	}
+	ptDenom := types.PtDenom(tranche)
+	if req.Denom == ptDenom {
+		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
+			info := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)
+			rate := sdk.MustNewDecFromStr(info.DepositDenomRate)
+			if rate.IsZero() {
+				return &types.QueryEstimateSwapInPoolResponse{
+					Amount: sdk.NewCoin(tranche.DepositDenom, sdk.ZeroInt()),
+				}, nil
+			}
+			amount := sdk.NewDecFromInt(depositAmount).Quo(rate).TruncateInt()
+			return &types.QueryEstimateSwapInPoolResponse{
+				Amount: sdk.NewCoin(tranche.DepositDenom, amount),
+			}, nil
+		}
+	}
+
 	amount, err := k.SimulateSwapPoolTokens(ctx, tranche, sdk.NewCoin(req.Denom, depositAmount))
 	if err != nil {
 		return nil, err
