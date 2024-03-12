@@ -25,6 +25,8 @@ func (k Keeper) EstimateSwapInPool(c context.Context, req *types.QueryEstimateSw
 		return nil, types.ErrInvalidAmount
 	}
 	ptDenom := types.PtDenom(tranche)
+	// if matured, swap PT runs RedeemPtAtMaturity
+	// So, this query returns the redeem value
 	if req.Denom == ptDenom {
 		if tranche.StartTime+tranche.Maturity <= uint64(ctx.BlockTime().Unix()) {
 			info := k.GetStrategyDepositInfo(ctx, tranche.StrategyContract)

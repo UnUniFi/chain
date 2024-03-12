@@ -33,9 +33,6 @@ func (k Keeper) TranchePtAPYs(c context.Context, req *types.QueryTranchePtAPYsRe
 		return nil, err
 	}
 	restMaturity := tranche.StartTime + tranche.Maturity - uint64(ctx.BlockTime().Unix())
-	if restMaturity < 0 {
-		restMaturity = 0
-	}
 	maturityPerYear := sdk.NewDecFromInt(sdk.NewIntFromUint64(restMaturity)).QuoInt(sdk.NewInt(365 * 24 * 60 * 60))
 	ptAPY := sdk.NewDecFromInt(pt.Amount.Sub(swapCoin.Amount)).QuoInt(swapCoin.Amount).Quo(maturityPerYear)
 	ptRate := sdk.NewDecFromInt(pt.Amount).QuoInt(swapCoin.Amount)
