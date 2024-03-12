@@ -17,7 +17,7 @@ func (k Keeper) SwapToYt(ctx sdk.Context, sender sdk.AccAddress, pool types.Tran
 	if rate.IsZero() {
 		return types.ErrZeroDepositRate
 	}
-	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
+	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Quo(rate).TruncateInt()
 	loan := sdk.NewCoin(tokenIn.Denom, loanAmount)
 	ptDenom := types.PtDenom(pool)
 	requiredDeposit, err := k.CalculateRequiredDepositSwapToYt(ctx, pool, requiredYtAmount)
@@ -62,7 +62,7 @@ func (k Keeper) CalculateRequiredDepositSwapToYt(ctx sdk.Context, pool types.Tra
 	if rate.IsZero() {
 		return sdk.Coin{}, types.ErrZeroDepositRate
 	}
-	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Mul(rate).TruncateInt()
+	loanAmount := sdk.NewDecFromInt(requiredYtAmount).Quo(rate).TruncateInt()
 	loan := sdk.NewCoin(pool.DepositDenom, loanAmount)
 	ptDenom := types.PtDenom(pool)
 	// estimation 2. PT amount to mint
@@ -110,7 +110,7 @@ func (k Keeper) CalculateSwapToYt(ctx sdk.Context, pool types.TranchePool, token
 	if rate.IsZero() {
 		return sdk.Coin{}, types.ErrZeroDepositRate
 	}
-	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Quo(rate).TruncateInt()
+	utAmountFromStrategy := sdk.NewDecFromInt(amountFromStrategy).Mul(rate).TruncateInt()
 	ytAmount := sdk.NewDecFromInt(tokenIn.Amount).MulInt(ytSupply.Amount).QuoInt(utAmountFromStrategy).Quo(ptRate).TruncateInt()
 	return sdk.NewCoin(ytDenom, ytAmount), nil
 }
