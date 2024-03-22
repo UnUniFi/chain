@@ -10,12 +10,12 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/irs/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd(queryRoute string) *cobra.Command {
-	// Group yieldaggregator queries under a subcommand
+	// Group irs queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
@@ -27,16 +27,22 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(
 		CmdQueryParams(),
 		CmdListVault(),
-		CmdListStrategy(),
-		CmdShowStrategy(),
 		CmdShowVault(),
-		CmdVaultAllByShareHolder(),
-		CmdVaultEstimatedMintAmount(),
-		CmdVaultEstimatedRedeemAmount(),
-		CmdQuerySymbolInfo(),
-		CmdQueryDenomInfo(),
-		CmdQueryIntermediaryAccounts(),
-		CmdVaultAddress(),
+		CmdShowVaultDetails(),
+		CmdShowTranche(),
+		CmdListStrategyTranches(),
+		CmdListAllTranches(),
+		CmdShowTranchePtAPYs(),
+		CmdShowTrancheYtAPYs(),
+		CmdShowTranchePoolAPYs(),
+		CmdEstimateSwapInPool(),
+		CmdEstimateMintPtYtPair(),
+		CmdEstimateRedeemPtYtPair(),
+		CmdEstimateSwapToYt(),
+		CmdEstimateRequiredDepositSwapToYt(),
+		CmdEstimateRedeemMaturedYt(),
+		CmdEstimateMintLiquidityPoolToken(),
+		CmdEstimateRedeemLiquidityPoolToken(),
 	)
 
 	return cmd

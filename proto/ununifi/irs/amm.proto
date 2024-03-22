@@ -1,0 +1,23 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+message TranchePool {
+  uint64 id                = 1;  // unique id across all the tranches
+  string strategy_contract = 2;
+  uint64 start_time        = 3;
+  uint64 maturity          = 4;
+  string swap_fee          = 5 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  string exit_fee          = 6 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  // sum of all LP tokens sent out
+  cosmos.base.v1beta1.Coin total_shares = 7 [(gogoproto.nullable) = false];
+  // Pool assets are sorted by denomination
+  repeated cosmos.base.v1beta1.Coin pool_assets = 8 [(gogoproto.nullable) = false];
+  string denom = 9; // denom of the underlying asset e.g. uatom
+  string deposit_denom = 10; // denom of the deposit asset e.g. ustatom
+}

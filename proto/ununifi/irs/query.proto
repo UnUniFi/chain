@@ -1,0 +1,308 @@
+syntax = "proto3";
+package ununifi.irs;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "ununifi/irs/params.proto";
+// this line is used by starport scaffolding # 1
+import "ununifi/irs/irs.proto";
+import "ununifi/irs/amm.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/irs/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/irs/params";
+  }
+  // Vaults queries the InterestRateSwapVaults
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vaults";
+  }
+  // Vault queries a single InterestRateSwapVault
+  rpc VaultByContract(QueryVaultByContractRequest) returns (QueryVaultByContractResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}";
+  }
+  // VaultDetails queries the details of the vault
+  rpc VaultDetails(QueryVaultDetailsRequest) returns (QueryVaultDetailsResponse) {
+    option (google.api.http).get = "/ununifi/irs/vault/{strategy_contract}/maturities/{maturity}";
+  }
+  // Tranches by Strategy
+  rpc AllTranches(QueryAllTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/all-tranches";
+  }
+  // Tranches by Strategy
+  rpc Tranches(QueryTranchesRequest) returns (QueryTranchesResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranches/{strategy_contract}";
+  }
+  // Tranche by id
+  rpc Tranche(QueryTrancheRequest) returns (QueryTrancheResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}";
+  }
+  // Estimate swap amount of Deposit_Token/PT (in the pool)
+  rpc EstimateSwapInPool(QueryEstimateSwapInPoolRequest) returns (QueryEstimateSwapInPoolResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-in-pool";
+  }
+  // Estimate mint amount of PT&YT pair 
+  rpc EstimateMintPtYtPair(QueryEstimateMintPtYtPairRequest) returns (QueryEstimateMintPtYtPairResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-pt-yt-pair";
+  }
+  // Estimate redeem amount of PT&YT pair 
+  rpc EstimateRedeemPtYtPair(QueryEstimateRedeemPtYtPairRequest) returns (QueryEstimateRedeemPtYtPairResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-pt-yt-pair";
+  }
+  // Estimate tokens to mint liquidity pool token
+  rpc EstimateMintLiquidityPoolToken(QueryEstimateMintLiquidityPoolTokenRequest) returns (QueryEstimateMintLiquidityPoolTokenResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-mint-liquidity-pool-token";
+  }
+  // Estimate redeem amount of liquidity pool token
+  rpc EstimateRedeemLiquidityPoolToken(QueryEstimateRedeemLiquidityPoolTokenRequest) returns (QueryEstimateRedeemLiquidityPoolTokenResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-liquidity-pool-token";
+  }
+  // Estimate swap Deposit_Token to YT
+  rpc EstimateSwapToYt(QueryEstimateSwapToYtRequest) returns (QueryEstimateSwapToYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-swap-to-yt";
+  }
+  // Estimate required Deposit_Token amount to swap to YT
+  rpc EstimateRequiredDepositSwapToYt(QueryEstimateRequiredDepositSwapToYtRequest) returns (QueryEstimateRequiredDepositSwapToYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-required-deposit-swap-to-yt";
+  }
+  // Estimate redeem matured YT
+  rpc EstimateRedeemMaturedYt(QueryEstimateRedeemMaturedYtRequest) returns (QueryEstimateRedeemMaturedYtResponse) {
+    option (google.api.http).get = "/ununifi/irs/estimate-redeem-matured-yt";
+  }
+  // tranche PT APYs by id
+  rpc TranchePtAPYs(QueryTranchePtAPYsRequest) returns (QueryTranchePtAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/pt-apy";
+  }    
+  // tranche YT APYs by id
+  rpc TrancheYtAPYs(QueryTrancheYtAPYsRequest) returns (QueryTrancheYtAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/yt-apy";
+  }  
+  // tranche Ls APYs by id
+  rpc TranchePoolAPYs(QueryTranchePoolAPYsRequest) returns (QueryTranchePoolAPYsResponse) {
+    option (google.api.http).get = "/ununifi/irs/tranche/{id}/pool-apy";
+  }  
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultsRequest is request type for the Query/Vaults RPC method.
+message QueryVaultsRequest {}
+
+// QueryVaultsResponse is response type for the Query/Vaults RPC method.
+message QueryVaultsResponse {
+  repeated InterestRateSwapVault vaults = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultRequest is request type for the Query/Vault RPC method.
+message QueryVaultByContractRequest {
+  string strategy_contract = 1;
+}
+
+// QueryVaultResponse is response type for the Query/Vault RPC method.
+message QueryVaultByContractResponse {
+  InterestRateSwapVault vault = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVaultDetailsRequest is request type for the Query/VaultDetails RPC method.
+message QueryVaultDetailsRequest {
+  string strategy_contract = 1;
+  string maturity          = 2;
+}
+
+// QueryVaultDetailsResponse is response type for the Query/VaultDetails RPC method.
+message QueryVaultDetailsResponse {
+  string liquidity_pool = 1;
+  string fy_rate        = 2;
+  string lvy_rate       = 3;
+}
+
+// QueryAllTranchesRequest is request type for the Query/Tranches RPC method.
+message QueryAllTranchesRequest {}
+
+// QueryTranchesRequest is request type for the Query/Tranches RPC method.
+message QueryTranchesRequest {
+  string strategy_contract = 1;
+}
+
+// QueryTranchesResponse is response type for the Query/Tranches RPC method.
+message QueryTranchesResponse {
+  repeated TranchePool tranches = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTranchRequest is request type for the Query/Tranches RPC method.
+message QueryTrancheRequest {
+  uint64 id = 1;
+}
+
+// QueryTranchResponse is response type for the Query/Tranch RPC method.
+message QueryTrancheResponse {
+  TranchePool tranche = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryEstimateSwapInPoolRequest is request type for the Query/EstimateSwapInPool RPC method.
+message QueryEstimateSwapInPoolRequest {
+  uint64 id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateSwapInPoolResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintPtYtPairRequest {
+  uint64 id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateMintPtYtPairResponse {
+  cosmos.base.v1beta1.Coin pt_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin yt_amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemPtYtPairRequest {
+  uint64 id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateRedeemPtYtPairResponse {
+  cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin additional_required_amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateMintLiquidityPoolTokenRequest {
+  uint64 id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateMintLiquidityPoolTokenResponse {
+  cosmos.base.v1beta1.Coin mint_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin additional_required_amount = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemLiquidityPoolTokenRequest {
+  uint64 id = 1;
+  string amount = 3;
+}
+
+message QueryEstimateRedeemLiquidityPoolTokenResponse {
+  repeated cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateSwapToYtRequest {
+  uint64 id = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message QueryEstimateSwapToYtResponse {
+  cosmos.base.v1beta1.Coin yt_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRequiredDepositSwapToYtRequest {
+  uint64 id = 1;
+  string desired_yt_amount = 3;
+}
+
+message QueryEstimateRequiredDepositSwapToYtResponse {
+  cosmos.base.v1beta1.Coin required_deposit_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEstimateRedeemMaturedYtRequest {
+  uint64 id = 1;
+  string yt_amount = 2;
+}
+
+message QueryEstimateRedeemMaturedYtResponse {
+  cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryTranchePtAPYsRequest {
+  uint64 id = 1;
+  string deposit_amount = 2;
+}
+
+message QueryTranchePtAPYsResponse {
+  string pt_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string pt_rate_per_deposit   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message QueryTrancheYtAPYsRequest {
+  uint64 id = 1;
+  string desired_yt_amount = 2;
+}
+
+message QueryTrancheYtAPYsResponse {
+  string yt_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string yt_rate_per_deposit   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string ls_apy     = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message QueryTranchePoolAPYsRequest {
+  uint64 id = 1;
+  string deposit_amount = 2;
+}
+
+message QueryTranchePoolAPYsResponse {
+  string liquidity_apy     = 1 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string discount_pt_apy   = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string liquidity_rate_per_deposit   = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string deposit_token_percentage_in_pool   = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string pt_percentage_in_pool   = 5 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

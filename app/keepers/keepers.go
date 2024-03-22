@@ -83,6 +83,8 @@ import (
 
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
+	irskeeper "github.com/UnUniFi/chain/x/irs/keeper"
+	irstypes "github.com/UnUniFi/chain/x/irs/types"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icacallbackskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/keeper"
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
@@ -151,6 +153,7 @@ type AppKeepers struct {
 	NftfactoryKeeper    nftfactorykeeper.Keeper
 
 	YieldaggregatorKeeper    yieldaggregatorkeeper.Keeper
+	IrsKeeper                irskeeper.Keeper
 	StakeibcKeeper           stakeibckeeper.Keeper
 	ScopedStakeibcKeeper     capabilitykeeper.ScopedKeeper
 	EpochsKeeper             epochskeeper.Keeper
@@ -616,6 +619,17 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	appKeepers.IrsKeeper = irskeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[irstypes.StoreKey],
+		appKeepers.BankKeeper,
+		wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper),
+		appKeepers.WasmKeeper,
+		appKeepers.RecordsKeeper,
+		appKeepers.YieldaggregatorKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	epochsKeeper := epochskeeper.NewKeeper(appCodec, appKeepers.keys[epochstypes.StoreKey])
 	appKeepers.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochstypes.NewMultiEpochHooks(
@@ -737,6 +751,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Deprecated: Just for migration
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
+	paramsKeeper.Subspace(irstypes.ModuleName)
 
 	return paramsKeeper
 }

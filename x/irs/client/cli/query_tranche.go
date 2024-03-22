@@ -8,30 +8,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/irs/types"
 )
 
-func CmdListVault() *cobra.Command {
+func CmdListStrategyTranches() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-vault",
-		Short: "list all vault",
+		Use:   "list-strategy-tranches [strategy_contract]",
+		Short: "list all tranches by strategy contract",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllVaultRequest{
-				Pagination: pageReq,
+			params := &types.QueryTranchesRequest{
+				StrategyContract: args[0],
 			}
 
-			res, err := queryClient.VaultAll(context.Background(), params)
+			res, err := queryClient.Tranches(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -46,26 +39,18 @@ func CmdListVault() *cobra.Command {
 	return cmd
 }
 
-func CmdShowVault() *cobra.Command {
+func CmdListAllTranches() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-vault [id]",
-		Short: "shows a vault",
-		Args:  cobra.ExactArgs(1),
+		Use:   "all-tranches",
+		Short: "list all tranches",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
 			queryClient := types.NewQueryClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
+			params := &types.QueryAllTranchesRequest{}
 
-			params := &types.QueryGetVaultRequest{
-				Id: id,
-			}
-
-			res, err := queryClient.Vault(context.Background(), params)
+			res, err := queryClient.AllTranches(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -74,60 +59,30 @@ func CmdShowVault() *cobra.Command {
 		},
 	}
 
+	flags.AddPaginationFlagsToCmd(cmd, cmd.Use)
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
 
-func CmdVaultAllByShareHolder() *cobra.Command {
+func CmdShowTranche() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-vault-by-share-holder [holder]",
-		Short: "List vaults by share holder",
+		Use:   "show-tranche [id]",
+		Short: "shows a tranche",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryAllVaultByShareHolderRequest{
-				ShareHolder: args[0],
-			}
-
-			res, err := queryClient.VaultAllByShareHolder(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdVaultEstimatedMintAmount() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "estimate-mint-amount [id] [deposit-amount]",
-		Short: "Estimate mint amount",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
 			id, err := strconv.Atoi(args[0])
 			if err != nil {
 				return err
 			}
-
-			params := &types.QueryEstimateMintAmountRequest{
-				Id:            uint64(id),
-				DepositAmount: args[1],
+			params := &types.QueryTrancheRequest{
+				Id: uint64(id),
 			}
 
-			res, err := queryClient.EstimateMintAmount(context.Background(), params)
+			res, err := queryClient.Tranche(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -141,57 +96,91 @@ func CmdVaultEstimatedMintAmount() *cobra.Command {
 	return cmd
 }
 
-func CmdVaultEstimatedRedeemAmount() *cobra.Command {
+func CmdShowTranchePtAPYs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "estimate-redeem-amount [id] [burn-amount]",
-		Short: "Estimate redeem amount",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			id, err := strconv.Atoi(args[0])
-			if err != nil {
-				return err
-			}
-
-			params := &types.QueryEstimateRedeemAmountRequest{
-				Id:         uint64(id),
-				BurnAmount: args[1],
-			}
-
-			res, err := queryClient.EstimateRedeemAmount(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdVaultAddress() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "show-vault-address [id]",
-		Short: "shows a vault address",
+		Use:   "show-tranche-pt-apys [id]",
+		Short: "shows a tranche's PT APYs",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTranchePtAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TranchePtAPYs(context.Background(), params)
 			if err != nil {
 				return err
 			}
 
-			vaultModName := types.GetVaultModuleAccountName(id)
-			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+			return clientCtx.PrintProto(res)
+		},
+	}
 
-			return clientCtx.PrintString(vaultModAddr.String())
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowTrancheYtAPYs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-tranche-yt-apys [id]",
+		Short: "shows a tranche's YT APYs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTrancheYtAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TrancheYtAPYs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowTranchePoolAPYs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-tranche-pool-apys [id]",
+		Short: "shows a tranche's Pool APYs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+			params := &types.QueryTranchePoolAPYsRequest{
+				Id: uint64(id),
+			}
+
+			res, err := queryClient.TranchePoolAPYs(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 
